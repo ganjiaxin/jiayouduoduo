@@ -23,4 +23,5 @@
 .idea
 *.iml
 .mvn
+*/dist/*
 
