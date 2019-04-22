@@ -1,0 +1,263 @@
+@charset "utf-8";
+/* CSS Document */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100%;
+    background: #f5f5f5;
+    margin: 0 auto;
+    font-family: '微软雅黑';
+    max-width: 720px;
+    color: #333333;
+}
+
+input, textarea, select {
+    outline: none;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+}
+
+input[type="button"], input[type="tel"], input[type="submit"], input[type="reset"], button {
+    outline: none;
+    -webkit-appearance: none !important;
+    border-radius: 5px;
+}
+
+a {
+    text-decoration: none;
+}
+
+input::-webkit-input-placeholder { /* WebKit browsers */
+    color: #ccc;
+}
+
+.clear {
+    clear: both;
+}
+
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.service {
+    width: 100%;
+    height: auto;
+    padding: 0.3rem;
+}
+
+.service img {
+    display: block;
+    border: none;
+}
+
+.service h2 {
+    font-size: 0.32rem;
+    padding: 0.1rem 0;
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.02rem;
+    color: #333333;
+}
+
+.service h2 i {
+    width: 0.08rem;
+    height: 0.32rem;
+    margin-right: 0.1rem;
+    background: #FF4456;
+    display: inline-block;
+    vertical-align: -0.03rem;
+    border-radius: 0.04rem;
+}
+
+.service dl {
+    width: 100%;
+    height: auto;
+    background: #ffffff;
+    border-radius: 0.05rem;
+    padding: 0.28rem 0.2rem 0.28rem 1.3rem;
+    position: relative;
+    margin-bottom: 0.3rem;
+}
+
+.service dl a {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 99;
+    left: 0;
+    top: 0;
+}
+
+.service dl dt {
+    width: 0.7rem;
+    height: 0.7rem;
+    position: absolute;
+    left: 0.3rem;
+    top: 0.37rem;
+}
+
+.service dl dd {
+    width: 100%;
+    height: auto;
+    font-size: 0.3rem;
+    color: #333333;
+}
+
+.service dl dd p {
+    font-size: 0.25rem;
+    color: #666666;
+    line-height: 1.6em;
+}
+
+.service dl dd p.tel {
+    font-size: 0.3rem;
+    color: #333333;
+}
+
+.service .ewm {
+    width: 100%;
+    height: auto;
+    clear: both;
+    padding-top: 0.2rem;
+}
+
+.service .ewm .img {
+    width: 50%;
+    padding: 0 0.6rem;
+    height: auto;
+    float: left;
+}
+
+.service .ewm .img p {
+    padding-top: 0.18rem;
+    text-align: center;
+    width: 100%;
+    font-size: 0.28rem;
+    line-height: 1.6em;
+}
+
+.express {
+    width: 100%;
+    height: auto;
+    padding-top: 15px;
+}
+
+.express_info {
+    width: 100%;
+    height: auto;
+    background: #ffffff;
+    padding: 0.2rem 0.3rem;
+    margin-bottom: 0.32rem;
+}
+
+.express_info p {
+    width: 100%;
+    line-height: 2.2em;
+    font-size: 0.27rem;
+}
+
+.express_info p label {
+    color: #666666;
+}
+
+.express .step {
+    width: 100%;
+    height: auto;
+    background: #ffffff;
+    padding: 0.4rem 0.3rem;
+}
+
+.express .step .box {
+    width: 100%;
+    height: auto;
+    clear:both;
+}
+.express .step .box.active dl dt,.express .step .box.active dl dd{
+    color:#333333;
+}
+.express .step .box dl {
+    width: 100%;
+    height: auto;
+    position: relative;
+}
+
+.express .step .box dl dt {
+    width: 13%;
+    height: 0.8rem;
+    top:50%;
+    color:#999999;
+    margin-top:-0.38rem;
+    position:absolute;
+    text-align:right;
+    letter-spacing: 1px;
+}
+
+.express .step .box dl dt h2 {
+    font-size: 0.28rem;
+    font-weight: normal;
+    line-height:1.5em;
+}
+.express .step .box dl dt p{
+    font-size:0.22rem;
+    line-height:1.5em;
+}
+.express .step .box dl dd{
+    width:78%;
+    height:auto;
+    font-size:0.29rem;
+    float:right;
+    color:#999999;
+    min-height:1.1rem;
+    border-left:solid 1px #EEEEEE;
+    position:relative;
+    padding:0.32rem 0 0.32rem  0.5rem;
+}
+.express .step .box dl dd p{
+    line-height:1.4em;
+}
+.express .step .box dl dd .flag{
+    width:0.4rem;
+    height:0.4rem;
+    border-radius:50%;
+    position:absolute;
+    top:50%;
+    margin:-0.2rem 0 0 -0.72rem;
+    z-index:99;
+}
+.express .step .box dl dd .hideLine{
+    width:6px;
+    height:50%;
+    background:#ffffff;
+    position:absolute;
+    top:0;
+    left:-3px;
+}
+.express .step .box dl dd .bm{
+    top:auto;
+    bottom:0;
+}
+
+.express .step .box dl dd .begin{
+    background:url("../images/begin.png") no-repeat center center;
+    background-size:contain;
+}
+.express .step .box dl dd .end{
+    background:url("../images/end.png") no-repeat center center;
+    background-size:contain;
+}
+.express .step .box dl dd i{
+    width:0.14rem;
+    height:0.14rem;
+    display:block;
+    background:#cccccc;
+    border-radius:50%;
+    position:absolute;
+    top:50%;
+    margin:-0.07rem 0 0 -0.58rem;
+}

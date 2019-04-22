@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>添加广告</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <!-- load css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/font/iconfont.css?v=1.0.0" media="all">
+    <link rel="stylesheet" type="text/css" href="css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v2.2.0" media="all">
+    <style>
+        .layui-table td, .layui-table th {
+            padding: 12px 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid larry-wrapper">
+    <div class="col-xs-10 col-sm-10 col-md-10">
+        <form id="addForm" class="layui-form layui-form-pane" action="/f/web/hykAd/save" method="post"
+              complete="add">
+            <div class="layui-form-item">
+                <label class="layui-form-label">广告名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" placeholder="请输入广告名称" autocomplete="off" required
+                           jq-verify="required" jq-error="请输入广告名称"
+                           class="layui-input ">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">banner</label>
+                <div class="layui-input-block">
+                    <div class="layui-btn layui-btn-warm modal-iframe"
+                         data-params='{"content":"upload.html?name=bannerImg", "title":"上传图片", "area":"520px,350px"}'>
+                        <i class="iconfont">&#xe63c;</i>上传图片
+                    </div>
+                    <input type="hidden" name="bannerImg">
+                    <div class="bannerImg imgView">
+                    </div>
+                </div>
+                <div class="layui-clear"></div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">开屏广告</label>
+                <div class="layui-input-block">
+                    <div class="layui-btn layui-btn-warm modal-iframe"
+                         data-params='{"content":"upload.html?name=openImg", "title":"上传图片", "area":"520px,350px"}'>
+                        <i class="iconfont">&#xe63c;</i>上传图片
+                    </div>
+                    <input type="hidden" name="openImg">
+                    <div class="openImg imgView">
+                    </div>
+                </div>
+                <div class="layui-clear"></div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">精彩活动</label>
+                <div class="layui-input-block">
+                    <div class="layui-btn layui-btn-warm modal-iframe"
+                         data-params='{"content":"upload.html?name=wondefulImg", "title":"上传图片", "area":"520px,350px"}'>
+                        <i class="iconfont">&#xe63c;</i>上传图片
+                    </div>
+                    <input type="hidden" name="wondefulImg">
+                    <div class="wondefulImg imgView">
+                    </div>
+                </div>
+                <div class="layui-clear"></div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">App弹窗</label>
+                <div class="layui-input-block">
+                    <div class="layui-btn layui-btn-warm modal-iframe"
+                         data-params='{"content":"upload.html?name=appImg", "title":"上传图片", "area":"520px,350px"}'>
+                        <i class="iconfont">&#xe63c;</i>上传图片
+                    </div>
+                    <input type="hidden" name="appImg">
+                    <div class="appImg imgView">
+                    </div>
+                </div>
+                <div class="layui-clear"></div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">商城广告图</label>
+                <div class="layui-input-block">
+                    <div class="layui-btn layui-btn-warm modal-iframe"
+                         data-params='{"content":"upload.html?name=goodsImg", "title":"上传图片", "area":"520px,350px"}'>
+                        <i class="iconfont">&#xe63c;</i>上传图片
+                    </div>
+                    <input type="hidden" name="goodsImg">
+                    <div class="goodsImg imgView">
+                    </div>
+                </div>
+                <div class="layui-clear"></div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">分享标题</label>
+                <div class="layui-input-block">
+                    <input type="text" name="shareTitle" placeholder="请输入分享标题" autocomplete="off" class="layui-input ">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">分享内容</label>
+                <div class="layui-input-block">
+                    <input type="text" name="shareSonTitle" placeholder="请输入分享内容" autocomplete="off" class="layui-input ">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">分享链接</label>
+                <div class="layui-input-block">
+                    <input type="text" name="shareUrl" placeholder="请输入分享链接地址" autocomplete="off"
+                           class="layui-input ">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">分享图片</label>
+                <div class="layui-input-block">
+                    <div class="layui-btn layui-btn-warm modal-iframe"
+                         data-params='{"content":"upload.html?name=shareImg", "title":"上传图片", "area":"520px,350px"}'>
+                        <i class="iconfont">&#xe63c;</i>上传图片
+                    </div>
+                    <input type="hidden" name="shareImg">
+                    <div class="shareImg imgView">
+                    </div>
+                </div>
+                <div class="layui-clear"></div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">活动链接</label>
+                <div class="layui-input-block">
+                    <input type="text" name="url" placeholder="请输入链接地址" autocomplete="off" required
+                           jq-verify="required|url" jq-error="请输入链接地址"
+                           class="layui-input ">
+                </div>
+            </div>
+            <div class="layui-form-item time-item">
+                <label class="layui-form-label">开始时间</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input start-date laydate-icon" name="startTime" required
+                           jq-verify="required" placeholder="开始时间" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item time-item">
+                <label class="layui-form-label">结束时间</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input end-date laydate-icon" name="endTime" required
+                           jq-verify="required" placeholder="结束时间" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-inline">
+                    <input type="radio" name="status" value="1" title="开启" checked>
+                    <input type="radio" name="status" value="0" title="关闭">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">排序序号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="sort" placeholder="请输入排序序号" autocomplete="off" required
+                           jq-verify="required|number" jq-error="请输入排序序号" value="10"
+                           class="layui-input ">
+                </div>
+            </div>
+            <input type="hidden" name="token">
+            <div class="layui-form-item hyk_buttons">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-submit" jq-submit jq-filter="submit">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</div>
+<script type="text/javascript" src="js/layui/layui.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/lib/jquery-2.2.0.min.js"></script>
+<script>
+    $('input[name=token]').val(token);
+    layui.use(['modal', 'jqform', 'laydate'], function () {
+        var start = {
+            min: laydate.now(),
+            istime: true,
+            istoday: false, format: 'YYYY-MM-DD',
+            choose: function (datas) {
+                end.min = datas;
+                end.start = datas
+            }
+        };
+        var end = {
+            min: laydate.now(),
+            istime: true,
+            istoday: false, format: 'YYYY-MM-DD',
+            choose: function (datas) {
+                start.max = datas;
+            }
+        };
+        $('.start-date').click(function () {
+            start.elem = this;
+            laydate(start);
+        })
+        $('.end-date').click(function () {
+            end.elem = this;
+            laydate(end);
+        })
+    });
+
+    function add() {
+        layer.msg('广告已添加', {
+            time: 1000, shade: [0.2, '#fff']
+        }, function () {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+            oneList = new parent.layui.dtable();
+            oneList.init('list-tpl');
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykOilManagerDao">
+    
+	<sql id="hykOilManagerColumns">
+		a.id AS "id",
+		a.order_no AS "orderNo",
+		a.user_id AS "hykUser.id",
+		a.periods_num AS "periodsNum",
+		a.periods_num +"期" AS "periodsNumName",
+		a.oil_date AS "oilDate",
+		a.plan_oil_date AS "planOilDate",
+		a.status AS "status",
+		e.label AS "statusName",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.goodId AS "goodId",
+		a.money As "money",
+		a.orderId AS "orderId",
+		a.cardId AS "cardId",
+		u3.phone AS "hykUser.phone",
+		u3.phone as "userPhone",
+		b.card_no AS "hykOrder.cardNo",
+		b.card_no As "cardNum",
+		f.label AS "hykOrder.orderTypeStr",
+		f.label AS "orderTypeStr",
+		b.order_type AS "hykOrder.orderType",
+		c.name AS  "hykOilCard.name",
+		c.name AS  "cardName",
+		g.label AS "oilTypeStr",
+		d.cycle AS  "hykGoods.cycle",
+		d.cycle AS "cycle",
+		d.goods_name As "hykGoods.goodsName",
+		d.goods_name As "goodsName",
+		DATE_FORMAT(a.oil_date,'%Y-%m-%d') oilDateStr,
+		DATE_FORMAT(a.plan_oil_date,'%Y-%m-%d') planOilDateStr
+	</sql>
+	
+	<sql id="hykOilManagerJoins">
+		inner JOIN hyk_user u3 ON u3.id = a.user_id
+		inner JOIN hyk_order b on a.orderId=b.id
+		LEFT JOIN hyk_oil_card c on a.cardId=c.id
+		inner JOIN hyk_goods d on a.goodId=d.id
+		LEFT JOIN sys_dict e on a.`status`=e.`value` and e.type="oilmanagerStatus"
+		LEFT JOIN sys_dict f on b.order_type=f.`value` and f.type="orderType"
+		LEFT JOIN sys_dict g on c.oil_type=g.`value` and g.type='oilType'
+	</sql>
+    
+	<select id="get" resultType="HykOilManager">
+		SELECT 
+			<include refid="hykOilManagerColumns"/>
+		FROM hyk_oil_manager a
+		<include refid="hykOilManagerJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykOilManager">
+		SELECT 
+			<include refid="hykOilManagerColumns"/>
+		FROM hyk_oil_manager a
+		<include refid="hykOilManagerJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="orderNo != null and orderNo != ''">
+				AND a.order_no = #{orderNo}
+			</if>
+			<if test="hykUser != null and hykUser.id != null and hykUser.id != ''">
+				AND a.user_id = #{hykUser.id}
+			</if>
+			<if test="periodsNum != null and periodsNum != ''">
+				AND a.periods_num = #{periodsNum}
+			</if>
+			<if test="oilDate != null and oilDate != ''">
+				AND a.oil_date = #{oilDate}
+			</if>
+			<if test="planOilDate != null and planOilDate != ''">
+				AND a.plan_oil_date = #{planOilDate}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="remark != null and remark != ''">
+				AND a.remark = #{remark}
+			</if>
+			<if test="goodId != null and goodId != ''">
+				AND a.goodId = #{goodId}
+			</if>
+			<if test="orderId != null and orderId != ''">
+				AND a.orderId = #{orderId}
+			</if>
+			<if test="cardId != null and cardId != ''">
+				AND a.cardId = #{cardId}
+			</if>
+			<if test="startTime != null and startTime != ''">
+				AND DATE_FORMAT(a.plan_oil_date,'%Y%m%d')&gt;=DATE_FORMAT(#{startTime},'%Y%m%d')
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND DATE_FORMAT(a.plan_oil_date,'%Y%m%d')&lt;=DATE_FORMAT(#{endTime},'%Y%m%d')
+			</if>
+			<if test="other != null and other != ''">
+				AND (a.order_no like CONCAT('%',#{other},'%') or u3.phone like CONCAT('%',#{other},'%') or a.user_id like CONCAT('%',#{other},'%'))
+			</if>
+			<if test="hykOrder != null and hykOrder.orderType != null and hykOrder.orderType != ''">
+				AND b.order_type =#{hykOrder.orderType}
+			</if>
+		</where>
+		ORDER BY a.`status`,a.plan_oil_date
+	</select>
+	
+	<select id="findAllList" resultType="HykOilManager">
+		SELECT 
+			<include refid="hykOilManagerColumns"/>
+		FROM hyk_oil_manager a
+		<include refid="hykOilManagerJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_oil_manager(
+			id,
+			order_no,
+			user_id,
+			periods_num,
+			oil_date,
+			plan_oil_date,
+			status,
+			remark,
+			del_flag,
+			goodId,
+			orderId,
+			cardId
+		) VALUES (
+			#{id},
+			#{orderNo},
+			#{hykUser.id},
+			#{periodsNum},
+			#{oilDate},
+			#{planOilDate},
+			#{status},
+			#{remark},
+			#{delFlag},
+			#{goodId},
+			#{orderId},
+			#{cardId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_oil_manager SET 	
+			order_no = #{orderNo},
+			user_id = #{hykUser.id},
+			periods_num = #{periodsNum},
+			oil_date = #{oilDate},
+			plan_oil_date = #{planOilDate},
+			status = #{status},
+			remark = #{remark},
+			goodId = #{goodId},
+			orderId = #{orderId},
+			cardId = #{cardId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_oil_manager SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+
+
+	<insert id="insertOilManagerList" parameterType="java.util.List">
+		 insert into hyk_oil_manager
+    (
+        id,
+        order_no,
+        user_id,
+        periods_num,
+        plan_oil_date,
+        money,
+        status,
+        create_date,
+        goodId,
+        orderId,
+        cardId
+    )
+    values
+		<foreach collection="list" item="item" index= "index" separator =",">
+			(
+			#{item.id},
+			#{item.orderNo},
+			#{item.hykUser.id},
+			#{item.periodsNum},
+			#{item.planOilDate},
+			#{item.money},
+			#{item.status},
+			#{item.createDate},
+			#{item.goodId},
+			#{item.orderId},
+			#{item.cardId}
+			)
+		</foreach>
+	</insert>
+
+
+	<update id="updateCardId">
+		update hyk_oil_manager set  cardId=#{cardId} where LENGTH(cardId)=0 and user_id=#{userId}
+	</update>
+
+	<select id="getCountOilManagerByUserId" resultType="java.lang.Integer">
+		SELECT COUNT(*) from hyk_oil_manager where status=0 and user_id=#{userId}
+	</select>
+
+	<select id="getAllByUserIdAndTimeAndStatus"  resultType="HykOilManager">
+		SELECT date_format(a.plan_oil_date,'%Y') as year,date_format(a.plan_oil_date,'%m') as month,date_format(a.plan_oil_date,'%d') as day ,
+             date_format(a.plan_oil_date,'%Y%m%d') as registerDateStr, a.status as status ,a.money as money ,c.`name` as cardName ,
+             insert( c.oli_card_no,5,case LENGTH(c.oli_card_no) when 16 then 8 when 19 then 11 else 1 end, case LENGTH(c.oli_card_no) when 16 then '********' when 19 then '***********' else '*' end ) as cardNum ,
+             a.periods_num as periodsNum,b.cycle as cycle,b.goods_type as goodsType from hyk_oil_manager a left join hyk_goods b on a.goodId=b.id
+             left join hyk_oil_card c on a.cardId=c.id
+             <where>
+				 a.user_id=#{userId} and FROM_UNIXTIME(UNIX_TIMESTAMP(a.plan_oil_date),'%Y%m') =#{time}  and a.`status`=#{status} and a.del_flag=0
+				 <if test="day != null and day != ''">
+					 AND FROM_UNIXTIME(UNIX_TIMESTAMP(a.plan_oil_date),'%d') =#{day}
+				 </if>
+			 </where>
+	</select>
+	<select id="getTimeGroupByUserId" resultType="java.lang.String">
+		SELECT date_format(plan_oil_date,'%Y-%m-%d')as time from hyk_oil_manager where FROM_UNIXTIME(UNIX_TIMESTAMP(plan_oil_date),'%Y%m') =#{time} and user_id=#{userId} GROUP BY date_format(plan_oil_date,'%Y%m%d')
+	</select>
+	<select id="getAllByUserIdAndTimeAndStatusNew"  resultType="HykOilManager">
+		SELECT date_format(a.plan_oil_date,'%Y') as year,date_format(a.plan_oil_date,'%m') as month,date_format(a.plan_oil_date,'%d') as day ,
+		date_format(a.plan_oil_date,'%Y%m%d') as registerDateStr, a.status as status ,a.money as money ,c.`name` as cardName ,
+		insert( c.oli_card_no,5,case LENGTH(c.oli_card_no) when 16 then 8 when 19 then 11 else 1 end, case LENGTH(c.oli_card_no) when 16 then '********' when 19 then '***********' else '*' end ) as cardNum ,
+		a.periods_num as periodsNum,b.cycle as cycle,b.goods_type as goodsType from hyk_oil_manager a left join hyk_goods b on a.goodId=b.id
+		left join hyk_oil_card c on a.cardId=c.id
+		where a.user_id=#{userId} and FROM_UNIXTIME(UNIX_TIMESTAMP(a.plan_oil_date),'%Y-%m-%d') =#{time}  and a.del_flag=0
+	</select>
+
+	<update id="updateStop">
+		update hyk_oil_manager set  del_flag=#{delFlag} where orderId=#{orderId}
+	</update>
+
+	<update id="updateStart">
+		update hyk_oil_manager set  del_flag="0" where orderId=#{orderId}
+	</update>
+
+
+	<select id="sumMoney" resultType="HykOilManager">
+		select sum(money)money from hyk_oil_manager a where a.orderId=#{orderId} and a.`status`="0"
+	</select>
+
+	<select id="totalMoney" resultType="HykOilManager">
+		select sum(money)money from hyk_oil_manager a where a.orderId=#{orderId}
+	</select>
+
+</mapper>

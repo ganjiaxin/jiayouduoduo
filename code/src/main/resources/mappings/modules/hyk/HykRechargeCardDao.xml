@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykRechargeCardDao">
+    
+	<sql id="hykRechargeCardColumns">
+		a.id AS "id",
+		a.code AS "code",
+		a.caredno AS "caredno",
+		a.password AS "password",
+		a.money AS "money",
+		a.use_method AS "useMethod",
+		a.sale_status AS "saleStatus",
+		a.create_date AS "createDate",
+		a.over_date AS "overDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.days AS "days",
+		a.status "status",
+		b.label useMethodStr,
+		c.label saleStatusStr,
+		d.label statusStr,
+		DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i:%s')createDateStr,
+		DATE_FORMAT(a.over_date,'%Y-%m-%d %H:%i:%s')overDateStr,
+		u.phone AS userName,
+		DATE_FORMAT(h.use_date,'%Y-%m-%d %H:%i:%s') AS useDateStr
+	</sql>
+	
+	<sql id="hykRechargeCardJoins">
+		LEFT JOIN sys_dict b on a.use_method=b.`value` and b.type='card_useMethod'
+		LEFT JOIN sys_dict c on a.sale_status=c.`value` and c.type='card_saleStatus'
+		LEFT JOIN sys_dict d on a.status=d.`value` and d.type='card_status'
+		LEFT JOIN hyk_card_his h on a.id=h.card_id
+		LEFT JOIN hyk_user u on h.user_id=u.id
+	</sql>
+    
+	<select id="get" resultType="HykRechargeCard">
+		SELECT 
+			<include refid="hykRechargeCardColumns"/>
+		FROM hyk_recharge_card a
+		<include refid="hykRechargeCardJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykRechargeCard">
+		SELECT 
+			<include refid="hykRechargeCardColumns"/>
+		FROM hyk_recharge_card a
+		<include refid="hykRechargeCardJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+			<if test="caredno != null and caredno != ''">
+				AND a.caredno = #{caredno}
+			</if>
+			<if test="password != null and password != ''">
+				AND a.password = #{password}
+			</if>
+			<if test="money != null and money != ''">
+				AND a.money = #{money}
+			</if>
+			<if test="useMethod != null and useMethod != ''">
+				AND a.use_method = #{useMethod}
+			</if>
+			<if test="saleStatus != null and saleStatus != ''">
+				AND a.sale_status = #{saleStatus}
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.create_date = #{createDate}
+			</if>
+			<if test="overDate != null and overDate != ''">
+				AND a.over_date = #{overDate}
+			</if>
+			<if test="days != null and days != ''">
+				AND a.days = #{days}
+			</if>
+			<if test="remarks != null and remarks != ''">
+				AND a.remarks = #{remarks}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				AND DATE_FORMAT(a.create_date,'%Y%m%d')&gt;=DATE_FORMAT(#{startDate},'%Y%m%d')
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND DATE_FORMAT(a.create_date,'%Y%m%d')&lt;=DATE_FORMAT(#{endDate},'%Y%m%d')
+			</if>
+			<if test="other != null and other != ''">
+				AND (a.caredno = #{other})
+			</if>
+		</where>
+		ORDER BY a.code desc
+	</select>
+	
+	<select id="findAllList" resultType="HykRechargeCard">
+		SELECT 
+			<include refid="hykRechargeCardColumns"/>
+		FROM hyk_recharge_card a
+		<include refid="hykRechargeCardJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insert">
+		INSERT INTO hyk_recharge_card(
+			id,
+			code,
+			caredno,
+			password,
+			money,
+			use_method,
+			sale_status,
+			create_date,
+			over_date,
+			create_date,
+			del_flag,
+			days,
+			status
+		) VALUES (
+			#{id},
+			#{code},
+			#{caredno},
+			#{password},
+			#{money},
+			#{useMethod},
+			#{saleStatus},
+			#{createDate},
+			#{overDate},
+			#{createDate},
+			#{remarks},
+			#{delFlag},
+			#{days},
+			#{status}
+		)
+	</insert>
+	<update id="update">
+		UPDATE hyk_recharge_card SET
+		 	code = #{code},
+			caredno = #{caredno},
+			password = #{password},
+			money = #{money},
+			use_method = #{useMethod},
+			sale_status = #{saleStatus},
+			create_date = #{createDate},
+			over_date = #{overDate},
+			remarks = #{remarks},
+			del_flag = #{delFlag},
+			days = #{days},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_recharge_card SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<insert id="saveBatch">
+		INSERT INTO hyk_recharge_card(
+		id,
+		code,
+		caredno,
+		password,
+		money,
+		use_method,
+		sale_status,
+		create_date,
+		over_date,
+		del_flag,
+		days,
+		status,
+		remarks
+		) VALUES
+		<foreach collection="list" item="card" separator="," >
+			(
+			#{card.id},
+			#{card.code},
+			#{card.caredno},
+			#{card.password},
+			#{card.money},
+			#{card.useMethod},
+			#{card.saleStatus},
+			#{card.createDate},
+			#{card.overDate},
+			#{card.delFlag},
+			#{card.days},
+			#{card.status},
+			#{card.remarks}
+			)
+		</foreach>
+	</insert>
+
+
+	<update id="updateBatch">
+		UPDATE hyk_recharge_card SET
+		create_date = #{createDate},
+		over_date = #{overDate},
+		status = #{status},
+		days = #{days}
+		WHERE code = #{code}
+	</update>
+
+	<select id="getByTwoType" resultType="HykRechargeCard">
+		SELECT * from hyk_recharge_card where status=1 and caredno=#{caredno} and password=#{password}
+	</select>
+
+
+	<update id="updateSaleStatusById">
+		update hyk_recharge_card set sale_status=1 where id=#{id}
+	</update>
+	<select id="selectNoPassword" resultType="map">
+		SELECT id as id ,days as days,caredno as caredno,password as password from hyk_recharge_card
+		where status=1 and use_method=1 and sale_status=3 and del_flag=0 and money=#{money} ORDER BY code asc limit #{num};
+	</select>
+	<update id="updateSaleStatusById2">
+		update hyk_recharge_card set sale_status=0,over_date=#{overDate} where id=#{id} and sale_status=3
+	</update>
+</mapper>

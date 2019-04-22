@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>提现管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <!-- load css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/font/iconfont.css?v=1.0.0" media="all">
+    <link rel="stylesheet" type="text/css" href="css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v2.2.0" media="all">
+    <style>
+        .layui-table td, .layui-table th {
+            padding: 12px 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid larry-wrapper">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <!--列表-->
+            <section class="panel panel-padding search_panel">
+                <form class="layui-form" id="searchForm" action="/f/web/hykCompanyCashWithdrawal?pageSize=14" method="POST">
+                    <div class="layui-form">
+                        <div class="layui-inline" style="width:20%">
+                            <div class="layui-input-inline" style="width:100%">
+                                <input class="layui-input" name="other" placeholder="请输入提现号码/用户ID/商户名">
+                            </div>
+                        </div>
+                        <div class="layui-inline lastline">
+                            <button lay-submit class="layui-btn layui-btn-warm search-btn" lay-filter="search"
+                                    id="search"><i
+                                    class="iconfont">&#xe608;</i>查 询
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section class="panel panel-padding">
+                <div id="list" class="layui-form"></div>
+                <div class="text-right" id="page"></div>
+            </section>
+        </div>
+    </div>
+</div>
+<script id="list-tpl" type="text/html"
+        data-params='{"url":"/f/web/hykCompanyCashWithdrawal?pageSize=14","tplid":"list-tpl","listid":"list","loading":true,"pageid":"#page"}'>
+    <table id="example" class="layui-table lay-even">
+        <thead>
+        <tr>
+            <th>编号</th>
+            <th>商户名</th>
+            <th>商户主号码</th>
+            <th>提现号码</th>
+            <th>提现金额</th>
+            <th>银行卡号</th>
+            <th>持卡人姓名</th>
+            <th>所属银行</th>
+            <th>支行名称</th>
+            <th>账户余额</th>
+            <th>提现时间</th>
+            <th>提现状态</th>
+            <th>审核</th>
+        </tr>
+        </thead>
+        <tbody>
+        <colgroup>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col width="60px" height="50px">
+        </colgroup>
+        {{# layui.each(d.page.list, function(index, item){ }}
+        <tr>
+            <td>{{index+1}}</td>
+            <td>{{item.realName}}</td>
+            <td>{{item.phone}}</td>
+            <td>{{item.userPhone}}</td>
+            <td>{{item.money}} 元</td>
+            <td>{{item.cardNo}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.branchBank}}</td>
+            <td>{{item.bankName}}</td>
+            <td>{{item.useMoney}} 元</td>
+            <td>{{item.createDateStr}}</td>
+            <td>{{item.statusStr}}</td>
+            <td>
+                {{#if(item.status==='0'){}}
+                <button class="layui-btn layui-btn-mini layui-btn-blue ajax" data-params='{"url": "/f/web/hykCompanyCashWithdrawal/save?id={{item.id}}&status=1&remarks=","method":"post","loading":"false","isConfirm":"审核通过","complete":"Success"}'>
+                    <i class="iconfont">&#xe62c;</i>通过
+                </button>
+                <button class="layui-btn layui-btn-mini layui-btn-danger modal-iframe" data-params='{"content": "hykCashWithdrawalEdit.html?id={{item.id}}","title": "审核","area":"500px,340px"}'>
+                    <i class="iconfont">&#xe63b;</i>未通过
+                </button>
+                {{#}else{}}
+                {{item.remarks}}
+                {{#}}}
+            </td>
+        </tr>
+        {{# }); }}
+        </tbody>
+    </table>
+    {{#  if(d.page.list.length === 0){ }}
+    <p class="Nulldata">暂无数据</p>
+    {{#  } }}
+</script>
+<script type="text/javascript" src="js/layui/layui.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/lib/jquery-2.2.0.min.js"></script>
+<script>
+    layui.use(['dtable', 'jqdate'], function () {
+        var list = layui.dtable,
+            oneList = new list();
+        oneList.init('list-tpl');
+    });
+    function exportAll(){
+        var paramForm = ''
+        var t = $('#searchForm').serializeArray();
+        $.each(t, function() {
+            paramForm+=this.name+'='+this.value+'&'
+        });
+        window.location.href=rootUrl+'/f/web/hykOrder/reportExcel?token='+token+'&'+paramForm+'dateTime='+ new Date().getTime()
+    }
+    function Success(){
+        layer.msg('审核成功', {
+            time: 1000, shade: [0.2, '#fff']
+        }, function () {
+            oneList = new layui.dtable();
+            oneList.init('list-tpl');
+        });
+    }
+</script>
+</body>
+</html>

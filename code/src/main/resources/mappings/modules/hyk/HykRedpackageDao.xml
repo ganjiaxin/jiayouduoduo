@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykRedpackageDao">
+
+    <sql id="hykRedpackageColumns">
+		a.id AS "id",
+		a.id AS "idStr",
+		a.title AS "title",
+		a.money AS "money",
+		a.status AS "status",
+		c.label AS "statusName",
+		a.send_time AS "sendTime",
+		a.use_time AS "useTime",
+		a.over_time AS "overTime",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.f1 AS "f1",
+		a.dayNum AS "dayNum",
+		a.redType AS "redType",
+		b.label AS "redTypeName",
+		a.user_id AS "userId",
+		u17.phone AS "phone",
+		DATE_FORMAT(a.send_time,'%Y-%m-%d') sendTimeStr,
+		DATE_FORMAT(a.use_time,'%Y-%m-%d') useTimeStr,
+		DATE_FORMAT(a.over_time,'%Y-%m-%d') overTimeStr,
+		a.minAmount,
+		a.goodsId,
+		d.goods_name as "goodsName"
+	</sql>
+
+    <sql id="hykRedpackageJoins">
+		LEFT JOIN hyk_user u17 ON u17.id = a.user_id
+		left join sys_dict b on a.redType=b.`value` and b.type="redType"
+		left join sys_dict c on a.`status`=c.`value` and c.type="redStatus"
+		LEFT JOIN hyk_goods d on a.goodsId=d.id
+	</sql>
+
+    <select id="get" resultType="HykRedpackage">
+        SELECT
+        <include refid="hykRedpackageColumns"/>
+        FROM hyk_redpackage a
+        <include refid="hykRedpackageJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="HykRedpackage">
+        SELECT
+        <include refid="hykRedpackageColumns"/>
+        FROM hyk_redpackage a
+        <include refid="hykRedpackageJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="id != null and id != ''">
+                AND a.id = #{id}
+            </if>
+            <if test="title != null and title != ''">
+                AND a.title LIKE
+                <if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+                <if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+            </if>
+            <if test="money != null and money != ''">
+                AND a.money = #{money}
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status = #{status}
+            </if>
+            <if test="sendTime != null and sendTime != ''">
+                AND a.send_time = #{sendTime}
+            </if>
+            <if test="useTime != null and useTime != ''">
+                AND a.use_time = #{useTime}
+            </if>
+            <if test="overTime != null and overTime != ''">
+                AND a.over_time = #{overTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                AND a.remark = #{remark}
+            </if>
+            <if test="f1 != null and f1 != ''">
+                AND a.f1 = #{f1}
+            </if>
+            <if test="dayNum != null and dayNum != ''">
+                AND a.dayNum = #{dayNum}
+            </if>
+            <if test="redType != null and redType != ''">
+                AND a.redType = #{redType}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND a.user_id = #{userId}
+            </if>
+            <if test="goodsId != null and goodsId != ''">
+                AND a.goodsId = #{goodsId}
+            </if>
+
+            <if test="other != null and other != ''">
+                AND (a.id like CONCAT('%',#{other},'%') or u17.phone like CONCAT('%',#{other},'%') or a.user_id like
+                CONCAT('%',#{other},'%'))
+            </if>
+        </where>
+        order by status,a.send_time DESC
+    </select>
+
+    <select id="findAllList" resultType="HykRedpackage">
+        SELECT
+        <include refid="hykRedpackageColumns"/>
+        FROM hyk_redpackage a
+        <include refid="hykRedpackageJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+		INSERT INTO hyk_redpackage(
+			id,
+			title,
+			money,
+			status,
+			send_time,
+			use_time,
+			over_time,
+			remark,
+			del_flag,
+			f1,
+			dayNum,
+			redType,
+			user_id,
+			minAmount,
+			goodsId
+		) VALUES (
+			#{id},
+			#{title},
+			#{money},
+			#{status},
+			#{sendTime},
+			#{useTime},
+			#{overTime},
+			#{remark},
+			#{delFlag},
+			#{f1},
+			#{dayNum},
+			#{redType},
+			#{userId},
+			#{minAmount},
+			#{goodsId}
+		)
+	</insert>
+
+    <update id="update">
+		UPDATE hyk_redpackage SET 	
+			title = #{title},
+			money = #{money},
+			status = #{status},
+			send_time = #{sendTime},
+			use_time = #{useTime},
+			over_time = #{overTime},
+			remark = #{remark},
+			f1 = #{f1},
+			dayNum = #{dayNum},
+			redType = #{redType},
+			user_id = #{userId},
+			minAmount=#{minAmount},
+			goodsId=#{goodsId}
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+		UPDATE hyk_redpackage SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+
+    <insert id="sendRegisteredRedPackage" parameterType="java.util.List">
+        INSERT INTO hyk_redpackage(
+        id,
+        title,
+        money,
+        user_id,
+        status,
+        send_time,
+        over_time,
+        dayNum,
+        redType,
+        minAmount,
+        goodsId
+        ) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.title},
+            #{item.money},
+            #{item.userId},
+            #{item.status},
+            #{item.sendTime},
+            #{item.overTime},
+            #{item.dayNum},
+            #{item.redType},
+            #{item.minAmount},
+            #{item.goodsId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryAll" resultType="HykRedpackage">
+        SELECT a.id as id,a.title as title,a.money as money,a.status as status,UNIX_TIMESTAMP(a.over_time)as
+        overTimeStr,a.redType as redType,a.minAmount as minAmount,b.goods_name as goodsName
+        from hyk_redpackage a left join hyk_goods b on a.goodsId=b.id
+        <where>
+            a.user_id=#{userId} AND a.del_flag=0
+            <if test="status != null and status != ''">
+                AND a.status=#{status}
+            </if>
+        </where>
+        ORDER BY a.status
+    </select>
+    <select id="queryAllCount" resultType="java.lang.Integer">
+        SELECT count(*) from hyk_redpackage
+        <where>
+            user_id=#{userId} and del_flag=0
+            <if test="status != null and status != ''">
+                AND status=#{status}
+            </if>
+        </where>
+    </select>
+    <select id="queryAllCan" resultType="HykRedpackage">
+        SELECT a.id as id,a.title as title,a.money as money,a.status as status,UNIX_TIMESTAMP(a.over_time)as
+        overTimeStr,a.redType as redType ,a.minAmount as minAmount,b.goods_name as goodsName,a.goodsId as goodsId
+        FROM hyk_redpackage a left join hyk_goods b on a.goodsId=b.id
+        <where>
+            a.user_id=#{userId} and a.status=0 and a.del_flag=0 and a.redType in(#{redType},2)
+                AND (a.minAmount &lt;=#{minAmount} or IFNULL(a.minAmount,0)=0)
+                AND (a.goodsId =#{goodsId} or a.goodsId is null or LENGTH(a.goodsId)=0)
+        </where>
+        ORDER BY minAmount asc,money desc
+    </select>
+
+    <select id="queryAllNotCan" resultType="HykRedpackage">
+        SELECT a.id as id,a.title as title,a.money as money,a.status as status,UNIX_TIMESTAMP(a.over_time)as
+        overTimeStr,a.redType as redType ,a.minAmount as minAmount,b.goods_name as goodsName,a.goodsId as goodsId
+        FROM hyk_redpackage a left join hyk_goods b on a.goodsId=b.id
+        where
+            a.user_id=#{userId} and a.status=0 and a.del_flag=0 and a.redType in(#{redType},2)
+             and a.id  not in
+             (
+              select id from hyk_redpackage a
+              where a.user_id=#{userId} and a.del_flag=0 and a.`status`=0
+              AND (a.minAmount &lt;=#{minAmount} or IFNULL(a.minAmount,0)=0)
+              AND (a.goodsId =#{goodsId} or a.goodsId is null or LENGTH(a.goodsId)=0)
+              )
+        ORDER BY minAmount asc,money desc
+    </select>
+
+</mapper>

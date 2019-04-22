@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+-->
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor Sample</title>
+	<script src="../ckeditor.js"></script>
+	<script src="js/sample.js"></script>
+	<link rel="stylesheet" href="css/samples.css">
+	<link rel="stylesheet" href="toolbarconfigurator/lib/codemirror/neo.css">
+	<script type="text/javascript">
+			window.onload = function()
+			{
+				CKEDITOR.replace( 'description');
+
+			};
+		</script>
+	</head>
+<body>
+<form method="post" action="job/add">
+	招聘岗位：<input type="text" name="position" id="position"/>
+	招聘人数：<input type="text" name="quantity" id="quantity"/>
+	学历要求：<input type="text" name="education" id="education"/>
+	薪资：<input type="text" name="salary" id="salary"/>
+	联系人：<input type="text" name="contact" id="contact"/>
+	联系电话：<input type="text" name="telephone" id="telephone"/>
+	描述：<textarea name="description" id="description"/></textarea>
+
+</form>
+<button onclick="test()">内容1</button>
+<button onclick="test2()">内容2</button>
+<script>
+	function test(){
+		var CHtml= CKEDITOR.instances.description.getData();
+		alert(CHtml);
+	}
+
+	function test2(){
+		CKEDITOR.instances.description.setData("要显示的文字内容");
+	}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykNewsDao">
+    
+	<sql id="hykNewsColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.content AS "content",
+		a.ico AS "ico",
+		a.url AS "url",
+		a.status AS "status",
+		a.create_by AS "addUserId",
+		a.create_date AS "createDate",
+		a.update_by AS "updateUserId",
+		a.update_date AS "updateDate",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i')AS "createDateStr"
+	</sql>
+	
+	<sql id="hykNewsJoins">
+	</sql>
+    
+	<select id="get" resultType="HykNews">
+		SELECT 
+			<include refid="hykNewsColumns"/>
+		FROM hyk_news a
+		<include refid="hykNewsJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykNews">
+		SELECT 
+			<include refid="hykNewsColumns"/>
+		FROM hyk_news a
+		<include refid="hykNewsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="content != null and content != ''">
+				AND a.content = #{content}
+			</if>
+			<if test="ico != null and ico != ''">
+				AND a.ico = #{ico}
+			</if>
+			<if test="url != null and url != ''">
+				AND a.url = #{url}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="addUserId != null and addUserId != ''">
+				AND a.create_by = #{addUserId}
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.create_date = #{createDate}
+			</if>
+			<if test="updateUserId != null and updateUserId != ''">
+				AND a.update_by = #{updateUserId}
+			</if>
+			<if test="updateDate != null and updateDate != ''">
+				AND a.update_date = #{updateDate}
+			</if>
+			<if test="remark != null and remark != ''">
+				AND a.remark = #{remark}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HykNews">
+		SELECT 
+			<include refid="hykNewsColumns"/>
+		FROM hyk_news a
+		<include refid="hykNewsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_news(
+			id,
+			title,
+			content,
+			ico,
+			url,
+			status,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remark,
+			del_flag
+		) VALUES (
+			#{id},
+			#{title},
+			#{content},
+			#{ico},
+			#{url},
+			#{status},
+			#{addUserId},
+			#{createDate},
+			#{updateUserId},
+			#{updateDate},
+			#{remark},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_news SET 	
+			title = #{title},
+			content = #{content},
+			ico = #{ico},
+			url = #{url},
+			status = #{status},
+			update_by = #{updateUserId},
+			update_date = #{updateDate},
+			remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_news SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<select id="getAllNews" resultType="HykNews">
+		SELECT
+		<include refid="hykNewsColumns"/>
+		FROM hyk_news a
+		<include refid="hykNewsJoins"/>
+		WHERE a.del_flag=0 and a.status=1
+		order by create_date desc
+		LIMIT #{startIndex} ,#{pageSize}
+	</select>
+	
+</mapper>

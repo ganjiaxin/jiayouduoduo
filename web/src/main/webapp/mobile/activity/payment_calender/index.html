@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <meta http-equiv="x-ua-compatible" content="IE=edge, chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <title>加油计划</title>
+    <link rel="stylesheet" href="css/calendar.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style type="text/css">
+        body {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+        }
+
+        #ca {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div class="out-kuang">
+    <div id="ca"></div>
+</div>
+<div class="content-kuang" id="page">
+
+</div>
+<script id="view" type="text/html">
+    <div class="title">
+        <h2><i></i>{{nowYear}}年{{nowMonth}}月</h2>
+    </div>
+    {{#if(d.list.length===0){}}
+    <div class="noDataTip">
+        <dl>
+            <dt></dt>
+            <dd>暂无加油计划~</dd>
+        </dl>
+    </div>
+    {{#}else{}}
+    {{#if(d.readyMoney!=undefined){}}
+    <div class="box">
+        <h2>待加总额：{{d.readyMoney}}</h2>
+        {{# d.list.forEach(function (item, i) {}}
+        {{# item.list2.forEach(function (res, i) {}}
+        {{#if(res.status==='0'){}}
+        <div class="list {{#if((res.year+'-'+res.month+'-'+res.day)===selectDate){}}active{{#}}}">
+            <dl>
+                <dt>{{res.day}}</dt>
+                <dd>{{res.year}}年{{res.month}}月</dd>
+            </dl>
+            <div class="con">
+                <p class="big">{{res.money}}元（{{res.periodsNum}}/{{res.cycle}}）</p>
+                <p><label>{{res.cardName===undefined?'当前账户暂未绑定油卡':res.cardName}}</label>{{res.cardNum===undefined?'':res.cardNum}}</p>
+            </div>
+        </div>
+        {{#}}}
+        {{#})}}
+        {{#})}}
+    </div>
+    {{#}}}
+    {{#if(d.endMoney!=undefined){}}
+    <div class="box">
+        <h2>已加总额：{{d.endMoney}}</h2>
+        {{# d.list.forEach(function (item, i) {}}
+        {{# item.list2.forEach(function (res, i) {}}
+        {{#if(res.status==='1'){}}
+        <div class="list {{#if((res.year+'-'+res.month+'-'+res.day)===selectDate){}}active{{#}}}">
+            <dl>
+                <dt>{{res.day}}</dt>
+                <dd>{{res.year}}年{{res.month}}月</dd>
+            </dl>
+            <div class="con">
+                <p class="big">{{res.money}}元（{{res.periodsNum}}/{{res.cycle}}）</p>
+                <p><label>{{res.cardName}}</label>{{res.cardNum}}</p>
+            </div>
+        </div>
+        {{#}}}
+        {{#})}}
+        {{#})}}
+    </div>
+    {{#}}}
+    {{#}}}
+</script>
+<script src="../lib/jquery-1.10.1.min.js"></script>
+<script src="../lib/laytpl.js"></script>
+<script src="../lib/layer_mobile/layer.js"></script>
+<script type="text/javascript" src="js/calendar.js"></script>
+<script>
+    var token = getUrlParam('token');
+    if (token == undefined) {
+        token = localStorage.getItem('hykToken');
+    }
+    var arrayList = new Array();
+    var rootUrl = '/hykweb/'
+    var now = new Date()
+    var nowYear = now.getFullYear();
+    var nowMonth = (now.getMonth() + 1).toString();
+    var nowDay = now.getDate();
+    if (nowMonth < 10) {
+        nowMonth = '0' + nowMonth
+    }
+    if (nowDay < 10) {
+        nowDay = '0' + nowDay
+    }
+    var selectDate = nowYear + '-' + nowMonth + '-' + nowDay
+    $.ajax({
+        url: rootUrl + 'mine/oilPlanCalendar',
+        type: "post",
+        async: false,
+        dataType: "json",
+        data: {
+            token: token,
+            time: nowYear + nowMonth
+        },
+        success: function (res) {
+            if (res.code !== '200') {
+                return false
+            }
+            var tpl = $('#view').html();
+            arrayList = res
+
+            laytpl(tpl).render(res, function (html) {
+                $('#page').html(html)
+            })
+        }
+    })
+    var width_screen = $(window).width() * 0.94; //手机屏宽度
+    if (width_screen > 480) {
+        width_screen = 480 * 0.94;
+    }
+    $('#ca').calendar({
+        width: width_screen,
+        height: width_screen,
+        data: arrayList,
+        date: new Date(),
+        viewChange: function (view, date, data) {
+            if (data < 10) {
+                data = '0' + data
+            }
+            nowYear = date.toString();
+            nowMonth = data.toString();
+            $.ajax({
+                url: rootUrl + 'mine/oilPlanCalendar',
+                type: "post",
+                async: false,
+                dataType: "json",
+                data: {
+                    token: token,
+                    time: nowYear + nowMonth
+                },
+                success: function (res) {
+                    if (res.code !== '200') {
+                        return false
+                    }
+                    arrayList = res
+                    var calendar = $('#ca').data('calendar');
+                    calendar.setData(arrayList);
+                    var tpl = $('#view').html();
+                    laytpl(tpl).render(res, function (html) {
+                        $('#page').html(html)
+                    })
+                }
+            })
+        },
+        onSelected: function (view, date, data) {
+            var tpl = $('#view').html();
+            if (data !== undefined) {
+                selectDate = data.date
+                laytpl(tpl).render(arrayList, function (html) {
+                    $('#page').html(html)
+                })
+                $('body,html').animate({
+                        scrollTop: width_screen
+                    },
+                    600)
+            } else {
+                selectDate = ''
+                laytpl(tpl).render(arrayList, function (html) {
+                    $('#page').html(html)
+                })
+                showMsg('当日暂无加油计划~')
+            }
+        }
+
+    });
+
+    function showMsg(tip) {
+        layer.open({
+            content: tip
+            , skin: 'msg'
+            , time: 2 //2秒后自动关闭
+        });
+    }
+
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+        if (r != null) {
+            return unescape(r[2]);
+        }
+    }
+</script>
+</body>
+</html>

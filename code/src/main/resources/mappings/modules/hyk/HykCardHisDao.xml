@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykCardHisDao">
+    
+	<sql id="hykCardHisColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.card_id AS "cardId",
+		a.cardno AS "cardno",
+		a.money AS "money",
+		a.use_date AS "useDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.accumulativeRechargeAmount AS "accumulativeRechargeAmount",
+		a.accountBalance AS accountBalance,
+		a.total,
+		b.phone AS "phone",
+		d.label AS useMethodStr,
+	  	DATE_FORMAT(a.use_date,'%Y-%m-%d %H:%i:%s') AS useDateStr
+	</sql>
+	
+	<sql id="hykCardHisJoins">
+		LEFT JOIN hyk_user b ON a.user_id = b.id
+		LEFT JOIN hyk_recharge_card c ON a.card_id = c.id
+		LEFT JOIN sys_dict d on c.use_method=d.`value` and d.type="card_useMethod"
+	</sql>
+    
+	<select id="get" resultType="HykCardHis">
+		SELECT 
+			<include refid="hykCardHisColumns"/>
+		FROM hyk_card_his a
+		<include refid="hykCardHisJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykCardHis">
+		SELECT 
+			<include refid="hykCardHisColumns"/>
+		FROM hyk_card_his a
+		<include refid="hykCardHisJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="userId != null  and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="cardId != null and cardId != ''">
+				AND a.card_id = #{cardId}
+			</if>
+			<if test="cardno != null and cardno != ''">
+				AND a.cardno = #{cardno}
+			</if>
+			<if test="money != null and money != ''">
+				AND a.money = #{money}
+			</if>
+			<if test="useDate != null and useDate != ''">
+				AND a.use_date = #{useDate}
+			</if>
+			<if test="remarks != null and remarks != ''">
+				AND a.remarks = #{remarks}
+			</if>
+			<if test="accumulativeRechargeAmount != null and accumulativeRechargeAmount != ''">
+				AND a.accumulativeRechargeAmount = #{accumulativeRechargeAmount}
+			</if>
+
+			<if test="startDate != null and startDate != ''">
+				AND DATE_FORMAT(a.use_date,'%Y%m%d')&gt;=DATE_FORMAT(#{startDate},'%Y%m%d')
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND DATE_FORMAT(a.use_date,'%Y%m%d')&lt;=DATE_FORMAT(#{endDate},'%Y%m%d')
+			</if>
+			<if test="other != null and other != ''">
+				AND (a.user_id = #{other} or a.cardno = #{other} or b.phone= #{other})
+			</if>
+		</where>
+		ORDER BY a.use_date desc
+	</select>
+	
+	<select id="findAllList" resultType="HykCardHis">
+		SELECT 
+			<include refid="hykCardHisColumns"/>
+		FROM hyk_card_his a
+		<include refid="hykCardHisJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_card_his(
+			id,
+			user_id,
+			card_id,
+			cardno,
+			money,
+			use_date,
+			remarks,
+			del_flag,
+			accumulativeRechargeAmount,
+			accountBalance,
+			total
+		) VALUES (
+			#{id},
+			#{userId},
+			#{cardId},
+			#{cardno},
+			#{money},
+			#{useDate},
+			#{remarks},
+			#{delFlag},
+			#{accumulativeRechargeAmount},
+			#{accountBalance},
+			#{total}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_card_his SET 	
+			user_id = #{userId},
+			card_id = #{cardId},
+			cardno = #{cardno},
+			money = #{money},
+			use_date = #{useDate},
+			remarks = #{remarks},
+			accumulativeRechargeAmount = #{accumulativeRechargeAmount},
+			accountBalance=#{accountBalance},
+			total=#{total}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_card_his SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+
+	<select id="getCountMoneyAndCount" resultType="map">
+	SELECT ifnull(SUM(money),0) as countMoney,COUNT(*) as count from hyk_card_his where user_id=#{userId}
+	</select>
+
+	<select id="getListByUserId" resultType="HykCardHis">
+		SELECT money as money,cardno as cardno,DATE_FORMAT(use_date,'%Y.%m.%d') as useDateStr ,DATE_FORMAT(use_date,'%H:%i') as timeStr
+		from hyk_card_his where user_id=#{userId} ORDER BY `use_date` desc
+	</select>
+	
+</mapper>

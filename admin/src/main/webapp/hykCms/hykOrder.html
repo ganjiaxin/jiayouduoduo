@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>订单管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <!-- load css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/font/iconfont.css?v=1.0.0" media="all">
+    <link rel="stylesheet" type="text/css" href="css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v2.2.0" media="all">
+    <style>
+        .layui-table td, .layui-table th {
+            padding: 12px 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid larry-wrapper">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <!--列表-->
+            <section class="panel panel-padding search_panel">
+                <form class="layui-form" id="searchForm" action="/f/web/hykOrder?pageSize=14" method="POST">
+                    <div class="layui-form">
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <input class="layui-input start-date laydate-icon" name="startTime" placeholder="开始时间" readonly>
+                            </div>
+                            -
+                            <div class="layui-input-inline">
+                                <input class="layui-input end-date laydate-icon" name="endTime" placeholder="结束时间" readonly>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline" id="deal_select">
+
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline" id="order_select">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline" id="pay_select">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <input class="layui-input" name="other" placeholder="用户手机/订单号">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <input class="layui-input" name="channel" placeholder="用户渠道">
+                            </div>
+                        </div>
+                        <div class="layui-inline lastline">
+                            <button lay-submit class="layui-btn layui-btn-warm search-btn" lay-filter="search"
+                                    id="search"><i
+                                    class="iconfont">&#xe608;</i>查 询
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section class="panel panel-padding">
+                <div id="list" class="layui-form"></div>
+                <div class="text-right" id="page"></div>
+            </section>
+        </div>
+    </div>
+</div>
+<script id="list-tpl" type="text/html"
+        data-params='{"url":"/f/web/hykOrder?pageSize=14","tplid":"list-tpl","listid":"list","loading":true,"pageid":"#page"}'>
+    {{# var dom = new layui.dtable()}}
+    {{# if(dom.contains(d.permission,'export')){}}
+    <button class="layui-btn layui-btn-danger export_all" onclick="exportAll()">
+        <i class="iconfont">&#xe61c;</i>导出全部
+    </button>
+    {{#}}}
+    <table id="example" class="layui-table lay-even">
+        <thead>
+        <tr>
+            <th>编号</th>
+            <th>订单编号</th>
+            <th>注册手机号码</th>
+            <th>充值卡号</th>
+            <th>交易类型</th>
+            <th>订单金额</th>
+            <th>实付金额</th>
+            <th>商品名称</th>
+            <th>红包</th>
+            <th>订单生成时间</th>
+            <th>付款时间</th>
+            <th>付款方式</th>
+            <th>用户渠道</th>
+            <th>订单状态</th>
+        </tr>
+        </thead>
+        <tbody>
+        <colgroup>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col width="60px" height="50px">
+
+        </colgroup>
+        {{# layui.each(d.page.list, function(index, item){ }}
+        <tr>
+            <td>{{index+1}}</td>
+            <td>{{item.orderNo}}</td>
+            <td>{{item.userPhone}}</td>
+            <td>{{item.cardNo}}</td>
+            <td width="8%">{{item.orderTypeStr}}</td>
+            <td>{{item.amt}} 元</td>
+            <td>{{item.payableMoney+item.balancePayment}} 元</td>
+            <td>{{item.goodsName}}</td>
+            <td>{{item.redpackageAmt==undefined?'未使用':item.redpackageAmt+' 元'}}</td>
+            <td>{{item.createDateStr}}</td>
+            <td>{{item.payDateStr==undefined?'':item.payDateStr}}</td>
+            <td>{{item.payType==undefined?'':item.balancePayment>0 && item.payableMoney>0?'账户余额（'+item.balancePayment+'元）+ 快捷支付（'+item.payableMoney+'元）':item.payTypeStr}}</td>
+            <td>{{item.channel}}</td>
+            <td>{{item.orderStatusStr}} {{#if(item.orderStatus==='2'){}}<label class="ajax" data-params='{"url": "/f/web/hykOrder/refund?id={{item.id}}","method":"post","loading":false,"isConfirm":"退款","complete":"Delete"}' style="color:red;text-decoration:underline;margin-right:5px;cursor:pointer;">已退款</label><label class="ajax" data-params='{"url": "/f/web/hykOrder/stop?id={{item.id}}","method":"post","loading":false,"isConfirm":"暂停","complete":"Stop"}' style="color:red;cursor:pointer;text-decoration:underline;margin-right:5px;">暂停</label>{{#}}}{{#if(item.orderStatus==='5'){}}<label class="ajax" data-params='{"url": "/f/web/hykOrder/start?id={{item.id}}","method":"post","loading":false,"isConfirm":"恢复","complete":"Start"}' style="color:red;text-decoration:underline;cursor:pointer;">恢复</label>{{#}}}</td>
+        </tr>
+        {{# }); }}
+        </tbody>
+    </table>
+    {{#  if(d.page.list.length === 0){ }}
+    <p class="Nulldata">暂无数据</p>
+    {{#  } }}
+</script>
+<script id="deal-tpl" type="text/html"
+        data-params='{"url":"/f/web/dicList?type=orderType","tplid":"deal-tpl","listid":"deal_select","loading":false,"pageid":""}'>
+    <select name="orderType">
+        <option value="">选择交易类型</option>
+        <option value=" ">全部</option>
+        {{# layui.each(d.list, function(index, item){ }}
+        <option value="{{item.value}}">{{item.label}}</option>
+        {{# }); }}
+    </select>
+</script>
+<script id="order-tpl" type="text/html"
+        data-params='{"url":"/f/web/dicList?type=orderStatus","tplid":"order-tpl","listid":"order_select","loading":false,"pageid":""}'>
+    <select name="orderStatus">
+        <option value="">选择订单状态</option>
+        <option value=" ">全部</option>
+        {{# layui.each(d.list, function(index, item){ }}
+        <option value="{{item.value}}">{{item.label}}</option>
+        {{# }); }}
+    </select>
+</script>
+<script id="pay-tpl" type="text/html"
+        data-params='{"url":"/f/web/dicList?type=payType","tplid":"pay-tpl","listid":"pay_select","loading":false,"pageid":""}'>
+    <select name="payType">
+        <option value="">选择支付渠道</option>
+        <option value=" ">全部</option>
+        {{# layui.each(d.list, function(index, item){ }}
+        <option value="{{item.value}}">{{item.label}}</option>
+        {{# }); }}
+    </select>
+</script>
+<script type="text/javascript" src="js/layui/layui.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/lib/jquery-2.2.0.min.js"></script>
+<script>
+    layui.use(['dtable', 'jqdate'], function () {
+        var list = layui.dtable,
+            oneList = new list();
+        oneList.init('deal-tpl');
+        oneList.init('order-tpl');
+        oneList.init('pay-tpl');
+        oneList.init('list-tpl');
+    });
+    function Start() {
+        layer.msg('已恢复', {
+            time: 1000, shade: [0.2, '#fff']
+        }, function () {
+            oneList = new layui.dtable();
+            oneList.init('list-tpl');
+        });
+    }
+    function Stop() {
+        layer.msg('已暂停', {
+            time: 1000, shade: [0.2, '#fff']
+        }, function () {
+            oneList = new layui.dtable();
+            oneList.init('list-tpl');
+        });
+    }
+    function Delete() {
+        layer.msg('已退款', {
+            time: 1000, shade: [0.2, '#fff']
+        }, function () {
+            oneList = new layui.dtable();
+            oneList.init('list-tpl');
+        });
+    }
+    function exportAll(){
+        var paramForm = ''
+        var t = $('#searchForm').serializeArray();
+        $.each(t, function() {
+            paramForm+=this.name+'='+this.value+'&'
+        });
+        window.location.href=rootUrl+'/f/web/hykOrder/reportExcel?token='+token+'&'+paramForm+'dateTime='+ new Date().getTime()
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>加油多多后台管理系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <!-- load css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/font/iconfont.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/jqadmin.css" media="all">
+
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header header">
+            <!-- logo区域 -->
+            <div class="jqadmin-logo-box">
+					<a class="logo" style="left: 0;" href="#">
+						<span style="font-size: 22px; letter-spacing:2px;">加油多多</span>
+					</a>
+                    <img src="images/icon.png" width="12" class="icon"/>
+            </div>
+            <!-- 主菜单区域 -->
+            <!--<div class="jqadmin-main-menu">-->
+                <!--<ul class="layui-nav clearfix" lay-filter="main-menu" id="main_menu">-->
+                        <!---->
+                <!--</ul>-->
+            <!--</div>-->
+
+            <!-- 头部右侧导航 -->
+            <div class="header-right">
+                <ul class="layui-nav jqadmin-header-item right-menu">
+                    <li class="layui-nav-item first">
+                        <a href="javascript:;">
+							您好：
+                            <cite id="username"> </cite>
+                            <span class="layui-nav-more"></span>
+                        </a>
+
+                        <dl class="layui-nav-child">
+                            <!--<dd class="tab-menu">-->
+                                <!--<a href="javascript:;" data-url="user-changePhone.html" data-title="修改手机"> <i class="iconfont " data-icon='&#xe601;'>&#xe601;</i><span>修改手机</span></a>-->
+                            <!--</dd>-->
+                            <!--<dd class="tab-menu">-->
+                                <!--<a href="javascript:;" data-url="user-info.html" data-title="修改密码"> <i class="iconfont " data-icon='&#xe63e;'>&#xe63d;</i><span>修改密码</span></a>-->
+                            <!--</dd>-->
+                            <dd>
+                                <a href="javascript:;" id="cancel" ><i class="iconfont ">&#xe6be;</i>安全退出</a>
+                            </dd>
+                        </dl>
+                    </li>
+
+                </ul>
+                <button title="刷新" class="layui-btn  layui-btn-normal fresh-btn"><i class="layui-icon">&#x1002;</i> </button>
+            </div>
+        </div>
+
+        <!-- 左侧导航-->
+        <div class="layui-side jqamdin-left-bar" id="left_bar">
+            <!--子菜单项-->
+
+        </div>
+
+        <!-- 左侧侧边导航结束 -->
+        <!-- 右侧主体内容 -->
+        <div class="layui-body jqadmin-body" id="jqadmin-body">
+            <div class="display-arrow">
+                <span class="arrow-box">
+                    <i class="iconfont">&#xe60d;</i>
+                </span>
+            </div>
+            <div class="layui-tab layui-tab-card jqadmin-tab-box" id="jqadmin-tab" lay-filter="tabmenu"  lay-notAuto="true">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" id="admin-home"><i class="iconfont">&#xe600;</i><em>我的桌面</em></li>
+
+                </ul>
+                <div class="tab-move-btn">
+                    <span class="move-left-btn"><i class="iconfont">&#xe606;</i></span>
+                    <span class="move-right-btn"><i class="iconfont ">&#xe60d;</i></span>
+                </div>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <iframe class="jqadmin-iframe" data-id='0' src="welcome.html"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 底部区域 -->
+        <div class="layui-footer jqadmin-foot" id="jqadmin-footer">
+            <div class="layui-mian">
+
+					<p>2019 Copyright &copy;
+						<a href="#">www.jiayouduoduo.com</a>
+						加油多多版权所有
+					</p>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="js/layui/layui.js"></script>
+<script type="text/javascript" src="js/config.js?v=2"></script>
+<script type="text/javascript" src="js/lib/jquery-2.2.0.min.js"></script>
+<!--<script id="main" type="text/html">-->
+<!--{{#  layui.each(d, function(index, item){ }}-->
+	<!--{{# if (index==0) { }}-->
+		<!--<li class="layui-nav-item layui-this">-->
+			<!--<a href="javascript:;">{{item.name}}</a>-->
+		<!--</li>-->
+	<!--{{# } else { }}-->
+		<!--<li class="layui-nav-item">-->
+			<!--<a href="javascript:;">{{item.name}}</a>-->
+		<!--</li>-->
+	<!--{{# } }}-->
+<!--{{#  }); }}-->
+<!--</script>-->
+<script id="submain" type="text/html">
+	<p class="jqadmin-home tab-menu">
+		<a href="javascript:;"  data-url="welcome.html" data-title="我的桌面">
+			<i class="iconfont" data-icon='&#xe600;'>&#xe6a0;</i>
+		</a>
+	</p>
+
+		<div class="sub-menu">
+
+
+            <ul class="layui-nav layui-nav-tree">
+                <!--<li class="layui-nav-item layui-nav-itemed">-->
+                    <!--<a href="javascript:;">默认展开</a>-->
+                    <!--<dl class="layui-nav-child">-->
+                        <!--<dd><a href="javascript:;">选项一</a></dd>-->
+                        <!--<dd><a href="javascript:;">选项二</a></dd>-->
+                        <!--<dd><a href="javascript:;">选项三</a></dd>-->
+                        <!--<dd><a href="">跳转项</a></dd>-->
+                    <!--</dl>-->
+                <!--</li>-->
+                <!--<li class="layui-nav-item">-->
+                    <!--<a href="javascript:;">解决方案</a>-->
+                    <!--<dl class="layui-nav-child">-->
+                        <!--<dd><a href="">移动模块</a></dd>-->
+                        <!--<dd><a href="">后台模版</a></dd>-->
+                        <!--<dd><a href="">电商平台</a></dd>-->
+                    <!--</dl>-->
+                <!--</li>-->
+                <!--<li class="layui-nav-item"><a href="">云市场</a></li>-->
+                <!--<li class="layui-nav-item"><a href="">社区</a></li>-->
+
+
+                {{#  layui.each(d, function(index, item){ }}
+                <li class="layui-nav-item">
+                    <i class="item"></i>
+                    <a href="javascript:;"
+                       data-url="{{item.href}}.html"
+                       data-title="{{ item.name }}">
+                        <i class="iconfont" data-icon='&#xe60e;'></i>
+                        <span>{{ item.name }}</span>
+                    </a>
+                    {{#if(item.childMenu && item.href==''){}}
+                    <dl class="layui-nav-child">
+                        {{# layui.each(item.childMenu,function(index,items){}}
+                        <dd><a href="javascript:;"
+                            data-url="{{items.href}}.html"
+                            data-title="{{ items.name }}">
+                            <i class="iconfont" data-icon='&#xe60e;'></i>
+                            <span>{{ items.name }}</span>
+                        </a></dd>
+                        {{#  }); }}
+                    </dl>
+                    {{#}}}
+                </li>
+                {{#  }); }}
+
+            </ul>
+		</div>
+
+</script>
+<script>
+    layui.config({
+        base: 'js/'
+    }).extend({
+        elem: 'jqmodules/elem',
+        tabmenu: 'jqmodules/tabmenu',
+		jqtpl: 'layui/lay/modules/laytpl',
+    }).use(['index','jquery'],function(){
+        var $ = layui.jquery;
+        $("#cancel").on('click',function () {
+            layui.data('hykUser', null)
+            window.location.href="login.html"
+        })
+    });
+
+</script>
+</html>

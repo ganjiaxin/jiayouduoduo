@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykMallGoodsDao">
+    
+	<sql id="hykMallGoodsColumns">
+		a.id AS "id",
+		a.category AS "category",
+		a.goods_type AS "goodsType",
+		a.goods_name AS "goodsName",
+		a.goods_title AS "goodsTitle",
+		a.prices AS "prices",
+		a.money AS "money",
+		a.stock AS "stock",
+		a.img AS "img",
+		a.labels AS "labels",
+		a.introcture AS "introcture",
+		a.mess AS "mess",
+		a.status AS "status",
+		a.create_date AS "createDate",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.freight AS "freight",
+		a.f2 AS "f2",
+		b.label AS "categoryStr",
+		c.label AS "goodsTypeStr",
+		d.label AS "labelsStr",
+		DATE_FORMAT(a.create_date,'%Y-%m-%d') AS "createDateStr",
+		ishot,
+		viewpic
+	</sql>
+	
+	<sql id="hykMallGoodsJoins">
+		LEFT JOIN sys_dict b on a.category=b.value and b.type="mall_category"
+		LEFT JOIN sys_dict c on a.goods_type=c.value and c.type="mall_goodsType"
+		LEFT JOIN sys_dict d on a.labels=d.value and d.type="mall_labels"
+	</sql>
+    
+	<select id="get" resultType="HykMallGoods">
+		SELECT 
+			<include refid="hykMallGoodsColumns"/>
+		FROM hyk_mall_goods a
+		<include refid="hykMallGoodsJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykMallGoods">
+		SELECT 
+			<include refid="hykMallGoodsColumns"/>
+		FROM hyk_mall_goods a
+		<include refid="hykMallGoodsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="category != null and category != ''">
+				AND a.category = #{category}
+			</if>
+			<if test="goodsType != null and goodsType != ''">
+				AND a.goods_type = #{goodsType}
+			</if>
+			<if test="goodsName != null and goodsName != ''">
+				AND a.goods_name = #{goodsName}
+			</if>
+			<if test="goodsTitle != null and goodsTitle != ''">
+				AND a.goods_title = #{goodsTitle}
+			</if>
+			<if test="prices != null and prices != ''">
+				AND a.prices = #{prices}
+			</if>
+			<if test="money != null and money != ''">
+				AND a.money = #{money}
+			</if>
+			<if test="stock != null and stock != ''">
+				AND a.stock = #{stock}
+			</if>
+			<if test="img != null and img != ''">
+				AND a.img = #{img}
+			</if>
+			<if test="labels != null and labels != ''">
+				AND a.labels = #{labels}
+			</if>
+			<if test="introcture != null and introcture != ''">
+				AND a.introcture = #{introcture}
+			</if>
+			<if test="mess != null and mess != ''">
+				AND a.mess = #{mess}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.create_date = #{createDate}
+			</if>
+			<if test="remark != null and remark != ''">
+				AND a.remark = #{remark}
+			</if>
+			<if test="freight != null and freight != ''">
+				AND a.freight = #{freight}
+			</if>
+			<if test="f2 != null and f2 != ''">
+				AND a.f2 = #{f2}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HykMallGoods">
+		SELECT 
+			<include refid="hykMallGoodsColumns"/>
+		FROM hyk_mall_goods a
+		<include refid="hykMallGoodsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_mall_goods(
+			id,
+			category,
+			goods_type,
+			goods_name,
+			goods_title,
+			prices,
+			money,
+			stock,
+			img,
+			labels,
+			introcture,
+			mess,
+			status,
+			create_date,
+			remark,
+			del_flag,
+			freight,
+			f2,
+			ishot,
+			viewpic
+		) VALUES (
+			#{id},
+			#{category},
+			#{goodsType},
+			#{goodsName},
+			#{goodsTitle},
+			#{prices},
+			#{money},
+			#{stock},
+			#{img},
+			#{labels},
+			#{introcture},
+			#{mess},
+			#{status},
+			#{createDate},
+			#{remark},
+			#{delFlag},
+			#{freight},
+			#{f2},
+			#{ishot},
+			#{viewpic}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_mall_goods SET 	
+			category = #{category},
+			goods_type = #{goodsType},
+			goods_name = #{goodsName},
+			goods_title = #{goodsTitle},
+			prices = #{prices},
+			money = #{money},
+			stock = #{stock},
+			img = #{img},
+			labels = #{labels},
+			introcture = #{introcture},
+			mess = #{mess},
+			status = #{status},
+			remark = #{remark},
+			freight = #{freight},
+			f2 = #{f2},
+			ishot = #{ishot},
+			viewpic = #{viewpic}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_mall_goods SET 
+			del_flag =1
+		WHERE id = #{id}
+	</update>
+
+	<select id="getCategoryAndCategoryName" resultType="HykObject">
+		SELECT max(a.category) as str1 ,max(b.label) as str2 from hyk_mall_goods a left join sys_dict b on a.category=b.value and b.type='mall_category'
+		where  a.del_flag=0 and a.status=0 and a.category &lt;&gt;5 and a.category &lt;&gt;9 GROUP BY a.category
+	</select>
+
+	<select id="getMallGoodsList" resultType="HykMallGoods">
+		SELECT * from hyk_mall_goods where del_flag=0 and status=0 and category=#{category}
+	</select>
+	<select id="getMallGoodsListToAndroid" resultType="HykMallGoods">
+		SELECT id as id ,labels as labels,goods_name as goodsName,goods_title as goodsTitle,prices as prices,img as img,freight as freight from hyk_mall_goods where del_flag=0 and status=0 and category=#{category}
+	</select>
+
+	<update id="updateStockById">
+		update hyk_mall_goods set stock=stock-#{num} where id=#{id}
+	</update>
+	<select id="getHotGoods" resultType="HykMallGoods">
+		SELECT * from hyk_mall_goods where del_flag=0 and status=0 and ishot=1 and category !=#{category}
+	</select>
+
+
+	
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykHolidaysDao">
+
+
+    <select id="getHolidaysByDate" resultType="HykHolidays">
+        SELECT * from hyk_holidays where DATE_FORMAT(calendar,'%Y%m%d')=DATE_FORMAT(#{date},'%Y%m%d') and del_flag=0 ORDER BY create_date desc limit 1
+    </select>
+
+    <insert id="insertHolidaysList" parameterType="java.util.List">
+        insert into hyk_holidays
+        (
+        calendar,
+        type,
+        create_date
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            #{item.calendar},
+            #{item.type},
+            #{item.createDate}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

@@ -1,0 +1,19 @@
+/***************************如何注册样式*********************/
+.paixu{
+	width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 3px;
+    background-color: #33cac5;
+    color: #fff;
+    text-align: center;
+    line-height: 0.5rem;
+    display: inline-block;
+    margin-right: 0.1rem;
+    font-size: 0.24rem;
+}
+
+.buzhou_1{
+	font-size: 0.24rem;
+    color: #33cac5;
+    font-weight: 700;
+}

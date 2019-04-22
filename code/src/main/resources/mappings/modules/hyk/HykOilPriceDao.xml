@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykOilPriceDao">
+
+    <select id="getByCity" resultType="HykOilPrice">
+        SELECT * from hyk_oil_price where city=#{city} ORDER BY create_date desc LIMIT 1
+    </select>
+    <insert id="insertOilPriceList" parameterType="java.util.List">
+        insert into hyk_oil_price
+        (
+        city,
+        b90,
+        b93,
+        b97,
+        b0,
+        h92,
+        h95,
+        h98,
+        h0,
+        create_date
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            #{item.city},
+            #{item.b90},
+            #{item.b93},
+            #{item.b97},
+            #{item.b0},
+            #{item.h92},
+            #{item.h95},
+            #{item.h98},
+            #{item.h0},
+            now()
+            )
+        </foreach>
+    </insert>
+
+    <select id="getAllCityName" resultType="java.lang.String">
+        SELECT city from hyk_oil_price  GROUP BY city
+    </select>
+
+</mapper>

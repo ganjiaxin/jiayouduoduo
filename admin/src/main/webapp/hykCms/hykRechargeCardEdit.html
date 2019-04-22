@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>激活充值卡</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <!-- load css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/font/iconfont.css?v=1.0.0" media="all">
+    <link rel="stylesheet" type="text/css" href="css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v2.2.0" media="all">
+    <style>
+        .layui-table td, .layui-table th {
+            padding: 12px 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid larry-wrapper">
+    <div class="col-xs-10 col-sm-10 col-md-10">
+        <form id="addForm" class="layui-form layui-form-pane" action="/f/web/hykRechargeCard/updateStatus" method="post"
+              complete="add">
+            <div class="layui-form-item">
+                <label class="layui-form-label">激活批次</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="code" placeholder="请输入激活批次" autocomplete="off" required
+                           jq-verify="required|num"
+                           class="layui-input ">
+                </div>
+            </div>
+            <div id="cardInfo">
+
+            </div>
+        </form>
+
+    </div>
+
+</div>
+<script id="label-tpl" type="text/html">
+    {{#if(d.page.list.length>0){}}
+    {{#if(d.page.list[0].status==='1'){}}
+    <p style="text-align:center;color:orange">该批次已激活</p>
+    {{#}else{}}
+    <div class="layui-form-item">
+        <label class="layui-form-label">充值卡类型</label>
+        <div class="layui-input-inline">
+            <input type="text" value="{{d.page.list[0].useMethodStr}}" class="layui-input " readonly>
+        </div>
+    </div>
+    <div class="layui-form-item time-item">
+        <label class="layui-form-label">过期时间</label>
+        {{#if(d.page.list[0].useMethod==='0'){}}
+        <div class="layui-input-inline">
+            <input class="layui-input start-date laydate-icon" name="overDate" required
+                   jq-verify="required" placeholder="请选择过期时间" readonly>
+        </div>
+        {{#}else{}}
+        <div class="layui-input-inline">
+            <select name="days" jq-verify="required" >
+                <option value="">请选择过期时间</option>
+                <option value="30">30天</option>
+                <option value="90">90天</option>
+                <option value="180">180天</option>
+                <option value="365">365天</option>
+            </select>
+        </div>
+        {{#}}}
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">面值</label>
+        <div class="layui-input-inline">
+            <input type="text"  value="{{d.page.list[0].money}}" placeholder="请输入充值卡面值" autocomplete="off" readonly class="layui-input ">
+        </div>
+        <label style="line-height:37px;">元</label>
+    </div>
+    <input type="hidden" name="token" value="{{token}}">
+    <div class="layui-form-item hyk_buttons">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-submit" jq-submit jq-filter="submit">立即激活</button>
+            <!--<button type="reset" class="layui-btn layui-btn-primary">重置</button>-->
+        </div>
+    </div>
+    {{#}}}
+    {{#}else{}}
+        <p style="text-align:center;color:orange">批次不存在，请重新输入</p>
+    {{#}}}
+</script>
+<script type="text/javascript" src="js/layui/layui.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/lib/jquery-2.2.0.min.js"></script>
+<script>
+    var list,type,code;
+    layui.use(['dtable', 'jqform'], function () {
+        list = layui.dtable;
+    });
+
+    $('input[name=code]').bind('input propertychange', function () {
+        var value = $(this).val()
+        var oneList = new list();
+        $('#label-tpl').attr('data-params', '{"url":"/f/web/hykRechargeCard?pageSize=1&code='+value+'","loading":"false","tplid":"label-tpl","listid":"cardInfo","complete":"loaded"}');
+        if(value.length===0){
+            $('#cardInfo').html('');
+            return false
+        }
+        oneList.init('label-tpl');
+    })
+
+    function loaded(res) {
+        // type=res.page.list[0].useMethod;
+        // code=res.page.list[0].code;
+        layui.use('laydate', function () {
+            var start = {
+                min: laydate.now(),
+                istime: true,
+                istoday: false, format: 'YYYY-MM-DD'
+            };
+            $('.start-date').click(function () {
+                start.elem = this;
+                laydate(start);
+            })
+        })
+    }
+
+    function add() {
+        // if(type==='0'){
+        //     // window.open(rootUrl+'/f/web/hykRechargeCard/reportExcel?token='+token+'&code='+code)
+        //     window.location.href=rootUrl+'/f/web/hykRechargeCard/reportExcel?token='+token+'&code='+code
+        // }
+        layer.msg('已激活', {
+            time: 1000, shade: [0.2, '#fff']
+        }, function () {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+            oneList = new parent.layui.dtable();
+            oneList.init('list-tpl');
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykPayinfoDao">
+    
+	<sql id="hykPayinfoColumns">
+		a.id AS "id",
+		a.order_no AS "orderNo",
+		a.req_msg AS "reqMsg",
+		a.resp_msg AS "respMsg",
+		a.code AS "code"
+	</sql>
+	
+	<sql id="hykPayinfoJoins">
+	</sql>
+    
+	<select id="get" resultType="HykPayinfo">
+		SELECT 
+			<include refid="hykPayinfoColumns"/>
+		FROM hyk_payinfo a
+		<include refid="hykPayinfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykPayinfo">
+		SELECT 
+			<include refid="hykPayinfoColumns"/>
+		FROM hyk_payinfo a
+		<include refid="hykPayinfoJoins"/>
+		<where>
+			
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="orderNo != null and orderNo != ''">
+				AND a.order_no = #{orderNo}
+			</if>
+			<if test="reqMsg != null and reqMsg != ''">
+				AND a.req_msg = #{reqMsg}
+			</if>
+			<if test="respMsg != null and respMsg != ''">
+				AND a.resp_msg = #{respMsg}
+			</if>
+			<if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HykPayinfo">
+		SELECT 
+			<include refid="hykPayinfoColumns"/>
+		FROM hyk_payinfo a
+		<include refid="hykPayinfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_payinfo(
+			id,
+			order_no,
+			req_msg,
+			resp_msg,
+			code
+		) VALUES (
+			#{id},
+			#{orderNo},
+			#{reqMsg},
+			#{respMsg},
+			#{code}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_payinfo SET 	
+			order_no = #{orderNo},
+			req_msg = #{reqMsg},
+			resp_msg = #{respMsg},
+			code = #{code}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM hyk_payinfo
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

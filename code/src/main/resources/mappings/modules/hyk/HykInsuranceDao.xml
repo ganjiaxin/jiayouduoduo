@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykInsuranceDao">
+
+    <sql id="hykInsuranceColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.plate_number AS "plateNumber",
+		a.brand_model AS "brandModel",
+		a.vehicle_identification_code AS "vehicleIdentificationCode",
+		a.engine_number AS "engineNumber",
+		a.register_date AS "registerDate",
+		a.name AS "name",
+		a.id_number AS "idNumber",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.goods_id AS "goodsId",
+		a.status AS "status",
+		a.del_flag AS "delFlag",
+		a.remarks AS "remarks"
+	</sql>
+
+
+    <select id="get" resultType="HykInsurance">
+        SELECT
+        <include refid="hykInsuranceColumns"/>
+        FROM hyk_insurance a
+        WHERE a.id = #{id}
+    </select>
+
+
+    <insert id="save">
+		INSERT INTO hyk_insurance(
+			user_id,
+			plate_number,
+			brand_model,
+			vehicle_identification_code,
+			engine_number,
+			register_date,
+			name,
+			id_number,
+			create_date,
+			update_date,
+			goods_id,
+			status,
+			del_flag,
+			remarks,
+			consignee,
+			phone,
+			address
+		) VALUES (
+			#{userId},
+			#{plateNumber},
+			#{brandModel},
+			#{vehicleIdentificationCode},
+			#{engineNumber},
+			#{registerDate},
+			#{name},
+			#{idNumber},
+			#{createDate},
+			#{updateDate},
+			#{goodsId},
+			#{status},
+			#{delFlag},
+			#{remarks},
+			#{consignee},
+			#{phone},
+			#{address}
+		)
+	</insert>
+
+    <select id="getByUserIdAndGoodsId" resultType="HykInsurance">
+		SELECT *,DATE_FORMAT(register_date,'%Y-%m-%d') as registerDateStr from hyk_insurance where user_id=#{userId} and goods_id=#{goodsId} and status=0 and del_flag=0
+	</select>
+
+</mapper>

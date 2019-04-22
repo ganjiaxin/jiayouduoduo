@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykMallOrderDao">
+
+    <sql id="hykMallOrderColumns">
+		a.id AS "id",
+		a.orderno AS "orderno",
+		a.user_id AS "userId",
+		a.phone AS "phone",
+		a.goods_id AS "goodsId",
+		a.goods_name AS "goodsName",
+		a.goods_type AS "goodsType",
+		a.num AS "num",
+		a.money AS "money",
+		a.create_date AS "createDate",
+		UNIX_TIMESTAMP(NOW()) as sysTime ,
+		UNIX_TIMESTAMP(a.create_date) as createTime,
+		a.pay_date AS "payDate",
+		a.pay_type AS "payType",
+		a.status AS "status",
+		a.send_status AS "sendStatus",
+		a.remark AS "remark",
+		a.wltype AS "wltype",
+		a.postid AS "postid",
+		a.address_id AS "addressId",
+		h.name AS "addressName",
+		h.phone AS "addressPhone",
+		h.address AS "address",
+		u3.name AS "userName",
+		b.label AS "goodsTypeStr",
+		c.label AS "payTypeStr",
+		d.label AS "statusStr",
+		e.label AS "sendStatusStr",
+		f.img AS "img",
+		f.category AS "category",
+		DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i:%s') AS "createDateStr",
+		DATE_FORMAT(a.pay_date,'%Y-%m-%d %H:%i:%s') AS "payDateStr",
+		g.label  AS "wltypeStr"
+	</sql>
+
+    <sql id="hykMallOrderJoins">
+		LEFT JOIN sys_user u3 ON u3.id = a.user_id
+		LEFT JOIN sys_dict b on a.goods_type =b.`value` and b.type='mall_goodsType'
+		LEFT JOIN sys_dict c on a.pay_type =c.`value` and c.type='payType'
+		LEFT JOIN sys_dict d on a.status =d.`value` and d.type='mallorder_status'
+		LEFT JOIN sys_dict e on a.send_status =e.`value` and e.type='mallorder_sendStatus'
+		inner JOIN hyk_mall_goods f on a.goods_id =f.`id`
+		LEFT JOIN sys_dict g on a.wltype=g.`value` and g.type="wltype"
+		LEFT JOIN hyk_address h on a.address_id =h.`id`
+	</sql>
+
+    <select id="get" resultType="HykMallOrder">
+        SELECT
+        <include refid="hykMallOrderColumns"/>
+        FROM hyk_mall_order a
+        <include refid="hykMallOrderJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="HykMallOrder">
+        SELECT
+        <include refid="hykMallOrderColumns"/>
+        FROM hyk_mall_order a
+        <include refid="hykMallOrderJoins"/>
+        <where>
+            1=1
+            <if test="id != null and id != ''">
+                AND a.id = #{id}
+            </if>
+            <if test="orderno != null and orderno != ''">
+                AND a.orderno = #{orderno}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND a.user_id = #{userId}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND a.phone = #{phone}
+            </if>
+            <if test="goodsId != null and goodsId != ''">
+                AND a.goods_id = #{goodsId}
+            </if>
+            <if test="goodsName != null and goodsName != ''">
+                AND a.goods_name = #{goodsName}
+            </if>
+            <if test="goodsType != null and goodsType != ''">
+                AND a.goods_type = #{goodsType}
+            </if>
+            <if test="num != null and num != ''">
+                AND a.num = #{num}
+            </if>
+            <if test="money != null and money != ''">
+                AND a.money = #{money}
+            </if>
+            <if test="createDate != null and createDate != ''">
+                AND a.create_date = #{createDate}
+            </if>
+            <if test="payDate != null and payDate != ''">
+                AND a.pay_date = #{payDate}
+            </if>
+            <if test="payType != null and payType != ''">
+                AND a.pay_type = #{payType}
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status = #{status}
+            </if>
+            <if test="sendStatus != null and sendStatus != ''">
+                AND a.send_status = #{sendStatus}
+            </if>
+            <if test="remark != null and remark != ''">
+                AND a.remark = #{remark}
+            </if>
+            <if test="wltype != null and wltype != ''">
+                AND a.wltype = #{wltype}
+            </if>
+            <if test="postid != null and postid != ''">
+                AND a.postid = #{postid}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND DATE_FORMAT(a.create_date,'%Y%m%d')&gt;=DATE_FORMAT(#{startDate},'%Y%m%d')
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND DATE_FORMAT(a.create_date,'%Y%m%d')&lt;=DATE_FORMAT(#{endDate},'%Y%m%d')
+            </if>
+            <if test="other != null and other != ''">
+                AND (a.phone = #{other} or a.user_id =#{other} or a.orderno=#{other})
+            </if>
+
+        </where>
+        ORDER BY a.create_date desc
+    </select>
+
+    <select id="findList2" resultType="HykMallOrder">
+        SELECT
+        <include refid="hykMallOrderColumns"/>
+        FROM hyk_mall_order a
+        <include refid="hykMallOrderJoins"/>
+        <where>
+            LENGTH(a.pay_date)&gt;0
+            <if test="id != null and id != ''">
+                AND a.id = #{id}
+            </if>
+            <if test="orderno != null and orderno != ''">
+                AND a.orderno = #{orderno}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND a.user_id = #{userId}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND a.phone = #{phone}
+            </if>
+            <if test="goodsId != null and goodsId != ''">
+                AND a.goods_id = #{goodsId}
+            </if>
+            <if test="goodsName != null and goodsName != ''">
+                AND a.goods_name = #{goodsName}
+            </if>
+            <if test="goodsType != null and goodsType != ''">
+                AND a.goods_type = #{goodsType}
+            </if>
+            <if test="num != null and num != ''">
+                AND a.num = #{num}
+            </if>
+            <if test="money != null and money != ''">
+                AND a.money = #{money}
+            </if>
+            <if test="createDate != null and createDate != ''">
+                AND a.create_date = #{createDate}
+            </if>
+            <if test="payType != null and payType != ''">
+                AND a.pay_type = #{payType}
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status = #{status}
+            </if>
+            <if test="sendStatus != null and sendStatus != ''">
+                AND a.send_status = #{sendStatus}
+            </if>
+            <if test="remark != null and remark != ''">
+                AND a.remark = #{remark}
+            </if>
+            <if test="wltype != null and wltype != ''">
+                AND a.wltype = #{wltype}
+            </if>
+            <if test="postid != null and postid != ''">
+                AND a.postid = #{postid}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND DATE_FORMAT(a.create_date,'%Y%m%d')&gt;=DATE_FORMAT(#{startDate},'%Y%m%d')
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND DATE_FORMAT(a.create_date,'%Y%m%d')&lt;=DATE_FORMAT(#{endDate},'%Y%m%d')
+            </if>
+            <if test="other != null and other != ''">
+                AND (a.phone = #{other} or a.user_id =#{other} or a.orderno=#{other})
+            </if>
+
+        </where>
+        ORDER BY a.create_date desc
+    </select>
+
+    <select id="findAllList" resultType="HykMallOrder">
+        SELECT
+        <include refid="hykMallOrderColumns"/>
+        FROM hyk_mall_order a
+        <include refid="hykMallOrderJoins"/>
+        <where>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+		INSERT INTO hyk_mall_order(
+			id,
+			orderno,
+			user_id,
+			phone,
+			goods_id,
+			goods_name,
+			goods_type,
+			num,
+			money,
+			create_date,
+			pay_date,
+			pay_type,
+			status,
+			send_status,
+			remark,
+			wltype,
+			postid
+		) VALUES (
+			#{id},
+			#{orderno},
+			#{userId},
+			#{phone},
+			#{goodsId},
+			#{goodsName},
+			#{goodsType},
+			#{num},
+			#{money},
+			#{createDate},
+			#{payDate},
+			#{payType},
+			#{status},
+			#{sendStatus},
+			#{remark},
+			#{wltype},
+			#{postid}
+		)
+	</insert>
+    <insert id="insert2">
+		INSERT INTO hyk_mall_order(
+			id,
+			orderno,
+			user_id,
+			phone,
+			goods_id,
+			goods_name,
+			goods_type,
+			num,
+			money,
+			create_date,
+			status,
+			send_status,
+			address_id,
+			remark
+		) VALUES (
+			#{id},
+			#{orderno},
+			#{userId},
+			#{phone},
+			#{goodsId},
+			#{goodsName},
+			#{goodsType},
+			#{num},
+			#{money},
+			#{createDate},
+			#{status},
+			#{sendStatus},
+			#{addressId},
+			#{remark}
+		)
+	</insert>
+
+    <update id="update">
+		UPDATE hyk_mall_order SET 	
+			orderno = #{orderno},
+			user_id = #{userId},
+			phone = #{phone},
+			goods_id = #{goodsId},
+			goods_name = #{goodsName},
+			goods_type = #{goodsType},
+			num = #{num},
+			money = #{money},
+			pay_date = #{payDate},
+			pay_type = #{payType},
+			status = #{status},
+			send_status = #{sendStatus},
+			remark = #{remark},
+			wltype = #{wltype},
+			postid = #{postid}
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+		DELETE FROM hyk_mall_order
+		WHERE id = #{id}
+	</update>
+
+    <update id="updateOverTimeMallOrder">
+		update hyk_mall_goods , hyk_mall_order,
+		(SELECT goods_id as goodsId,SUM(num) as countStock from hyk_mall_order where UNIX_TIMESTAMP(NOW())>=UNIX_TIMESTAMP(hyk_mall_order.create_date)+1800 and status=0 GROUP BY goods_id)a
+		 set hyk_mall_goods.stock=hyk_mall_goods.stock+a.countStock,hyk_mall_order.status=3
+		 where a.goodsId=hyk_mall_goods.id and UNIX_TIMESTAMP(NOW())>=UNIX_TIMESTAMP(hyk_mall_order.create_date)+1800 and hyk_mall_order.status=0
+	</update>
+
+    <update id="updateOverTimeMallOrderByUserId">
+		update hyk_mall_goods , hyk_mall_order,
+		(SELECT goods_id as goodsId,SUM(num) as countStock from hyk_mall_order where UNIX_TIMESTAMP(NOW())>=UNIX_TIMESTAMP(hyk_mall_order.create_date)+1800 and status=0 and hyk_mall_order.user_id=#{userId} GROUP BY goods_id)a
+		 set hyk_mall_goods.stock=hyk_mall_goods.stock+a.countStock,hyk_mall_order.status=3
+		 where a.goodsId=hyk_mall_goods.id and UNIX_TIMESTAMP(NOW())>=UNIX_TIMESTAMP(hyk_mall_order.create_date)+1800 and hyk_mall_order.status=0 and hyk_mall_order.user_id=#{userId}
+	</update>
+
+    <select id="getListByUserId" resultType="HykMallOrder">
+		SELECT a.*,d.name as addressName,d.phone as addressPhone,d.address as address , DATE_FORMAT(a.pay_date,'%Y-%m-%d %H:%i:%s') as payDateStr,b.img as img ,c.label as goodsTypeStr
+		 from hyk_mall_order a
+		 left join hyk_mall_goods b on a.goods_id=b.id
+		LEFT JOIN sys_dict c on a.goods_type =c.`value` and c.type='mall_goodsType'
+		LEFT JOIN hyk_address d on a.address_id =d.`id`
+        <where>
+            a.del_flag=0 and a.user_id=#{userId}
+            <if test="sendStatus != null and sendStatus != ''">
+                AND a.status=2 and a.send_status=#{sendStatus}
+            </if>
+        </where>
+		ORDER BY status asc
+	</select>
+    <update id="updateFailStatusByOrderno">
+		update hyk_mall_order set status=#{status} where orderno=#{orderno}
+	</update>
+    <update id="updateSuccessStatusByOrder">
+		update hyk_mall_order set status=#{status} ,pay_date=NOW(),pay_type=#{payType} where orderno=#{orderno}
+	</update>
+    <update id="updateSendStatusByOrderno">
+		update hyk_mall_order set send_status=2 where orderno=#{orderno}
+	</update>
+    <select id="getByOrderno" resultType="HykMallOrder">
+		SELECT * from hyk_mall_order where orderno=#{orderno}
+	</select>
+
+    <select id="getCountBuyOilCardByTime" resultType="java.lang.Integer">
+		SELECT count(*) from hyk_mall_order where status in(0,2) and DATE_FORMAT(create_date,'%Y%m%d')=DATE_FORMAT(NOW(),'%Y%m%d')
+		and goods_name =#{goodsName} and user_id=#{userId}
+	</select>
+
+    <select id="getCountBuyOilCard" resultType="java.lang.Integer">
+		SELECT count(*) from hyk_mall_order where status!=3 and status!=4 and goods_name =#{goodsName} and user_id=#{userId} ;
+	</select>
+
+    <update id="softDeleteMallOrder">
+        update  hyk_mall_order set del_flag=1 where del_flag=0 and status=3 and TO_DAYS(NOW()) - TO_DAYS(create_date)>13;
+    </update>
+</mapper>

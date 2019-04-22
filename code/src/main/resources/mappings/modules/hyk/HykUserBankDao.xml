@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykUserBankDao">
+    
+	<sql id="hykUserBankColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.no_agree AS "noAgree",
+		a.id_type AS "idType",
+		a.id_no AS "idNo",
+		a.acct_name AS "acctName",
+		a.card_no AS "cardNo",
+	</sql>
+	
+	<sql id="hykUserBankJoins">
+	</sql>
+    
+	<select id="get" resultType="HykUserBank">
+		SELECT 
+			<include refid="hykUserBankColumns"/>
+		FROM hyk_user_bank a
+		<include refid="hykUserBankJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykUserBank">
+		SELECT 
+			<include refid="hykUserBankColumns"/>
+		FROM hyk_user_bank a
+		<include refid="hykUserBankJoins"/>
+		<where>
+			
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="user != null and userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="noAgree != null and noAgree != ''">
+				AND a.no_agree = #{noAgree}
+			</if>
+			<if test="idType != null and idType != ''">
+				AND a.id_type = #{idType}
+			</if>
+			<if test="idNo != null and idNo != ''">
+				AND a.id_no = #{idNo}
+			</if>
+			<if test="acctName != null and acctName != ''">
+				AND a.acct_name = #{acctName}
+			</if>
+			<if test="cardNo != null and cardNo != ''">
+				AND a.card_no = #{cardNo}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HykUserBank">
+		SELECT 
+			<include refid="hykUserBankColumns"/>
+		FROM hyk_user_bank a
+		<include refid="hykUserBankJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_user_bank(
+			id,
+			user_id,
+			no_agree,
+			id_type,
+			id_no,
+			acct_name,
+			card_no
+		) VALUES (
+			#{id},
+			#{userId},
+			#{noAgree},
+			#{idType},
+			#{idNo},
+			#{acctName},
+			#{cardNo}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_user_bank SET 	
+			user_id = #{userId},
+			no_agree = #{noAgree},
+			id_type = #{idType},
+			id_no = #{idNo},
+			acct_name = #{acctName},
+			card_no = #{cardNo}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM hyk_user_bank
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

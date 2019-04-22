@@ -1,0 +1,45 @@
+﻿@charset "utf-8";
+
+/*public*/
+.clearfix:after{visibility: hidden;display: block;font-size: 0;content: " ";clear: both;height: 0;}
+body{color:#000;background:#fff;font-family: Arial,sans-serif,SimSun;font-size:12px;}
+html,body,form,input,select,textarea,div,p,h1,h2,h3,h4,h5,h6,p,ul,ol,li,form,img,dl,dt,dd,table,th,td,blockquote,fieldset,div,strong,label,em{margin:0;padding:0;}
+ul,li,dl,dt,dd{list-style:none;float:left;}
+
+button,input{background:#fff;border:none;}
+.clear{clear:both;}
+.thRelative{left:0;top:0;}
+.thLeft{float:left;}
+.thRight{float:right;}
+.size_14{font-size:12px;font-weight: normal;}
+
+.lineSearch{width:100%;float:left;position: relative;}
+.ico{background: url(../images/sicon_v5.png) no-repeat;}
+/*boxSearch*/
+.thRelative{width: 48%;margin:0 1%;}
+.lineSearch ul{width:100%;}
+.lineSearch li .boxSearch,.lineSearch li .boxSearchHover{background: url(../img/jt2.png) no-repeat right center;background-size:25px 25px;position:relative;width:100%;padding-left:7px;color:#777;height:26px;border:1px solid #dbdbdb;margin-right:8px;margin-top:7px;cursor:pointer;}
+.lineSearch li .boxSearchHover{z-index: 2001;border:1px solid #94ccff;border-bottom-color:#000;background: url(../img/jt1.png) no-repeat right center;background-size:25px 25px;}
+.boxSearch .ico_shBlue{margin-top:7px;width:12px;height:17px;display: inline-block;background-position:left -165px;}
+.boxSearch .btn_search,.boxSearch .btn_search_current{border-left:1px solid #dbdbdb;background-position:6px -186px;width: 10px;height: 5px;margin-top: 4px;padding: 9px 6px;_padding: 9px 6px 0;}
+.boxSearch .btn_search_current{background-position:6px -202px;}
+.search_form_suggest{border:1px solid #000;position:absolute;top:32px;left:1%;z-index:978;width:98%;background:#fff;}
+.search_form_suggest h3{height:30px;line-height:30px;padding:0 10px;font-size:12px;font-weight:normal;color:#333;border-bottom:1px dashed #e6e6e6;margin-bottom:4px;}
+.search_form_suggest h3 em{color:#2c99fe;font-style: normal;}
+.btn_close{cursor:pointer;background-position:0 -1px;width:16px;height:16px;}
+.btn_close:hover{background-position:0 -27px;}
+.search_hotList dd{line-height:25px;padding-bottom:2px;width:100%;}
+.select_city_box{background:#FBFBFB;border-top:1px solid #E5E5E5;border-bottom:1px solid #E5E5E5;padding:13px 3px;}
+.select_city_box span{padding:0 17px;color:#888;}
+.select_city_box .input_city{width: 180px;border: 1px solid #C1C1C1;background: #FFF;padding: 5px 8px;font: 12px/14px Arial,Helvetica,sans-serif;vertical-align: middle;}
+.search_city_result {line-height: 24px;margin: 10px 0 -5px 108px;height: 24px;}
+.tab_select dl{padding: 5px 0;}
+.tab_select dt{width: 46px;background: #FE984F;font: bold 12px/22px Tahoma,Geneva,sans-serif;color: #fff;text-align: center;margin-left: 5px;}
+.tab_select dd{line-height: 22px;width: 317px;_width: 310px;}
+.tab_select dd a{color: #888;margin-left: 10px;display: inline-block;}
+/*lineSearchbg*/
+.lineSearchbg{border:1px solid #dbdbdb;height:31px;line-height:31px;width:390px;}
+.lineSearchbg .ico_serGray{width:18px;height:18px;background-position:8px -52px;padding:7px 5px 0 8px;}
+.lineSearchbg input{font-size:14px;font-family:Arial,sans-serif;border: 0;height: 15px;line-height: 15px;padding: 9px 0 7px;width:312px;color: #b5b5b5;background: #fff;}
+.lineSearchbg a.btn_search{background-position:0 -90px;height: 33px;line-height: 32px;display: inline-block;width: 71px;font-weight: bold;color: #fff;text-align: center;font-size: 14px;position: absolute;right:-46px;top:-1px;}
+.lineSearchbg a.btn_search:hover{background-position:0 -125px;text-decoration:none;}

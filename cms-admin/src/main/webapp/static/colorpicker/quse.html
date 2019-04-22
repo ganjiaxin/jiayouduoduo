@@ -1,0 +1,51 @@
+<html>
+<head>
+	<link rel="stylesheet" href="css/colorpicker.css" type="text/css" />
+    <link rel="stylesheet" media="screen" type="text/css" href="css/layout.css" />
+    <title>ColorPicker - jQuery plugin</title>
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/colorpicker.js"></script>
+    <script type="text/javascript" src="js/eye.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/layout.js?ver=1.0.2"></script>
+</head>
+<body>
+<div>
+<div id="colorSelector"><div style="background-color: #0000ff"></div></div>
+<div id="ss1" onclick="changeidvalue('ss1')" style="height:30px;width:80px;background-color:#0000ff"></div>
+<div id="ss2" onclick="changeidvalue('ss2')" style="height:30px;width:80px;background-color:#0000ff"></div>
+<div id="ss3" onclick="changeidvalue('ss3')" style="height:30px;width:80px;background-color:#0000ff"></div>
+</div>
+<div>
+</div>
+
+</body>
+<script>
+var idvalue="";
+$('#colorSelector').ColorPicker({
+	color: '#0000ff',
+	onShow: function (colpkr) {
+		$(colpkr).fadeIn(500);
+		return false;
+	},
+	onHide: function (colpkr) {
+		$(colpkr).fadeOut(500);
+		return false;
+	},
+	onChange: function (hsb, hex, rgb) {
+		$('#colorSelector div').css('backgroundColor', '#' + hex);
+		change(hex);
+	}
+});
+
+function change(hex){
+	$("#"+idvalue).css('background','#'+hex);
+}
+
+function changeidvalue(id){
+	idvalue=id;
+	$("#colorSelector").click();
+}
+</script>
+
+</html>

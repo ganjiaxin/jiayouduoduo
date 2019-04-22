@@ -1,0 +1,20 @@
+@charset "utf-8";
+/* CSS Document */
+#page{max-width:1024px; margin:0 auto;}
+.content_title { margin: 10px auto 0 auto; border: 1px solid #e1e1e1; width: 1198px; padding: 20px 0; background-color: #fff; border-bottom: none; }
+.content_title h2 {color:#333; width: 96%; padding: 0 2%;font-weight:normal; }
+.art_detail { min-height: 100px;  margin: 0 auto; background-color: #fff; }
+#content_list { margin: 0 auto !important; }
+.art_detail .art_detai_tit { border-bottom: 1px dashed #eaeaea; padding:15px;}
+.art_detail .art_detai_tit a.back { background: #c1c1c1 none repeat scroll 0 0; border-radius: 2px; color: #fff; display: block; height: 20px; text-align: center; width: 55px; line-height: 20px; text-decoration: none; }
+.art_detail .art_detai_tit a.back b{font-family:'宋体';}
+.art_detail .art_detai_tit a.back:hover { text-decoration: none; background: #d61718; }
+.art_detail .art_detai_tit h3 { color: #0697da; font: 20px/34px "Microsoft YaHei"; text-align: center; }
+.art_detail .art_detai_tit p { font-family: "simsun";text-align: center;color:#666;font-size:12px;}
+.art_detail .art_detai_tit p span { margin-right: 20px; }
+.art_detail .art_detai_cont {padding:15px;font-size:14px;}
+.art_detail .art_detai_cont p {font-size:14px !important;line-height:175%;color:#333;}
+.art_detail .art_detai_cont a{color:#d61718 !important;}
+.art_detail .art_detai_cont p a span {color:#d61718 !important;}
+.art_detail .art_detai_cont img,.art_detail .art_detai_cont p img{max-width:60% !important;margin:0 auto;display:block;}
+.layui-elem-field legend{font-size:16px !important;}

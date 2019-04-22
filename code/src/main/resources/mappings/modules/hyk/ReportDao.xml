@@ -1,0 +1,1697 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.ReportDao">
+
+
+    <select id="getYesterDayInifo" resultType="ReportIndex">
+        select
+        (select count(*)peopleNum from hyk_user a where DATE_FORMAT(a.register_date,"%Y%m%d")=DATE_FORMAT(date_sub(curdate(),interval 1 day),"%Y%m%d")) peopleNum,
+        (SELECT count(*)orderNum from hyk_order a where DATE_FORMAT(a.pay_date,"%Y%m%d")=DATE_FORMAT(date_sub(curdate(),interval 1 day),"%Y%m%d") and a.order_status in('2')) orderNum,
+        (SELECT sum(a.payable_money+a.balance_payment)totalAmt from hyk_order a where DATE_FORMAT(a.pay_date,"%Y%m%d")=DATE_FORMAT(date_sub(curdate(),interval 1 day),"%Y%m%d") and a.order_status in('2'))totalAmt,
+        (SELECT sum(money)oilAmt from hyk_oil_manager a where DATE_FORMAT(a.oil_date,"%Y%m%d")=DATE_FORMAT(date_sub(curdate(),interval 1 day),"%Y%m%d") and a.`status`='0')oilAmt
+    </select>
+
+    <select id="getYesterDayFindList" resultType="ReportIndex">
+        select
+        (select count(*)peopleNum from hyk_user a
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="startTime != null and startTime != ''">
+                AND DATE_FORMAT(a.register_date,'%Y%m%d')&gt;=DATE_FORMAT(#{startTime},'%Y%m%d')
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND DATE_FORMAT(a.register_date,'%Y%m%d')&lt;=DATE_FORMAT(#{endTime},'%Y%m%d')
+            </if>
+        </where>
+        )peopleNum,
+        (SELECT count(*)orderNum from hyk_order a
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL} and a.order_status in('2')
+            <if test="startTime != null and startTime != ''">
+                AND DATE_FORMAT(a.pay_date,'%Y%m%d')&gt;=DATE_FORMAT(#{startTime},'%Y%m%d')
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND DATE_FORMAT(a.pay_date,'%Y%m%d')&lt;=DATE_FORMAT(#{endTime},'%Y%m%d')
+            </if>
+        </where>
+        )orderNum,
+        (SELECT sum(a.payable_money+a.balance_payment)totalAmt from hyk_order a
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL} and a.order_status in('2')
+            <if test="startTime != null and startTime != ''">
+                AND DATE_FORMAT(a.pay_date,'%Y%m%d')&gt;=DATE_FORMAT(#{startTime},'%Y%m%d')
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND DATE_FORMAT(a.pay_date,'%Y%m%d')&lt;=DATE_FORMAT(#{endTime},'%Y%m%d')
+            </if>
+        </where>
+        )totalAmt,
+        (SELECT sum(money)oilAmt from hyk_oil_manager a
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL} and a.`status`='0'
+            <if test="startTime != null and startTime != ''">
+                AND DATE_FORMAT(a.oil_date,'%Y%m%d')&gt;=DATE_FORMAT(#{startTime},'%Y%m%d')
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND DATE_FORMAT(a.oil_date,'%Y%m%d')&lt;=DATE_FORMAT(#{endTime},'%Y%m%d')
+            </if>
+        </where>
+        )oilAmt
+
+    </select>
+
+
+    <!-- 获取上个月每个公司的返现金额 -->
+    <select id="listCompanyBackMoney" resultType="com.hyk.code.modules.hyk.entity.bo.CompanyBackMoneyBo">
+
+        -- 上月交易返现金额
+        SELECT
+            sum(backMoney) backMoney,
+            a.companyId,
+            date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y%m') lastMonth
+        FROM
+            (
+                -- 查询出订单所属商户ID
+                SELECT
+                    a.backMoney,
+                    b.companyId
+                FROM
+                    (
+                        -- 查询出所有的被邀请用户下单记录
+                        SELECT
+                            (case c.cycle
+                                            when 3 then ((a.amt)*0.02)
+                                            when 8 then ((a.amt)*0.05)
+                                            when 13 then ((a.amt)*0.07)
+                                            when 24 then ((a.amt)*0.12) end
+                            )backMoney,b.inviter_id,a.pay_date
+                        FROM
+                            hyk_order a
+                        INNER JOIN hyk_user b ON a.user_id = b.id
+                        LEFT JOIN hyk_goods c on a.goods_id=c.id
+                        WHERE
+                            a.del_flag = 0 and a.order_type=1
+                        AND DATE_FORMAT(a.pay_date, "%Y%m") =date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y%m')
+                        AND LENGTH(b.inviter_id) &gt; 0
+                        -- 查询出所有的邀请用户下单记录
+                    ) a
+                LEFT JOIN hyk_user b ON a.inviter_id = b.id
+                WHERE
+                    b.isCompany = 1 and  a.pay_date &gt;b.companyAddDate
+                -- 查询出订单所属商户ID
+                UNION  ALL 
+                -- 商户用户下单记录
+                    SELECT
+                        (case c.cycle
+                                            when 3 then ((a.amt)*0.02)
+                                            when 8 then ((a.amt)*0.05)
+                                            when 13 then ((a.amt)*0.07)
+                                            when 24 then ((a.amt)*0.12)
+                                end
+                        )backMoney,
+                        b.companyId
+                    FROM
+                        hyk_order a
+                    INNER JOIN hyk_user b ON a.user_id = b.id
+                    LEFT JOIN hyk_goods c on a.goods_id=c.id
+                    WHERE
+                        a.del_flag = 0 and a.order_type=1
+                    AND DATE_FORMAT(a.pay_date, "%Y%m") =date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y%m')
+                    AND b.isCompany = 1 and  a.pay_date &gt;b.companyAddDate
+                -- 商户用户下单记录
+            ) a
+        GROUP BY
+        a.companyId
+
+    </select>
+
+
+    <!-- 获取本月每个公司的返现金额 -->
+    <select id="getCurrentMonthBackMoney" resultType="com.hyk.code.modules.hyk.entity.bo.CompanyBackMoneyBo"
+            parameterType="string">
+            -- 上月交易返现金额
+            SELECT
+                sum(backMoney) backMoney,
+                a.companyId
+            FROM
+                (
+                    -- 查询出订单所属商户ID
+                    SELECT
+                        a.backMoney,
+                        b.companyId
+                    FROM
+                        (
+                            -- 查询出所有的被邀请用户下单记录
+                            SELECT
+                                (case c.cycle
+                                                when 3 then ((a.amt)*0.02)
+                                                when 8 then ((a.amt)*0.05)
+                                                when 13 then ((a.amt)*0.07)
+                                                when 24 then ((a.amt)*0.12) end
+                                )backMoney,b.inviter_id,a.pay_date
+                            FROM
+                                hyk_order a
+                            INNER JOIN hyk_user b ON a.user_id = b.id
+                            LEFT JOIN hyk_goods c on a.goods_id=c.id
+                            WHERE
+                                a.del_flag = 0 and a.order_type=1
+                            AND DATE_FORMAT(a.pay_date, "%Y%m")=date_format(curdate(),'%Y%m')
+                            AND LENGTH(b.inviter_id) &gt; 0
+                            -- 查询出所有的邀请用户下单记录
+                        ) a
+                    LEFT JOIN hyk_user b ON a.inviter_id = b.id
+                    WHERE
+                        b.isCompany = 1 and  a.pay_date &gt;b.companyAddDate
+                    -- 查询出订单所属商户ID
+                    UNION  ALL 
+                    -- 商户用户下单记录
+                        SELECT
+                            (case c.cycle
+                                                when 3 then ((a.amt)*0.02)
+                                                when 8 then ((a.amt)*0.05)
+                                                when 13 then ((a.amt)*0.07)
+                                                when 24 then ((a.amt)*0.12)
+                                    end
+                            )backMoney,
+                            b.companyId
+                        FROM
+                            hyk_order a
+                        INNER JOIN hyk_user b ON a.user_id = b.id
+                        LEFT JOIN hyk_goods c on a.goods_id=c.id
+                        WHERE
+                            a.del_flag = 0 and a.order_type=1
+                        AND DATE_FORMAT(a.pay_date, "%Y%m")=date_format(curdate(),'%Y%m')
+                        AND b.isCompany = 1 and  a.pay_date &gt;b.companyAddDate
+                    -- 商户用户下单记录
+                ) a
+            where a.companyId=#{_parameter}
+            GROUP BY
+            a.companyId
+    </select>
+
+    <!-- 累计邀请人数 -->
+    <select id="countInviterNumByCompanyId" resultType="com.hyk.code.modules.hyk.entity.bo.CompanyBackMoneyBo"
+            parameterType="string">
+
+        -- 累计邀请人数
+        SELECT
+            sum(inviterNum) inviterNum,
+            companyId
+        FROM
+            (
+                SELECT
+                    COUNT(*) inviterNum,
+                    a.companyId
+                FROM
+                    hyk_user a
+                INNER JOIN (
+                    SELECT
+                        a.id,
+                        a.inviter_id,
+                        a.register_date
+                    FROM
+                        hyk_user a
+                    WHERE
+                        LENGTH(a.inviter_id) &gt; 0
+                ) b ON a.id = b.inviter_id
+                WHERE
+                    a.isCompany = 1
+                AND a.companyId = #{_parameter} and b.register_date>a.companyAddDate
+                GROUP BY
+                    a.id
+            ) a
+        GROUP BY
+            a.companyId
+
+    </select>
+
+    <!-- 获取本月每个公司的返现金额 -->
+    <select id="listOrderDetailByMonth" resultType="com.hyk.code.modules.hyk.entity.vo.HykOrderVo"
+            parameterType="com.hyk.code.modules.hyk.entity.bo.CompanyBackMoneyBo">
+
+        -- 上月交易返现金额
+        SELECT
+                    a.backMoney,
+                    a.amt money,
+                    a.phone,
+                    a.goods_name goodsName,
+                    DATE_FORMAT(a.pay_date,'%Y-%m-%d %H:%i') payDateStr,
+                    a.inviterName
+        FROM
+            (
+                -- 查询出订单所属商户ID
+                SELECT
+                    a.backMoney,
+                    a.amt,
+                    a.phone,
+                    a.goods_name,
+                    a.pay_date,
+                    b.real_name inviterName
+                FROM
+                    (
+                        -- 查询出所有的被邀请用户下单记录
+                        SELECT
+                            (case c.cycle
+                                            when 3 then ((a.amt)*0.02)
+                                            when 8 then ((a.amt)*0.05)
+                                            when 13 then ((a.amt)*0.07)
+                                            when 24 then ((a.amt)*0.12) end
+                            )backMoney,
+                            b.inviter_id,
+                            a.amt,
+                            b.phone,
+                            c.goods_name,
+                            a.pay_date
+                        FROM
+                            hyk_order a
+                        INNER JOIN hyk_user b ON a.user_id = b.id
+                        LEFT JOIN hyk_goods c on a.goods_id=c.id
+                        WHERE
+                            a.del_flag = 0
+                        and a.order_type=1
+                        AND DATE_FORMAT(a.pay_date, "%Y%m")=#{lastMonth}
+                        AND LENGTH(b.inviter_id) &gt; 0
+                        -- 查询出所有的邀请用户下单记录
+                    ) a
+                LEFT JOIN hyk_user b ON a.inviter_id = b.id
+                WHERE
+                    b.companyId =#{companyId} and  a.pay_date &gt;b.companyAddDate
+                -- 查询出订单所属商户ID
+                UNION  ALL 
+                -- 商户用户下单记录
+                    SELECT
+                        (case c.cycle
+                                            when 3 then ((a.amt)*0.02)
+                                            when 8 then ((a.amt)*0.05)
+                                            when 13 then ((a.amt)*0.07)
+                                            when 24 then ((a.amt)*0.12)
+                                end
+                        )backMoney,
+                        a.amt,
+                        b.phone,
+                        c.goods_name,
+                        a.pay_date,
+                        b.real_name inviterName
+                    FROM
+                        hyk_order a
+                    INNER JOIN hyk_user b ON a.user_id = b.id
+                    LEFT JOIN hyk_goods c on a.goods_id=c.id
+                    WHERE
+                    a.del_flag = 0
+                    and a.order_type=1
+                    AND DATE_FORMAT(a.pay_date, "%Y%m")=#{lastMonth}
+                    AND b.companyId = #{companyId} and  a.pay_date &gt;b.companyAddDate
+                -- 商户用户下单记录
+            ) a
+
+
+    </select>
+
+
+    <!-- 获取本月每个邀请人数 -->
+    <select id="listCountMonthInviterNuMByCompanyId" resultType="com.hyk.code.modules.hyk.entity.bo.CompanyBackMoneyBo"
+            parameterType="string">
+
+        -- 每月累计邀请人数
+        SELECT
+            DATE_FORMAT(
+                a.register_date,
+                "%Y年%m月"
+            ) lastMonth,
+            COUNT(*) inviterNum
+        FROM
+            (
+                SELECT
+                    b.id,
+                    b.register_date,
+                    a.companyId
+                FROM
+                    hyk_user a
+                INNER JOIN (
+                    SELECT
+                        a.id,
+                        a.inviter_id,
+                        a.register_date
+                    FROM
+                        hyk_user a
+                    WHERE
+                        LENGTH(a.inviter_id) > 0
+                ) b ON a.id = b.inviter_id
+                WHERE
+                    a.isCompany = 1
+                AND a.companyId =#{_parameter} and b.register_date>a.companyAddDate
+            ) a
+        GROUP BY
+            DATE_FORMAT(a.register_date, "%Y%m")
+        ORDER BY
+            A.register_date DESC
+
+    </select>
+
+    <!-- 获取本月每个邀请人数详细 -->
+    <select id="listInviterNumByMonth" resultType="com.hyk.code.modules.hyk.entity.vo.HykUserInviterVo"
+            parameterType="com.hyk.code.modules.hyk.entity.vo.HykUserInviterVo">
+      -- 每月累计邀请人数
+        SELECT
+            a.id,
+            DATE_FORMAT(a.register_date,'%Y-%m-%d %H:%i') as registerDateStr,
+            a.phone,
+            a.real_name as realName
+        from (
+                SELECT
+                    b.id,
+                    b.register_date,
+                    b.phone,
+                    a.real_name,
+                    a.companyId
+                FROM
+                    hyk_user a
+                INNER JOIN (
+                    SELECT
+                        a.id,
+                        a.inviter_id,
+                        a.register_date,
+                        a.phone
+                    FROM
+                        hyk_user a
+                    WHERE
+                        LENGTH(a.inviter_id) &gt; 0
+                ) b ON a.id = b.inviter_id
+                WHERE
+                    a.isCompany = 1
+                AND a.companyId = #{companyId} and b.register_date>a.companyAddDate
+            ) a
+            where   DATE_FORMAT(a.register_date,"%Y年%m月")=#{lastMonth}
+        ORDER BY
+            a.id,a.register_date DESC
+    </select>
+
+
+    <!-- 获取本月每个邀请人数 -->
+    <select id="listEmployeeByCompanyId" resultType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo"
+            parameterType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo">
+        -- 我的员工
+        select a.real_name realName,a.phone,sum(b.backMoney)backMoney  from hyk_user a
+        LEFT JOIN (
+            SELECT
+                 backMoney,real_name realName,phone
+            FROM
+                (
+                    -- 查询出订单所属商户ID
+                    SELECT
+                        a.backMoney,
+                        b.real_name,b.phone
+                    FROM
+                        (
+                            -- 查询出所有的被邀请用户下单记录
+                            SELECT
+                                (case c.cycle
+                                                when 3 then ((a.amt)*0.02)
+                                                when 8 then ((a.amt)*0.05)
+                                                when 13 then ((a.amt)*0.07)
+                                                when 24 then ((a.amt)*0.12) end
+                                )backMoney,
+                                b.inviter_id,a.pay_date
+                            FROM
+                                hyk_order a
+                            INNER JOIN hyk_user b ON a.user_id = b.id
+                            LEFT JOIN hyk_goods c on a.goods_id=c.id
+                            WHERE
+                                a.del_flag = 0 and a.order_type=1
+                            AND DATE_FORMAT(a.pay_date, "%Y%m")=date_format(curdate(),'%Y%m')
+                            AND LENGTH(b.inviter_id) &gt; 0
+                            -- 查询出所有的邀请用户下单记录
+                        ) a
+                    LEFT JOIN hyk_user b ON a.inviter_id = b.id
+                    WHERE
+                        b.companyId =#{companyId} and  a.pay_date &gt;b.companyAddDate
+                    -- 查询出订单所属商户ID
+                    UNION  ALL 
+                    -- 商户用户下单记录
+                        SELECT
+                            (case c.cycle
+                                                when 3 then ((a.amt)*0.02)
+                                                when 8 then ((a.amt)*0.05)
+                                                when 13 then ((a.amt)*0.07)
+                                                when 24 then ((a.amt)*0.12)
+                                    end
+                            )backMoney,
+                            b.real_name,b.phone
+                        FROM
+                            hyk_order a
+                        INNER JOIN hyk_user b ON a.user_id = b.id
+                        LEFT JOIN hyk_goods c on a.goods_id=c.id
+                        WHERE
+                            a.del_flag = 0 and a.order_type=1
+                        AND DATE_FORMAT(a.pay_date, "%Y%m")=date_format(curdate(),'%Y%m')
+                        AND b.companyId =#{companyId} and  a.pay_date &gt;b.companyAddDate
+                    -- 商户用户下单记录
+                ) a
+            where a.phone is not null
+        ) b on a.phone=b.phone
+        where a.companyId=#{companyId}
+        GROUP BY a.phone
+    </select>
+
+
+    <!-- 获取公司的每个月 -->
+    <select id="listEmployeeMonethByCompanyId" resultType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo"
+            parameterType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo">
+
+            SELECT
+                        DATE_FORMAT(a.pay_date,'%Y年%m月') month
+            FROM
+                (
+                    -- 查询出订单所属商户ID
+                    SELECT
+                        a.pay_date
+                    FROM
+                        (
+                            -- 查询出所有的被邀请用户下单记录
+                            SELECT
+                                b.inviter_id,
+                                a.pay_date
+                            FROM
+                                hyk_order a
+                            INNER JOIN hyk_user b ON a.user_id = b.id
+                            LEFT JOIN hyk_goods c on a.goods_id=c.id
+                            WHERE
+                            a.del_flag = 0
+                            and a.order_type=1 AND a.pay_date is not null
+                            AND LENGTH(b.inviter_id) > 0
+                            -- 查询出所有的邀请用户下单记录
+                        ) a
+                    LEFT JOIN hyk_user b ON a.inviter_id = b.id
+                    WHERE
+                        b.companyId =#{companyId}  and  a.pay_date &gt;b.companyAddDate
+                    -- 查询出订单所属商户ID
+                    UNION  ALL 
+                    -- 商户用户下单记录
+                        SELECT
+                            a.pay_date
+                        FROM
+                            hyk_order a
+                        INNER JOIN hyk_user b ON a.user_id = b.id
+                        LEFT JOIN hyk_goods c on a.goods_id=c.id
+                        WHERE
+                        a.del_flag = 0
+                        and a.order_type=1 AND a.pay_date is not null
+                        AND b.companyId =#{companyId} and  a.pay_date &gt;b.companyAddDate
+                    -- 商户用户下单记录
+                ) a
+
+            where a.pay_date is not null
+            GROUP BY  DATE_FORMAT(a.pay_date,'%Y年%m月')
+
+            order by a.pay_date desc
+    </select>
+
+
+    <!-- 获取 月报详细  每个月的邀请详细 -->
+    <select id="listemployeeMonthByMonth" resultType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo"
+            parameterType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo">
+        select a.backMoney,a.inviterName,b.inviterNum,a.id from (
+        SELECT
+                    sum(a.backMoney)backMoney,
+                    a.inviterName,a.id
+        FROM
+            (
+                -- 查询出订单所属商户ID
+                SELECT
+                    a.backMoney,
+                    b.real_name inviterName,
+                    b.id
+                FROM
+                    (
+                        -- 查询出所有的被邀请用户下单记录
+                        SELECT
+                            (case c.cycle
+                                            when 3 then ((a.amt)*0.02)
+                                            when 8 then ((a.amt)*0.05)
+                                            when 13 then ((a.amt)*0.07)
+                                            when 24 then ((a.amt)*0.12) end
+                            )backMoney,
+                            b.inviter_id,a.pay_date
+                        FROM
+                            hyk_order a
+                        INNER JOIN hyk_user b ON a.user_id = b.id
+                        LEFT JOIN hyk_goods c on a.goods_id=c.id
+                        WHERE
+                            a.del_flag = 0
+                        and a.order_type=1
+                        AND DATE_FORMAT(a.pay_date, "%Y年%m月")=#{month}
+                        AND LENGTH(b.inviter_id) > 0
+                        -- 查询出所有的邀请用户下单记录
+                    ) a
+                LEFT JOIN hyk_user b ON a.inviter_id = b.id
+                WHERE
+                    b.companyId = #{companyId} and  a.pay_date &gt;b.companyAddDate
+                -- 查询出订单所属商户ID
+                UNION  ALL 
+                -- 商户用户下单记录
+                    SELECT
+                        (case c.cycle
+                                            when 3 then ((a.amt)*0.02)
+                                            when 8 then ((a.amt)*0.05)
+                                            when 13 then ((a.amt)*0.07)
+                                            when 24 then ((a.amt)*0.12)
+                                end
+                        )backMoney,
+                        b.real_name inviterName,
+                        b.id
+                    FROM
+                        hyk_order a
+                    INNER JOIN hyk_user b ON a.user_id = b.id
+                    LEFT JOIN hyk_goods c on a.goods_id=c.id
+                    WHERE
+                    a.del_flag = 0
+                    and a.order_type=1
+                    AND DATE_FORMAT(a.pay_date, "%Y年%m月")=#{month}
+                    AND b.companyId = #{companyId} and  a.pay_date &gt;b.companyAddDate
+                -- 商户用户下单记录
+            ) a
+        GROUP BY a.id
+        ) a
+        left join(
+
+        -- 累计邀请人数
+                SELECT
+                    sum(a.inviterNum) inviterNum,
+                    a.id
+                FROM
+                    (
+                        SELECT
+                            COUNT(*) inviterNum,
+                            a.id
+                        FROM
+                            hyk_user a
+                        INNER JOIN (
+                            SELECT
+                                a.id,
+                                a.inviter_id,
+                                a.register_date
+                            FROM
+                                hyk_user a
+                            WHERE
+                                LENGTH(a.inviter_id) > 0 and DATE_FORMAT(a.register_date, "%Y年%m月")=#{month}
+                        ) b ON a.id = b.inviter_id
+                        WHERE
+                            a.isCompany = 1 and b.register_date>a.companyAddDate
+                        GROUP BY
+                            a.id
+                    ) a
+
+
+        GROUP BY a.id
+
+        )b on a.id=b.id
+        where a.id is not null
+    </select>
+
+
+    <!-- 获取每月邀请人数 -->
+    <select id="listemployeeInviterNumByMonth" resultType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo"
+            parameterType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo">
+            -- 每月累计邀请人数
+            SELECT
+                DATE_FORMAT(
+                    a.register_date,
+                    "%Y年%m月"
+                ) month,
+                COUNT(*) inviterNum
+            FROM
+                (
+                    SELECT
+                        b.id,
+                        b.register_date,
+                        a.companyId
+                    FROM
+                        hyk_user a
+                    INNER JOIN (
+                        SELECT
+                            a.id,
+                            a.inviter_id,
+                            a.register_date
+                        FROM
+                            hyk_user a
+                        WHERE
+                            LENGTH(a.inviter_id) &gt; 0
+                    ) b ON a.id = b.inviter_id
+                    WHERE
+                        a.isCompany = 1
+                    AND a.companyId =#{companyId} and b.register_date>a.companyAddDate
+                ) a
+            where 	DATE_FORMAT(a.register_date, "%Y年%m月")=#{month}
+            GROUP BY
+                DATE_FORMAT(a.register_date, "%Y%m")
+            ORDER BY
+                A.register_date DESC
+
+    </select>
+
+
+    <!-- 获取每月返现金额 -->
+    <select id="listemployeeBackMoneyByMonth" resultType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo"
+            parameterType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo">
+            -- 月交易返现金额
+            SELECT
+                  sum(a.backMoney)backMoney
+            FROM
+                (
+                    -- 查询出订单所属商户ID
+                    SELECT
+                        a.backMoney
+                    FROM
+                        (
+                            -- 查询出所有的被邀请用户下单记录
+                            SELECT
+                                (case c.cycle
+                                                when 3 then ((a.amt)*0.02)
+                                                when 8 then ((a.amt)*0.05)
+                                                when 13 then ((a.amt)*0.07)
+                                                when 24 then ((a.amt)*0.12) end
+                                )backMoney,
+                                b.inviter_id,a.pay_date
+                            FROM
+                                hyk_order a
+                            INNER JOIN hyk_user b ON a.user_id = b.id
+                            LEFT JOIN hyk_goods c on a.goods_id=c.id
+                            WHERE
+                                a.del_flag = 0
+                            and a.order_type=1
+                            AND DATE_FORMAT(a.pay_date,"%Y年%m月")=#{month}
+                            AND LENGTH(b.inviter_id) > 0
+                            -- 查询出所有的邀请用户下单记录
+                        ) a
+                    LEFT JOIN hyk_user b ON a.inviter_id = b.id
+                    WHERE
+                        b.companyId =#{companyId} and  a.pay_date &gt;b.companyAddDate
+                    -- 查询出订单所属商户ID
+                    UNION  ALL 
+                    -- 商户用户下单记录
+                        SELECT
+                            (case c.cycle
+                                                when 3 then ((a.amt)*0.02)
+                                                when 8 then ((a.amt)*0.05)
+                                                when 13 then ((a.amt)*0.07)
+                                                when 24 then ((a.amt)*0.12)
+                                    end
+                            )backMoney
+                        FROM
+                            hyk_order a
+                        INNER JOIN hyk_user b ON a.user_id = b.id
+                        LEFT JOIN hyk_goods c on a.goods_id=c.id
+                        WHERE
+                        a.del_flag = 0
+                        and a.order_type=1
+                        AND DATE_FORMAT(a.pay_date, "%Y年%m月")=#{month}
+                        AND b.companyId = #{companyId} and  a.pay_date &gt;b.companyAddDate
+                    -- 商户用户下单记录
+                ) a
+    </select>
+
+
+    <!-- 员工具体每个月邀请用户 -->
+    <select id="listByInviterId" resultType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo"   parameterType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo">
+        select
+        a.phone,
+        DATE_FORMAT(a.register_date,'%Y.%m.%d %H:%i')registerDateStr
+        from hyk_user a
+        inner JOIN hyk_user b on a.inviter_id=b.id
+        where
+        a.register_date>b.companyAddDate and a.inviter_id=#{id}
+        and  DATE_FORMAT(a.register_date,"%Y年%m月")=#{month}
+
+    </select>
+
+    <!-- 员工具体每个月邀请用户下单信息 -->
+    <select id="listInviterOrderById" resultType="com.hyk.code.modules.hyk.entity.vo.HykOrderVo"   parameterType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo">
+         -- 上月交易返现金额
+        SELECT
+                    a.backMoney,
+                    a.amt money,
+                    a.phone,
+                    a.goods_name goodsName,
+                    DATE_FORMAT(a.pay_date,'%Y-%m-%d %H:%i') payDateStr,
+                    a.inviterName,a.id
+        FROM
+            (
+                -- 查询出订单所属商户ID
+                SELECT
+                    a.backMoney,
+                    a.amt,
+                    a.phone,
+                    a.goods_name,
+                    a.pay_date,
+                    b.real_name inviterName,
+                    b.id
+                FROM
+                    (
+                        -- 查询出所有的被邀请用户下单记录
+                        SELECT
+                            (case c.cycle
+                                            when 3 then ((a.amt)*0.02)
+                                            when 8 then ((a.amt)*0.05)
+                                            when 13 then ((a.amt)*0.07)
+                                            when 24 then ((a.amt)*0.12) end
+                            )backMoney,
+                            b.inviter_id,
+                            a.amt,
+                            b.phone,
+                            c.goods_name,
+                            a.pay_date
+                        FROM
+                            hyk_order a
+                        INNER JOIN hyk_user b ON a.user_id = b.id
+                        LEFT JOIN hyk_goods c on a.goods_id=c.id
+                        WHERE
+                            a.del_flag = 0
+
+                        AND DATE_FORMAT(a.pay_date, "%Y年%m月")=#{month}
+                        AND LENGTH(b.inviter_id) &gt; 0
+                        -- 查询出所有的邀请用户下单记录
+                    ) a
+                LEFT JOIN hyk_user b ON a.inviter_id = b.id
+                WHERE
+                    b.companyId =#{companyId} and b.id=#{id} and  a.pay_date &gt;b.companyAddDate
+                -- 查询出订单所属商户ID
+                UNION  ALL 
+                -- 商户用户下单记录
+                    SELECT
+                        (case c.cycle
+                                            when 3 then ((a.amt)*0.02)
+                                            when 8 then ((a.amt)*0.05)
+                                            when 13 then ((a.amt)*0.07)
+                                            when 24 then ((a.amt)*0.12)
+                                end
+                        )backMoney,
+                        a.amt,
+                        b.phone,
+                        c.goods_name,
+                        a.pay_date,
+                        b.real_name inviterName,
+                        b.id
+                    FROM
+                        hyk_order a
+                    INNER JOIN hyk_user b ON a.user_id = b.id
+                    LEFT JOIN hyk_goods c on a.goods_id=c.id
+                    WHERE
+                    a.del_flag = 0
+
+                    AND DATE_FORMAT(a.pay_date, "%Y年%m月")=#{month} and b.id=#{id}
+                    AND b.companyId = #{companyId} and  a.pay_date &gt;b.companyAddDate
+                -- 商户用户下单记录
+            ) a
+
+    </select>
+
+
+    <!-- 员工登录 获取元当月返现金额 -->
+    <select id="getEmployeeBackMoneyById" resultType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo"   parameterType="string">
+            -- 员工本月交易金额
+            SELECT
+                 sum(backMoney)backMoney
+            FROM
+                (
+                    -- 查询出订单所属商户ID
+                    SELECT
+                        a.backMoney
+                    FROM
+                        (
+                            -- 查询出所有的被邀请用户下单记录
+                            SELECT
+                                (case c.cycle
+                                                when 3 then ((a.amt)*0.02)
+                                                when 8 then ((a.amt)*0.05)
+                                                when 13 then ((a.amt)*0.07)
+                                                when 24 then ((a.amt)*0.12) end
+                                )backMoney,
+                                b.inviter_id,
+                                a.pay_date
+                            FROM
+                                hyk_order a
+                            INNER JOIN hyk_user b ON a.user_id = b.id
+                            LEFT JOIN hyk_goods c on a.goods_id=c.id
+                            WHERE
+                                a.del_flag = 0 and a.order_type=1
+                            AND DATE_FORMAT(a.pay_date, "%Y%m")=date_format(curdate(),'%Y%m')
+                            AND LENGTH(b.inviter_id) &gt;0
+                            -- 查询出所有的邀请用户下单记录
+                        ) a
+                    LEFT JOIN hyk_user b ON a.inviter_id = b.id
+                    WHERE b.id = #{userId} and  a.pay_date &gt;b.companyAddDate
+                    -- 查询出订单所属商户ID
+                    UNION  ALL 
+                    -- 商户用户下单记录
+                        SELECT
+                            (case c.cycle
+                                                when 3 then ((a.amt)*0.02)
+                                                when 8 then ((a.amt)*0.05)
+                                                when 13 then ((a.amt)*0.07)
+                                                when 24 then ((a.amt)*0.12)
+                                    end
+                            )backMoney
+                        FROM
+                            hyk_order a
+                        INNER JOIN hyk_user b ON a.user_id = b.id
+                        LEFT JOIN hyk_goods c on a.goods_id=c.id
+                        WHERE
+                            a.del_flag = 0 and a.order_type=1
+                        AND DATE_FORMAT(a.pay_date, "%Y%m")=date_format(curdate(),'%Y%m')
+                        AND b.id = #{userId} and  a.pay_date &gt;b.companyAddDate
+                    -- 商户用户下单记录
+                ) a
+
+    </select>
+
+
+
+
+    <!-- 员工登录 获取元当月返现金额 -->
+    <select id="countBackMoneyById" resultType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo"   parameterType="string">
+        -- 员工本月交易金额
+        SELECT
+        sum(backMoney)backMoney
+        FROM
+        (
+        -- 查询出订单所属商户ID
+        SELECT
+        a.backMoney
+        FROM
+        (
+        -- 查询出所有的被邀请用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end
+        )backMoney,
+        b.inviter_id,a.pay_date
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        WHERE
+        a.del_flag = 0 and a.order_type=1
+        AND a.pay_date is not null
+        AND LENGTH(b.inviter_id) &gt;0
+        -- 查询出所有的邀请用户下单记录
+        ) a
+        LEFT JOIN hyk_user b ON a.inviter_id = b.id
+        WHERE b.id = #{userId} and  a.pay_date &gt;b.companyAddDate
+        -- 查询出订单所属商户ID
+        UNION  ALL 
+        -- 商户用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12)
+        end
+        )backMoney
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        WHERE
+        a.del_flag = 0 and a.order_type=1
+        AND a.pay_date is not null
+        AND b.id = #{userId} and  a.pay_date &gt;b.companyAddDate
+        -- 商户用户下单记录
+        ) a
+
+    </select>
+
+
+    <!-- 员工登录 邀请人数 -->
+    <select id="countInviterNumById" resultType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo"   parameterType="string">
+        -- 累计邀请人数
+        SELECT
+            sum(inviterNum) inviterNum
+        FROM
+            (
+                SELECT
+                    COUNT(*) inviterNum,
+                    a.companyId
+                FROM
+                    hyk_user a
+                INNER JOIN (
+                    SELECT
+                        a.id,
+                        a.inviter_id,
+                        a.register_date
+                    FROM
+                        hyk_user a
+                    WHERE
+                        LENGTH(a.inviter_id) &gt; 0
+                ) b ON a.id = b.inviter_id
+                WHERE
+                    a.isCompany = 1
+                AND a.id=#{userId}  and b.register_date>a.companyAddDate
+                GROUP BY
+                    a.id
+            ) a
+
+    </select>
+
+    <!-- 员工登录 奖励明细 列表 -->
+    <select id="listMonthById" resultType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo"   parameterType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo">
+
+        SELECT
+                    sum(a.backMoney)backMoney,
+                    DATE_FORMAT(a.pay_date,'%Y年%m月')month
+        FROM
+            (
+                -- 查询出订单所属商户ID
+                SELECT
+                    a.backMoney,
+                    b.id,
+                    a.pay_date
+                FROM
+                    (
+                        -- 查询出所有的被邀请用户下单记录
+                        SELECT
+                            (case c.cycle
+                                            when 3 then ((a.amt)*0.02)
+                                            when 8 then ((a.amt)*0.05)
+                                            when 13 then ((a.amt)*0.07)
+                                            when 24 then ((a.amt)*0.12) end
+                            )backMoney,
+                            b.inviter_id,
+                            a.pay_date
+                        FROM
+                            hyk_order a
+                        INNER JOIN hyk_user b ON a.user_id = b.id
+                        LEFT JOIN hyk_goods c on a.goods_id=c.id
+                        WHERE
+                            a.del_flag = 0
+                        and a.order_type=1
+                        AND LENGTH(b.inviter_id) > 0
+                        AND a.pay_date is not null
+                        -- 查询出所有的邀请用户下单记录
+                    ) a
+                LEFT JOIN hyk_user b ON a.inviter_id = b.id
+                WHERE
+                    b.isCompany=1 and a.pay_date>b.companyAddDate
+                -- 查询出订单所属商户ID
+                UNION all
+                -- 商户用户下单记录
+                    SELECT
+                        (case c.cycle
+                                            when 3 then ((a.amt)*0.02)
+                                            when 8 then ((a.amt)*0.05)
+                                            when 13 then ((a.amt)*0.07)
+                                            when 24 then ((a.amt)*0.12)
+                                end
+                        )backMoney,
+                        b.id,
+                        a.pay_date
+                    FROM
+                        hyk_order a
+                    INNER JOIN hyk_user b ON a.user_id = b.id
+                    LEFT JOIN hyk_goods c on a.goods_id=c.id
+                    WHERE
+                    a.del_flag = 0
+                    and a.order_type=1
+                    and a.pay_date is not null
+                    and a.pay_date>b.companyAddDate
+
+                -- 商户用户下单记录
+            ) a
+        where a.id=#{id}
+        GROUP BY DATE_FORMAT(a.pay_date,'%Y年%m月')
+
+    </select>
+
+    <!-- 获取本月每个公司的返现金额 -->
+    <select id="listOrderDetailByMonthAndId" resultType="com.hyk.code.modules.hyk.entity.vo.HykOrderVo"
+            parameterType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo">
+
+        -- 上月交易返现金额
+        SELECT
+        a.backMoney,
+        a.amt money,
+        a.phone,
+        a.goods_name goodsName,
+        DATE_FORMAT(a.pay_date,'%Y-%m-%d %H:%i') payDateStr,
+        a.inviterName
+        FROM
+        (
+        -- 查询出订单所属商户ID
+        SELECT
+        a.backMoney,
+        a.amt,
+        a.phone,
+        a.goods_name,
+        a.pay_date,
+        b.real_name inviterName
+        FROM
+        (
+        -- 查询出所有的被邀请用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end
+        )backMoney,
+        b.inviter_id,
+        a.amt,
+        b.phone,
+        c.goods_name,
+        a.pay_date
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        WHERE
+        a.del_flag = 0
+        and a.order_type=1
+        AND DATE_FORMAT(a.pay_date, "%Y年%m月")=#{month}
+        AND LENGTH(b.inviter_id) &gt; 0
+        -- 查询出所有的邀请用户下单记录
+        ) a
+        LEFT JOIN hyk_user b ON a.inviter_id = b.id
+        WHERE
+        b.id =#{id} and  a.pay_date &gt;b.companyAddDate
+        -- 查询出订单所属商户ID
+        UNION  ALL
+        -- 商户用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12)
+        end
+        )backMoney,
+        a.amt,
+        b.phone,
+        c.goods_name,
+        a.pay_date,
+        b.real_name inviterName
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        WHERE
+        a.del_flag = 0
+        and a.order_type=1
+        AND DATE_FORMAT(a.pay_date, "%Y年%m月")=#{month}
+        AND b.id = #{id} and  a.pay_date &gt;b.companyAddDate
+        -- 商户用户下单记录
+        ) a
+
+
+    </select>
+
+
+
+    <!-- 获取本月每个邀请人数 -->
+    <select id="listCountMonthInviterNuMByUserId" resultType="com.hyk.code.modules.hyk.entity.bo.CompanyBackMoneyBo"
+            parameterType="string">
+  -- 根据员工id每月累计邀请人数
+        SELECT
+            DATE_FORMAT(
+                a.register_date,
+                "%Y年%m月"
+            ) lastMonth,
+            COUNT(*) inviterNum
+        FROM
+            (
+                SELECT
+                    b.id,
+                    b.register_date,
+                    a.companyId
+                FROM
+                    hyk_user a
+                INNER JOIN (
+                    SELECT
+                        a.id,
+                        a.inviter_id,
+                        a.register_date
+                    FROM
+                        hyk_user a
+                    WHERE
+                        LENGTH(a.inviter_id) > 0
+                ) b ON a.id = b.inviter_id
+                WHERE
+                    a.isCompany = 1
+                AND a.id =#{_parameter} and b.register_date>a.companyAddDate
+            ) a
+        GROUP BY
+            DATE_FORMAT(a.register_date, "%Y%m")
+        ORDER BY
+            A.register_date DESC
+    </select>
+
+    <!-- 获取本月每个邀请人数详细 -->
+    <select id="listInviterNumByMonthByUserId" resultType="com.hyk.code.modules.hyk.entity.vo.HykUserInviterVo"
+            parameterType="com.hyk.code.modules.hyk.entity.vo.HykUserInviterVo">
+        -- 每月累计邀请人数
+        SELECT
+        a.id,
+         DATE_FORMAT(a.register_date,'%Y-%m-%d %H:%i')as registerDateStr,
+        a.phone,
+        a.real_name as realName
+        from (
+        SELECT
+        b.id,
+        b.register_date,
+        b.phone,
+        a.real_name,
+        a.companyId
+        FROM
+        hyk_user a
+        INNER JOIN (
+        SELECT
+        a.id,
+        a.inviter_id,
+        a.register_date,
+        a.phone
+        FROM
+        hyk_user a
+        WHERE
+        LENGTH(a.inviter_id) &gt; 0
+        ) b ON a.id = b.inviter_id
+        WHERE
+        a.isCompany = 1
+        AND a.id = #{id} and b.register_date>a.companyAddDate
+        ) a
+        where   DATE_FORMAT(a.register_date,"%Y年%m月")=#{lastMonth}
+        ORDER BY
+        a.id,a.register_date DESC
+    </select>
+
+
+
+    <!--奖励明细 邀请用户截至上月累计充值金额 -->
+    <select id="countRechargeAmountByLastMonthAll" resultType="string"  parameterType="com.hyk.code.modules.hyk.entity.vo.CompanyMarVo">
+        -- 截至上月商户累计充值金额
+        SELECT
+        sum(amt) money
+        FROM
+        (
+        -- 查询出订单所属商户ID
+        SELECT
+        a.amt
+        FROM
+        (
+        -- 查询出所有的被邀请用户下单记录
+        SELECT
+        a.amt,
+        b.inviter_id,
+        a.pay_date
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        WHERE
+        a.del_flag = 0
+        AND DATE_FORMAT(a.pay_date, "%Y%m") &lt; DATE_FORMAT(curdate(), "%Y%m")
+        AND LENGTH(b.inviter_id) > 0
+        -- 查询出所有的邀请用户下单记录
+        ) a
+        LEFT JOIN hyk_user b ON a.inviter_id = b.id
+		WHERE
+		b.isCompany = 1 and a.pay_date>b.companyAddDate
+        <if test="other != null and other != ''">
+            and (b.phone=#{other} or b.id=#{other})
+        </if>
+        -- 查询出订单所属商户ID
+        UNION all
+        -- 商户用户下单记录
+        SELECT
+        a.amt
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        WHERE
+        a.del_flag = 0 and a.pay_date>b.companyAddDate
+        AND DATE_FORMAT(a.pay_date, "%Y%m") &lt; DATE_FORMAT(curdate(), "%Y%m")
+        AND b.isCompany = 1
+        <if test="other != null and other != ''">
+            and (b.phone=#{other} or b.id=#{other})
+        </if>
+        -- 商户用户下单记录
+        ) a
+    </select>
+
+
+    <!--奖励明细 邀请用户上月充值金额 -->
+    <select id="countRechargeAmountByLastMonth" resultType="string"  parameterType="com.hyk.code.modules.hyk.entity.vo.CompanyMarVo">
+        -- 上月商户充值金额
+        SELECT
+            sum(amt) money
+        FROM
+            (
+                -- 查询出订单所属商户ID
+                SELECT
+                    a.amt
+                FROM
+                    (
+                        -- 查询出所有的被邀请用户下单记录
+                        SELECT
+                            a.amt,
+                            b.inviter_id,
+                            a.pay_date
+                        FROM
+                            hyk_order a
+                        INNER JOIN hyk_user b ON a.user_id = b.id
+                        WHERE
+                            a.del_flag = 0
+                        AND DATE_FORMAT(a.pay_date, "%Y%m") =date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y%m')
+                        AND LENGTH(b.inviter_id) > 0
+                        -- 查询出所有的邀请用户下单记录
+                    ) a
+                LEFT JOIN hyk_user b ON a.inviter_id = b.id
+                LEFT JOIN sys_dict c on b.companyId=c.`value` and c.type='companyId'
+                WHERE
+                b.isCompany = 1 and a.pay_date>b.companyAddDate
+                <if test="other != null and other != ''">
+                    and (b.phone=#{other} or b.id=#{other} or c.label like CONCAT('%',#{other},'%'))
+                </if>
+                -- 查询出订单所属商户ID
+                UNION all
+                -- 商户用户下单记录
+                    SELECT
+                        a.amt
+                    FROM
+                        hyk_order a
+                    INNER JOIN hyk_user b ON a.user_id = b.id
+                    LEFT JOIN sys_dict c on b.companyId=c.`value` and c.type='companyId'
+                    WHERE
+                        a.del_flag = 0 and a.pay_date>b.companyAddDate
+                    AND DATE_FORMAT(a.pay_date, "%Y%m") =date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y%m')
+                    AND b.isCompany = 1
+                    <if test="other != null and other != ''">
+                        and (b.phone=#{other} or b.id=#{other} or c.label like CONCAT('%',#{other},'%'))
+                    </if>
+                -- 商户用户下单记录
+            ) a
+    </select>
+
+
+
+    <!--奖励明细 邀请用户本月充值金额 -->
+    <select id="countRechargeAmountByCurrentMonth" resultType="string" parameterType="com.hyk.code.modules.hyk.entity.vo.CompanyMarVo">
+        -- 邀请用户本月充值金额
+        SELECT
+        sum(amt) money
+        FROM
+        (
+        -- 查询出订单所属商户ID
+        SELECT
+        a.amt
+        FROM
+        (
+        -- 查询出所有的被邀请用户下单记录
+        SELECT
+        a.amt,
+        b.inviter_id,
+        a.pay_date
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        WHERE
+        a.del_flag = 0
+        AND DATE_FORMAT(a.pay_date, "%Y%m") =DATE_FORMAT(curdate(), "%Y%m")
+        AND LENGTH(b.inviter_id) > 0
+        -- 查询出所有的邀请用户下单记录
+        ) a
+        LEFT JOIN hyk_user b ON a.inviter_id = b.id
+        LEFT JOIN sys_dict c on b.companyId=c.`value` and c.type='companyId'
+		WHERE
+		b.isCompany = 1 and a.pay_date>b.companyAddDate
+        <if test="other != null and other != ''">
+            and (b.phone=#{other} or b.id=#{other} or c.label like CONCAT('%',#{other},'%'))
+        </if>
+        -- 查询出订单所属商户ID
+        UNION all
+        -- 商户用户下单记录
+        SELECT
+        a.amt
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN sys_dict c on b.companyId=c.`value` and c.type='companyId'
+        WHERE
+        a.del_flag = 0 and a.pay_date>b.companyAddDate
+        AND DATE_FORMAT(a.pay_date, "%Y%m") =DATE_FORMAT(curdate(), "%Y%m")
+        AND b.isCompany = 1
+        <if test="other != null and other != ''">
+            and (b.phone=#{other} or b.id=#{other} or c.label like CONCAT('%',#{other},'%'))
+        </if>
+        -- 商户用户下单记录
+        ) a
+    </select>
+
+
+    <!--奖励明细 邀请用户截止上月累计交易返现金额 -->
+    <select id="countBackMoneyByLastMonthAll" resultType="string" parameterType="com.hyk.code.modules.hyk.entity.vo.CompanyMarVo">
+        -- 邀请用户截至上月累计返现金额
+        SELECT
+        sum(backMoney) backMoney
+        FROM
+        (
+        -- 查询出订单所属商户ID
+        SELECT
+        a.backMoney
+        FROM
+        (
+        -- 查询出所有的被邀请用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end
+        )backMoney,
+        b.inviter_id,
+        a.pay_date
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        WHERE
+        a.del_flag = 0
+        AND DATE_FORMAT(a.pay_date, "%Y%m") &lt; DATE_FORMAT(curdate(), "%Y%m")
+        AND LENGTH(b.inviter_id) > 0
+        -- 查询出所有的邀请用户下单记录
+        ) a
+        LEFT JOIN hyk_user b ON a.inviter_id = b.id
+        WHERE
+        b.isCompany = 1 and a.pay_date>b.companyAddDate
+        <if test="other != null and other != ''">
+            and (b.phone=#{other} or b.id=#{other})
+        </if>
+        -- 查询出订单所属商户ID
+        UNION all
+        -- 商户用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12)
+        end
+        )backMoney
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        WHERE
+        a.del_flag = 0 and a.pay_date>b.companyAddDate
+        AND DATE_FORMAT(a.pay_date, "%Y%m") &lt; DATE_FORMAT(curdate(), "%Y%m")
+        AND b.isCompany = 1
+        <if test="other != null and other != ''">
+            and (b.phone=#{other} or b.id=#{other})
+        </if>
+        -- 商户用户下单记录
+        ) a
+    </select>
+
+    <!--奖励明细 邀请用户上月返现金额 -->
+    <select id="countBackMoneyByLastMonth" resultType="string" parameterType="com.hyk.code.modules.hyk.entity.vo.CompanyMarVo">
+        -- 邀请用户上月返现金额
+        SELECT
+        sum(backMoney) backMoney
+        FROM
+        (
+        -- 查询出订单所属商户ID
+        SELECT
+        a.backMoney
+        FROM
+        (
+        -- 查询出所有的被邀请用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end
+        )backMoney,b.inviter_id,a.pay_date
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        WHERE
+        a.del_flag = 0
+        AND DATE_FORMAT(a.pay_date, "%Y%m") =date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y%m')
+        AND LENGTH(b.inviter_id) > 0
+        -- 查询出所有的邀请用户下单记录
+        ) a
+        LEFT JOIN hyk_user b ON a.inviter_id = b.id
+        LEFT JOIN sys_dict c on b.companyId=c.`value` and c.type='companyId'
+        WHERE
+        b.isCompany = 1 and a.pay_date>b.companyAddDate
+        <if test="other != null and other != ''">
+            and (b.phone=#{other} or b.id=#{other} or c.label like CONCAT('%',#{other},'%'))
+        </if>
+        -- 查询出订单所属商户ID
+        UNION all
+        -- 商户用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12)
+        end
+        )backMoney
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        LEFT JOIN sys_dict d on b.companyId=d.`value` and d.type='companyId'
+        WHERE
+        a.del_flag = 0 and a.pay_date>b.companyAddDate
+        AND DATE_FORMAT(a.pay_date, "%Y%m") =date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y%m')
+        AND b.isCompany = 1
+        <if test="other != null and other != ''">
+            and (b.phone=#{other} or b.id=#{other} or d.label like CONCAT('%',#{other},'%'))
+        </if>
+        -- 商户用户下单记录
+        ) a
+    </select>
+
+    <!--奖励明细 邀请用户本月返现金额 -->
+    <select id="countBackMoneyByCurrentMonth" resultType="string"  parameterType="com.hyk.code.modules.hyk.entity.vo.CompanyMarVo">
+        -- 邀请用户本月返现金额
+        SELECT
+        sum(backMoney) backMoney
+        FROM
+        (
+        -- 查询出订单所属商户ID
+        SELECT
+        a.backMoney
+        FROM
+        (
+        -- 查询出所有的被邀请用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end
+        )backMoney,b.inviter_id,a.pay_date
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        WHERE
+        a.del_flag = 0
+        AND DATE_FORMAT(a.pay_date, "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+        AND LENGTH(b.inviter_id) > 0
+        -- 查询出所有的邀请用户下单记录
+        ) a
+        LEFT JOIN hyk_user b ON a.inviter_id = b.id
+        LEFT JOIN sys_dict d on b.companyId=d.`value` and d.type='companyId'
+        WHERE
+        b.isCompany = 1 and a.pay_date>b.companyAddDate
+        <if test="other != null and other != ''">
+            and (b.phone=#{other} or b.id=#{other} or d.label like CONCAT('%',#{other},'%'))
+        </if>
+        -- 查询出订单所属商户ID
+        UNION all
+        -- 商户用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12)
+        end
+        )backMoney
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        LEFT JOIN sys_dict d on b.companyId=d.`value` and d.type='companyId'
+        WHERE
+        a.del_flag = 0 and a.pay_date>b.companyAddDate
+        AND DATE_FORMAT(a.pay_date, "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+        AND b.isCompany = 1
+        <if test="other != null and other != ''">
+            and (b.phone=#{other} or b.id=#{other} or d.label like CONCAT('%',#{other},'%'))
+        </if>
+        -- 商户用户下单记录
+        ) a
+    </select>
+
+
+
+
+
+    <!--员工管理 邀请用户累计充值金额 -->
+    <select id="countOrderMoneyById" resultType="string">
+        -- 邀请用户累计充值金额
+        SELECT
+        sum(amt) money
+        FROM
+        (
+        -- 查询出订单所属商户ID
+        SELECT
+        a.amt
+        FROM
+        (
+        -- 查询出所有的被邀请用户下单记录
+        SELECT
+        a.amt,
+        b.inviter_id,
+        a.pay_date
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        WHERE
+        a.del_flag = 0
+        AND LENGTH(b.inviter_id) > 0
+        -- 查询出所有的邀请用户下单记录
+        ) a
+        LEFT JOIN hyk_user b ON a.inviter_id = b.id
+        WHERE
+        b.isCompany = 1 and b.id=#{_parameter}  and a.pay_date>b.companyAddDate
+        -- 查询出订单所属商户ID
+        UNION all
+        -- 商户用户下单记录
+        SELECT
+        a.amt
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        WHERE
+        a.del_flag = 0 and b.id=#{_parameter}  and a.pay_date>b.companyAddDate
+        AND b.isCompany = 1
+        -- 商户用户下单记录
+        ) a
+    </select>
+
+
+
+    <!--员工管理 邀请用户当月充值金额 -->
+    <select id="countOrderMoneyByIdAndcurrentMonth" resultType="string">
+        -- 邀请用户当月充值金额
+        SELECT
+        sum(amt) money
+        FROM
+        (
+        -- 查询出订单所属商户ID
+        SELECT
+        a.amt
+        FROM
+        (
+        -- 查询出所有的被邀请用户下单记录
+        SELECT
+        a.amt,
+        b.inviter_id,
+        a.pay_date
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        WHERE
+        a.del_flag = 0
+        AND DATE_FORMAT(a.pay_date, "%Y%m") =DATE_FORMAT(curdate(), "%Y%m")
+        AND LENGTH(b.inviter_id) > 0
+        -- 查询出所有的邀请用户下单记录
+        ) a
+        LEFT JOIN hyk_user b ON a.inviter_id = b.id
+        WHERE
+        b.isCompany = 1 and b.id=#{_parameter}  and a.pay_date>b.companyAddDate
+        -- 查询出订单所属商户ID
+        UNION all
+        -- 商户用户下单记录
+        SELECT
+        a.amt
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        WHERE
+        a.del_flag = 0 and b.id=#{_parameter}  and a.pay_date>b.companyAddDate
+        AND DATE_FORMAT(a.pay_date, "%Y%m") =DATE_FORMAT(curdate(), "%Y%m")
+        AND b.isCompany = 1
+        -- 商户用户下单记录
+        ) a
+    </select>
+
+
+
+    <!-- 员工登录 奖励明细 列表 -->
+    <select id="OrderlistMonthById" resultType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo"   parameterType="com.hyk.code.modules.hyk.entity.vo.EmployeeVo">
+
+        SELECT
+        sum(a.amt)amt,
+        DATE_FORMAT(a.pay_date,'%Y年%m月')month
+        FROM
+        (
+        -- 查询出订单所属商户ID
+        SELECT
+        a.amt,
+        b.id,
+        a.pay_date
+        FROM
+        (
+        -- 查询出所有的被邀请用户下单记录
+        SELECT
+        a.amt,
+        b.inviter_id,
+        a.pay_date
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        WHERE
+        a.del_flag = 0
+        and a.order_type=1
+        AND LENGTH(b.inviter_id) > 0
+        AND a.pay_date is not null
+        -- 查询出所有的邀请用户下单记录
+        ) a
+        LEFT JOIN hyk_user b ON a.inviter_id = b.id
+        WHERE
+        b.isCompany=1 and a.pay_date>b.companyAddDate
+        -- 查询出订单所属商户ID
+        UNION all
+        -- 商户用户下单记录
+        SELECT
+        a.amt,
+        b.id,
+        a.pay_date
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        WHERE
+        a.del_flag = 0
+        and a.order_type=1
+        and a.pay_date is not null
+        and a.pay_date>b.companyAddDate
+
+        -- 商户用户下单记录
+        ) a
+        where a.id=#{id}
+        GROUP BY DATE_FORMAT(a.pay_date,'%Y年%m月')
+
+    </select>
+
+</mapper>

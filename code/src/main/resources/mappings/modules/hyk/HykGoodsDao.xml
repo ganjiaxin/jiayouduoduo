@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykGoodsDao">
+    
+	<sql id="hykGoodsColumns">
+		a.id AS "id",
+		a.goods_name AS "goodsName",
+		a.discount AS "discount",
+		a.activity_discount AS "activityDiscount",
+		a.cycle AS "cycle",
+		a.stock AS "stock",
+		a.goods_type AS "goodsType",
+		c.label AS "goodsTypeStr",
+		a.status AS "status",
+		b.label AS "statusStr",
+		a.prices AS "prices",
+		a.val AS "val",
+		a.discount_money AS "discountMoney",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.f1 AS "f1",
+		a.goodsImg AS "goodsImg",
+		d.label AS "label",
+		a.adviceMoney1,
+		a.adviceMoney2,
+		a.istop
+	</sql>
+	
+	<sql id="hykGoodsJoins">
+		left join sys_dict b on a.status=b.`value` and b.type="status"
+		left join sys_dict c on a.goods_type=c.`value` and c.type="goodsType"
+		left join sys_dict d on a.label=d.`value` and d.type="goodsLabel"
+	</sql>
+    
+	<select id="get" resultType="HykGoods">
+		SELECT 
+			<include refid="hykGoodsColumns"/>
+		FROM hyk_goods a
+		<include refid="hykGoodsJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykGoods">
+		SELECT 
+			<include refid="hykGoodsColumns"/>
+		FROM hyk_goods a
+		<include refid="hykGoodsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="goodsName != null and goodsName != ''">
+				AND a.goods_name = #{goodsName}
+			</if>
+			<if test="discount != null and discount != ''">
+				AND a.discount = #{discount}
+			</if>
+			<if test="activityDiscount != null and activityDiscount != ''">
+				AND a.activity_discount = #{activityDiscount}
+			</if>
+			<if test="cycle != null and cycle != ''">
+				AND a.cycle = #{cycle}
+			</if>
+			<if test="stock != null and stock != ''">
+				AND a.stock = #{stock}
+			</if>
+			<if test="goodsType != null and goodsType != ''">
+				AND a.goods_type = #{goodsType}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="prices != null and prices != ''">
+				AND a.prices = #{prices}
+			</if>
+			<if test="val != null and val != ''">
+				AND a.val = #{val}
+			</if>
+			<if test="discountMoney != null and discountMoney != ''">
+				AND a.discount_money = #{discountMoney}
+			</if>
+			<if test="remark != null and remark != ''">
+				AND a.remark = #{remark}
+			</if>
+			<if test="f1 != null and f1 != ''">
+				AND a.f1 = #{f1}
+			</if>
+			<if test="goodsImg != null and goodsImg != ''">
+				AND a.goodsImg = #{goodsImg}
+			</if>
+			<if test="label != null and label != ''">
+				AND a.label = #{label}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HykGoods">
+		SELECT 
+			<include refid="hykGoodsColumns"/>
+		FROM hyk_goods a
+		<include refid="hykGoodsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_goods(
+			id,
+			goods_name,
+			discount,
+			activity_discount,
+			cycle,
+			stock,
+			goods_type,
+			status,
+			prices,
+			val,
+			discount_money,
+			remark,
+			del_flag,
+			f1,
+			goodsImg,
+			label,
+			adviceMoney1,
+			adviceMoney2,
+			istop
+		) VALUES (
+			#{id},
+			#{goodsName},
+			#{discount},
+			#{activityDiscount},
+			#{cycle},
+			#{stock},
+			#{goodsType},
+			#{status},
+			#{prices},
+			#{val},
+			#{discountMoney},
+			#{remark},
+			#{delFlag},
+			#{f1},
+			#{goodsImg},
+			#{label},
+			#{adviceMoney1},
+			#{adviceMoney2},
+			#{istop}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_goods SET 	
+			goods_name = #{goodsName},
+			discount = #{discount},
+			activity_discount = #{activityDiscount},
+			cycle = #{cycle},
+			stock = #{stock},
+			goods_type = #{goodsType},
+			status = #{status},
+			prices = #{prices},
+			val = #{val},
+			discount_money = #{discountMoney},
+			remark = #{remark},
+			f1 = #{f1},
+			goodsImg = #{goodsImg},
+			label = #{label},
+			adviceMoney1=#{adviceMoney1},
+			adviceMoney2=#{adviceMoney2},
+			istop=#{istop}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_goods SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+
+</mapper>

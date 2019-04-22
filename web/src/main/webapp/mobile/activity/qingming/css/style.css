@@ -1,0 +1,101 @@
+body, html { width: 100%; max-width:750px;margin:0 auto;padding: 0; background-color:#7CB04B;font-family: "Arial";  position: relative;}
+*, *:before, *:after { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+input, textarea, select { outline: none; font-family: 'Arial';  }
+input:-webkit-autofill {-webkit-box-shadow: 0 0 0px 1000px white inset;}
+input[type="button"], input[type="tel"],input[type="submit"], input[type="reset"],button {-webkit-appearance:none !important;}
+*{padding: 0; margin: 0; }
+img{display:block;border:none;}
+a{text-decoration:none;}
+ul li{list-style: none;float: left;text-align: center;}
+input::-webkit-input-placeholder { /* WebKit browsers */ color: #ccc; }
+h1, h2, h3, h4, h5, h6, p, ul, li, dl, dt, dd, img, input, div, form { margin: 0; padding: 0; border: 0; list-style: none; }
+
+.party{
+    width:100%;
+    height:auto;
+}
+.party .plane{
+    width:100%;
+    height:auto;
+    padding:0 0.25rem;
+}
+.party .plane table{border:solid 1px #b6e76b;border-bottom:none;border-right:none;background:#fff;}
+.party .plane table tr td,.party .plane table tr th{border-bottom:solid 1px #b6e76b;color:#000000;width:50%;border-right:solid 1px #b6e76b;padding:0.25rem 0;font-size:0.28rem;text-align:center;}
+.party .plane table tr td label,.party .plane .box .ticket .con p label{color:#ff5c31;}
+.party .plane table tr th{background:#f4fdea;color:#59822c;font-weight:normal;}
+.party .plane .box{
+    width:100%;
+    height:auto;
+    background:#f0f8c5;
+    padding:0 0.2rem;
+}
+.party .plane .box h2{width:100%;text-align:center;font-weight:normal;font-size:0.33rem;color:#59822c;letter-spacing: 1px;line-height:1;padding:0.3rem 0;}
+.party .plane .box p{text-align:center;line-height:2em;font-size:0.28rem;text-decoration:underline;color:#ff5c31;padding:0.2rem 0;}
+.party .plane .list{
+    padding-top:0.22rem;
+}
+.party .plane .box .ticket{
+    width:100%;
+    height:1.45rem;
+    background: url("../images/ticketBg.png") no-repeat center center;
+    background-size:contain;
+    margin-bottom:0.2rem;
+}
+.party .plane .box .ticket .price{
+    width:24%;
+    height:auto;
+    line-height:1.45rem;
+    text-align:center;
+    color:#ff5c31;
+    font-size:0.54rem;
+    font-weight:bold;
+    float:left;
+}
+.party .plane .box .ticket .con{
+   width:76%;height:auto;float:left;padding:0.32rem 0 0 0.1rem;position:relative;
+}
+.party .plane .box .ticket .con button{
+    width:30%;
+    height:0.5rem;
+    line-height:0.5rem;
+    border-radius:0.25rem;
+    position:absolute;
+    top:50%;
+    right:0.3rem;
+    margin-top:-0.1rem;
+    border:none;
+    display:block;
+    background:#ff5c31;
+    color:#ffffff;
+    font-size:0.26rem;
+    outline: none;
+    cursor: pointer;
+}
+.party .plane .box .ticket .con button.disabled{
+    background:#cccccc;
+}
+.party .plane .box .ticket .con p{
+    font-size:0.26rem;
+    line-height:1.5em;
+    text-align:left;
+    color:#000000;
+    padding:0;
+    text-decoration:none;
+}
+.party .plane .box .ticket .price label{
+    font-size:0.3rem;
+}
+.rule{
+    width:100%;
+    padding:0 0.55rem;
+    height:auto;
+}
+.rule ul li{
+    width:100%;
+    height:auto;
+    line-height:1.8em;
+    letter-spacing: 1px;
+    color:#ffffff;
+    font-size:0.26rem;
+    text-align:left;
+}

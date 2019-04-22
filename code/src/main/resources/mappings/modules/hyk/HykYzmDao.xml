@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykYzmDao">
+    
+	<sql id="hykYzmColumns">
+		a.id AS "id",
+		a.phone AS "phone",
+		a.code AS "code",
+		a.times AS "times",
+		a.create_date AS "createDate",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.type,
+		a.ip,
+		IFNULL(b.channel,"自然流量")channel,
+		case when a.type='1' then '注册短信' else '找回密码' end typeStr,
+		DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i') createDateStr
+	</sql>
+	
+	<sql id="hykYzmJoins">
+		LEFT JOIN hyk_user  b on a.phone=b.phone
+	</sql>
+    
+	<select id="get" resultType="HykYzm">
+		SELECT 
+			<include refid="hykYzmColumns"/>
+		FROM hyk_yzm a
+		<include refid="hykYzmJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykYzm">
+		SELECT 
+			<include refid="hykYzmColumns"/>
+		FROM hyk_yzm a
+		<include refid="hykYzmJoins"/>
+		<where>
+			1=1
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="phone != null and phone != ''">
+				AND a.phone = #{phone}
+			</if>
+			<if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+			<if test="times != null and times != ''">
+				AND a.times = #{times}
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.create_date = #{createDate}
+			</if>
+			<if test="remark != null and remark != ''">
+				AND a.remark = #{remark}
+			</if>
+			<if test="ip != null and ip != ''">
+				AND a.ip = #{ip}
+			</if>
+		</where>
+		ORDER BY a.create_date desc
+	</select>
+	
+	<select id="findAllList" resultType="HykYzm">
+		SELECT 
+			<include refid="hykYzmColumns"/>
+		FROM hyk_yzm a
+		<include refid="hykYzmJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_yzm(
+			id,
+			phone,
+			code,
+			times,
+			create_date,
+			remark,
+			del_flag,
+			type,
+			ip
+		) VALUES (
+			#{id},
+			#{phone},
+			#{code},
+			#{times},
+			#{createDate},
+			#{remark},
+			#{delFlag},
+			#{type},
+			#{ip}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_yzm SET 	
+			phone = #{phone},
+			code = #{code},
+			times = #{times},
+			remark = #{remark},
+			type=#{type},
+			ip=#{ip}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_yzm SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

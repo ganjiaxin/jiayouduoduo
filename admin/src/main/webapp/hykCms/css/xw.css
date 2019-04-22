@@ -1,0 +1,64 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body, html {
+    width: 100%;
+    padding: 0;
+    font-size: 14px;
+    position: relative;
+    background-color: #EEEEEE;
+}
+
+.xw_center {
+    padding: 0 10px 30px 10px;
+    color: #666;
+    text-align: center;
+}
+
+.iconContainer {
+    margin: 160px 0 5px 0;
+}
+
+.iconContainer .icon {
+    margin: 0 auto;
+    display: block;
+}
+
+.tips_title {
+    color: #465862;
+    font-size: 26px;
+    line-height: 30px;
+    margin: 30px 0 5px 0;
+}
+
+.tips_content {
+    color: #b2b7bb;
+    font-size: 20px;
+    line-height: 22px;
+    margin: 20px 0 5px 0;
+}
+
+.jump {
+    color: #b2b7bb;
+    font-size: 18px;
+    line-height: 20px;
+    margin: 15px 0 5px 0;
+}
+
+.button {
+    margin: 80px auto;
+    padding: 10px 0;
+    font-size: 20px;
+    background-color: #fd5353;
+    letter-spacing: 1px;
+    width: 150px;
+    color: #fff;
+    border-radius: 6px;
+}
+
+.jump span#countDown {
+    color: red;
+    font-size: 18px;
+}

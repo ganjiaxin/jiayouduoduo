@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykInvoiceDao">
+    
+	<sql id="hykInvoiceColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.user_phone AS "userPhone",
+		a.nature AS "nature",
+		b.label AS "natureStr",
+		a.title AS "title",
+		a.num AS "num",
+		a.money AS "money",
+		a.receive AS "receive",
+		a.tel AS "tel",
+		a.addr AS "addr",
+		a.status AS "status",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.f1 AS "f1",
+		a.f2 AS "f2",
+		a.f3 AS "f3"
+	</sql>
+	
+	<sql id="hykInvoiceJoins">
+		LEFT JOIN  sys_dict b on a.nature=b.`value` and  b.type='nature'
+	</sql>
+    
+	<select id="get" resultType="HykInvoice">
+		SELECT 
+			<include refid="hykInvoiceColumns"/>
+		FROM hyk_invoice a
+		<include refid="hykInvoiceJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykInvoice">
+		SELECT 
+			<include refid="hykInvoiceColumns"/>
+		FROM hyk_invoice a
+		<include refid="hykInvoiceJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="userPhone != null and userPhone != ''">
+				AND a.user_phone = #{userPhone}
+			</if>
+			<if test="nature != null and nature != ''">
+				AND a.nature = #{nature}
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="num != null and num != ''">
+				AND a.num = #{num}
+			</if>
+			<if test="money != null and money != ''">
+				AND a.money = #{money}
+			</if>
+			<if test="receive != null and receive != ''">
+				AND a.receive = #{receive}
+			</if>
+			<if test="tel != null and tel != ''">
+				AND a.tel = #{tel}
+			</if>
+			<if test="addr != null and addr != ''">
+				AND a.addr = #{addr}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+
+			<if test="remark != null and remark != ''">
+				AND a.remark = #{remark}
+			</if>
+			<if test="f1 != null and f1 != ''">
+				AND a.f1 = #{f1}
+			</if>
+			<if test="f2 != null and f2 != ''">
+				AND a.f2 = #{f2}
+			</if>
+			<if test="f3 != null and f3 != ''">
+				AND a.f3 = #{f3}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HykInvoice">
+		SELECT 
+			<include refid="hykInvoiceColumns"/>
+		FROM hyk_invoice a
+		<include refid="hykInvoiceJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_invoice(
+			id,
+			user_id,
+			user_phone,
+			nature,
+			title,
+			num,
+			money,
+			receive,
+			tel,
+			addr,
+			status,
+			remark,
+			del_flag,
+			f1,
+			f2,
+			f3
+		) VALUES (
+			#{id},
+			#{userId},
+			#{userPhone},
+			#{nature},
+			#{title},
+			#{num},
+			#{money},
+			#{receive},
+			#{tel},
+			#{addr},
+			#{status},
+			#{remark},
+			#{delFlag},
+			#{f1},
+			#{f2},
+			#{f3}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_invoice SET 	
+			user_id = #{userId},
+			user_phone = #{userPhone},
+			nature = #{nature},
+			title = #{title},
+			num = #{num},
+			money = #{money},
+			receive = #{receive},
+			tel = #{tel},
+			addr = #{addr},
+			status = #{status},
+			remark = #{remark},
+			f1 = #{f1},
+			f2 = #{f2},
+			f3 = #{f3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_invoice SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+
+	<insert id="insertInvoiceList" parameterType="java.util.List">
+		INSERT INTO hyk_invoice(
+			id,
+			user_id,
+			user_phone,
+			nature,
+			title,
+			num,
+			money,
+			receive,
+			tel,
+			addr,
+			status
+		) VALUES
+		<foreach collection="list" item="item" index= "index" separator =",">(
+			#{item.id},
+			#{item.userId},
+			#{item.userPhone},
+			#{item.nature},
+			#{item.title},
+			#{item.num},
+			#{item.money},
+			#{item.receive},
+			#{item.tel},
+			#{item.addr},
+			#{item.status}
+			)</foreach>
+	</insert>
+
+	
+</mapper>

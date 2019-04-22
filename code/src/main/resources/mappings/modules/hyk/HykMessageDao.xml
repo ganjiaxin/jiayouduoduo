@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykMessageDao">
+    
+	<sql id="hykMessageColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.content AS "content",
+		a.mess_status AS "messStatus",
+		a.phones AS "phones",
+		a.create_date AS "createDate",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.f1 AS "f1",
+		a.type AS "type",
+		DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i') createDateStr,
+		b.label AS 'messStatusStr'
+	</sql>
+
+	<sql id="hykMessageJoins">
+		LEFT JOIN sys_dict b on a.mess_status=b.`value` and b.type="messStatus"
+	</sql>
+
+	<select id="get" resultType="HykMessage">
+		SELECT
+			<include refid="hykMessageColumns"/>
+		FROM hyk_message a
+		<include refid="hykMessageJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="findList" resultType="HykMessage">
+		SELECT
+			<include refid="hykMessageColumns"/>
+		FROM hyk_message a
+		<include refid="hykMessageJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="content != null and content != ''">
+				AND a.content = #{content}
+			</if>
+			<if test="messStatus != null and messStatus != ''">
+				AND a.mess_status = #{messStatus}
+			</if>
+			<if test="phones != null and phones != ''">
+				AND a.phones = #{phones}
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.create_date = #{createDate}
+			</if>
+			<if test="remark != null and remark != ''">
+				AND a.remark = #{remark}
+			</if>
+			<if test="f1 != null and f1 != ''">
+				AND a.f1 = #{f1}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+		</where>
+		ORDER BY a.create_date desc
+	</select>
+
+	<select id="findAllList" resultType="HykMessage">
+		SELECT
+			<include refid="hykMessageColumns"/>
+		FROM hyk_message a
+		<include refid="hykMessageJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insert">
+		INSERT INTO hyk_message(
+			id,
+			title,
+			content,
+			mess_status,
+			phones,
+			create_date,
+			remark,
+			del_flag,
+			f1,
+			type
+		) VALUES (
+			#{id},
+			#{title},
+			#{content},
+			#{messStatus},
+			#{phones},
+			#{createDate},
+			#{remark},
+			#{delFlag},
+			#{f1},
+			#{type}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE hyk_message SET
+			title = #{title},
+			content = #{content},
+			mess_status = #{messStatus},
+			phones = #{phones},
+			remark = #{remark},
+			f1 = #{f1},
+			type = #{type}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_message SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateStatusById">
+		update hyk_message
+		SET mess_status=1
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateStatusByPhone">
+		update hyk_message
+		SET mess_status=1
+		WHERE phones = #{phone}
+	</update>
+
+	<select id="getAll" resultType="HykMessage">
+		SELECT * ,DATE_FORMAT(create_date,'%Y-%m-%d') as createDateStr from hyk_message where
+		phones=#{phone}
+		ORDER BY create_date desc
+	</select>
+
+	<select id="getNewTitle" resultType="HykMessage">
+		SELECT title as title from hyk_message where
+		 phones=#{phone}
+		 ORDER BY create_date desc limit 1
+	</select>
+
+	<select id="getUnreadCount" resultType="java.lang.Integer">
+		SELECT count(*) from hyk_message where
+		 phones=#{phone} and mess_status=0
+	</select>
+	
+</mapper>

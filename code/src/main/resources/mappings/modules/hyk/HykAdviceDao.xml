@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykAdviceDao">
+    
+	<sql id="hykAdviceColumns">
+		a.id AS "id",
+		a.content AS "content",
+		a.imgs AS "imgs",
+		a.phone AS "phone",
+		a.status AS "status",
+		a.answer AS "answer",
+		a.create_Date AS "createDate",
+		a.f1 AS "f1",
+		a.f2 AS "f2",
+		DATE_FORMAT(a.create_Date,'%Y-%m-%d %H:%i:%s')AS "createDateStr"
+	</sql>
+	
+	<sql id="hykAdviceJoins">
+	</sql>
+    
+	<select id="get" resultType="HykAdvice">
+		SELECT 
+			<include refid="hykAdviceColumns"/>
+		FROM hyk_advice a
+		<include refid="hykAdviceJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykAdvice">
+		SELECT 
+			<include refid="hykAdviceColumns"/>
+		FROM hyk_advice a
+		<include refid="hykAdviceJoins"/>
+		<where>
+			
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="content != null and content != ''">
+				AND a.content = #{content}
+			</if>
+			<if test="imgs != null and imgs != ''">
+				AND a.imgs = #{imgs}
+			</if>
+			<if test="phone != null and phone != ''">
+				AND a.phone = #{phone}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="answer != null and answer != ''">
+				AND a.answer = #{answer}
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.create_Date = #{createDate}
+			</if>
+			<if test="f1 != null and f1 != ''">
+				AND a.f1 = #{f1}
+			</if>
+			<if test="f2 != null and f2 != ''">
+				AND a.f2 = #{f2}
+			</if>
+		</where>
+		ORDER BY  a.create_date desc
+	</select>
+	
+	<select id="findAllList" resultType="HykAdvice">
+		SELECT 
+			<include refid="hykAdviceColumns"/>
+		FROM hyk_advice a
+		<include refid="hykAdviceJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_advice(
+			id,
+			content,
+			imgs,
+			phone,
+			status,
+			answer,
+			create_date,
+			f1,
+			f2
+		) VALUES (
+			#{id},
+			#{content},
+			#{imgs},
+			#{phone},
+			#{status},
+			#{answer},
+			#{createDate},
+			#{f1},
+			#{f2}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_advice SET 	
+			content = #{content},
+			imgs = #{imgs},
+			phone = #{phone},
+			status = #{status},
+			answer = #{answer},
+			f1 = #{f1},
+			f2 = #{f2}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM hyk_advice
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

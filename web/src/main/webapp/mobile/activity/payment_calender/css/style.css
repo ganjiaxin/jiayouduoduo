@@ -1,0 +1,323 @@
+body, html {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #f2f2f2;
+    color: #444;
+    font-family: "Arial";
+    position: relative;
+}
+
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+input, textarea, select {
+    outline: none;
+    font-family: 'Arial';
+    outline: none;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
+
+input[type="button"], input[type="tel"], input[type="submit"], input[type="reset"] {
+    -webkit-appearance: none !important;
+    border-radius: 5px;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+img {
+    display: block;
+    border: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul li {
+    list-style: none;
+    float: left;
+    text-align: center;
+}
+
+input::-webkit-input-placeholder { /* WebKit browsers */
+    color: #ccc;
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, li, dl, dt, dd, img, input, div, form {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    list-style: none;
+}
+
+.cf-left {
+    clear: left;
+}
+
+.cf-right {
+    clear: right;
+}
+
+.cf-both {
+    clear: both;
+}
+
+.dis-block {
+    display: block;
+}
+
+.dis-none {
+    display: none;
+}
+
+#dt {
+    margin: 30px auto;
+    height: 28px;
+    width: 200px;
+    padding: 0 6px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+#ca {
+    background-color: #fff;
+    margin: 0 auto;
+    max-width: 480px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 1px 2px 10px #E8E8E8;
+}
+
+.out-kuang {
+    font-family: "微软雅黑";
+    font-size: 1em;
+    max-width: 480px;
+    margin: 0 auto 10px auto;
+    padding-top: 15px;
+}
+
+.sum {
+    margin: 10px auto 0px 0px;
+    padding: 13px 20px;
+    background-color: #fff;
+}
+
+.xianzai, .detail {
+    margin: 0px auto 0px 0px;
+    padding: 13px 20px;
+    background-color: #fff;
+    border-top: 1px solid #e0e0e0;
+}
+
+.should, .should_ago, .detail {
+    padding: 13px 20px;
+    background-color: #fff;
+}
+
+#sum, #now, #should, #should_ago, #num {
+    float: right;
+    margin-right: 0px;
+    color: #f95755;
+    font-size: 20px !important;
+}
+
+.xianzai {
+    margin-bottom: 10px;
+}
+
+.content-kuang {
+    width: 93%;
+    height: auto;
+    margin: 0 auto;
+
+}
+
+.noDataTip {
+    width: 100%;
+    height: auto;
+}
+
+.noDataTip dl {
+    width: 100%;
+    height: auto;
+    padding:20px 0 30px 0;
+}
+.noDataTip dt {
+    width: 215px;
+    height: 180px;
+    margin: 0 auto;
+    background:url("../images/tip_no_plan.png") no-repeat center center;
+    background-size:cover;
+}
+.noDataTip dd {
+    text-align: center;
+    font-size: 14px;
+    color: #777777;
+    line-height: 1;
+    padding-top: 0px;
+    letter-spacing: 2px;
+}
+
+.content-kuang .title {
+    width: 100%;
+    height: auto;
+    padding-bottom: 5px;
+}
+
+.content-kuang .title h2 {
+    width: 100%;
+    height: auto;
+    font-size: 16px;
+    font-weight: normal;
+    color: #333333;
+}
+
+.content-kuang .title h2 i {
+    width: 4px;
+    height: 15px;
+    background: #FF4456;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: -1px;
+}
+
+.content-kuang .box {
+    width: 100%;
+    height: auto;
+    background: #ffffff;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding-bottom: 1px;
+    box-shadow: 1px 2px 10px #E8E8E8;
+}
+
+.content-kuang .box h2 {
+    width: 100%;
+    height: auto;
+    font-size: 16px;
+    font-weight: normal;
+    color: #333333;
+    line-height: 1em;
+    padding: 12px 10px;
+    border-bottom: solid 1px #EEEEEE;
+    margin-bottom: 10px;
+}
+
+.content-kuang .box .list {
+    width: 100%;
+    height: auto;
+    padding: 0 10px;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.content-kuang .box .list dl {
+    width: 80px;
+    height: auto;
+    position: absolute;
+    left: 5px;
+    top: 0;
+}
+
+.content-kuang .box .list dl dt {
+    width: 35px;
+    height: 35px;
+    margin: 0 auto 4px auto;
+    line-height: 35px;
+    border-radius: 50%;
+    border: solid 1px #999999;
+    color: #666666;
+    text-align: center;
+}
+
+.content-kuang .box .list.active dl dt {
+    background: #FF4456;
+    color: #ffffff;
+    border-color: #FF4456;
+}
+
+.content-kuang .box .list dl dd {
+    width: 100%;
+    line-height: 1.5em;
+    height: auto;
+    font-size: 14px;
+    color: #999999;
+    text-align: center;
+}
+
+.content-kuang .box .list.active dl dd {
+    color: #FF4456;
+}
+
+.content-kuang .box .list .con {
+    width: 100%;
+    height: auto;
+    padding: 5px 0 5px 95px;
+}
+
+.content-kuang .box .list .con p {
+    font-size: 14px;
+    line-height: 1.5em;
+    color: #666666;
+}
+
+.content-kuang .box .list.active .con p {
+    color: #333333;
+}
+
+.content-kuang .box .list .con p.big {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.content-kuang .box .list .con p label {
+    margin-right: 10px;
+}
+
+.calendar-views .days .old, .calendar-views .days .new, .calendar-views .days .old {
+    color: #eaeaea;
+}
+
+.calendar-arrow, .calendar-display {
+    color: #FFFFFF;
+}
+
+.calendar-display .m, .calendar-views .week, .calendar-display:hover, .calendar-arrow span:hover {
+    color: #ffffff;
+}
+
+.week li:nth-of-type(1), .week li:nth-of-type(7) {
+    color: #888
+}
+
+.days li:nth-of-type(1), .days li:nth-of-type(7), .days li:nth-of-type(8),
+.days li:nth-of-type(14), .days li:nth-of-type(15), .days li:nth-of-type(21),
+.days li:nth-of-type(22), .days li:nth-of-type(28), .days li:nth-of-type(29),
+.days li:nth-of-type(35), .days li:nth-of-type(36) {
+    color: #888
+}
+
+.span-num {
+    color: #fff;
+    background-color: #f95755;
+    border-radius: 50%;
+    left: 30px;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    font-size: 0.6em;
+    top: 2px;
+    position: relative;
+}
+

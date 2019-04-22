@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>邀请管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <!-- load css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/font/iconfont.css?v=1.0.0" media="all">
+    <link rel="stylesheet" type="text/css" href="css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v2.2.8" media="all">
+    <style>
+        .layui-table td, .layui-table th {
+            padding: 12px 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid larry-wrapper">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <!--列表-->
+            <section class="panel panel-padding">
+                <div id="list2" class="layui-form"></div>
+                <div class="text-right" id="page2"></div>
+            </section>
+            <section class="panel panel-padding search_panel">
+                <form class="layui-form" id="searchForm" action="/f/web/hykOrder/backMoneyMgr?pageSize=14" method="POST" style="margin-bottom:20px;">
+                    <div class="layui-form">
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <input class="layui-input" name="other" placeholder="邀请人手机号码/用户ID">
+                            </div>
+                        </div>
+                        <div class="layui-inline lastline">
+                            <button lay-submit class="layui-btn layui-btn-warm search-btn" lay-filter="search"
+                                    id="search"><i
+                                    class="iconfont">&#xe608;</i>查 询
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div id="list" class="layui-form"></div>
+                <div class="text-right" id="page"></div>
+            </section>
+        </div>
+    </div>
+</div>
+<script id="list-tpl" type="text/html"
+        data-params='{"url":"/f/web/hykOrder/backMoneyMgr?pageSize=14","tplid":"list-tpl","listid":"list","loading":true,"pageid":"#page"}'>
+    <table id="example" class="layui-table lay-even">
+        <thead>
+        <tr>
+            <th>编号</th>
+            <th>手机号码</th>
+            <th>用户ID</th>
+            <th>用户名称</th>
+            <th>截止上月交易笔数</th>
+            <th>截止上月累计充值金额</th>
+            <th>截止上月历史交易返现</th>
+            <th>邀请用户上月充值金额</th>
+            <th>上月交易返现金额</th>
+            <th>本月充值金额</th>
+            <th>本月交易返现</th>
+            <th>其他</th>
+        </tr>
+        </thead>
+        <tbody>
+        <colgroup>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col width="60px" height="50px">
+
+        </colgroup>
+        {{# layui.each(d.page.list, function(index, item){ }}
+        <tr>
+            <td>{{index+1}}</td>
+            <td>{{item.phone}}</td>
+            <td>{{item.userId}}</td>
+            <td>{{item.realName}}</td>
+            <td>{{item.totalOrderNum}} 笔</td>
+            <td >{{item.totalOrderAmt}} 元</td>
+            <td>{{item.totalBackAmt}} 元</td>
+            <td>{{item.upMonthInviterAmt}} 元</td>
+            <td>{{item.upMonthBackAmt}} 元</td>
+            <td>{{item.currentMonthAmt}} 元</td>
+            <td>{{item.currentMonthBackAmt}} 元</td>
+            <td></td>
+        </tr>
+        {{# }); }}
+        </tbody>
+    </table>
+    {{#  if(d.page.list.length === 0){ }}
+    <p class="Nulldata">暂无数据</p>
+    {{#  } }}
+</script>
+<script id="list-tpl2" type="text/html"
+        data-params='{"url":"/f/web/hykOrder/backMoneyMgr2?pageSize=8","tplid":"list-tpl2","listid":"list2","loading":true,"pageid":"#page2"}'>
+    <table id="example" class="layui-table lay-even">
+        <thead>
+        <tr>
+            <th>时间</th>
+            <th>充值笔数</th>
+            <th>充值金额</th>
+            <th>返现金额</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{# layui.each(d.page.list, function(index, item){ }}
+        <tr>
+            <td>{{item.months}}</td>
+            <td>{{item.monthOrderNum}} 笔</td>
+            <td>{{item.monthPayMoney}} 元</td>
+            <td>{{item.monthBackMoney}} 元</td>
+        </tr>
+        {{# }); }}
+        </tbody>
+    </table>
+    {{#  if(d.page.list.length === 0){ }}
+    <p class="Nulldata">暂无数据</p>
+    {{#  } }}
+</script>
+<script type="text/javascript" src="js/layui/layui.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/lib/jquery-2.2.0.min.js"></script>
+<script>
+    layui.use(['dtable', 'jqdate'], function () {
+        var list = layui.dtable,
+            oneList = new list();
+        oneList.init('list-tpl');
+        oneList.init('list-tpl2');
+    });
+</script>
+</body>
+</html>

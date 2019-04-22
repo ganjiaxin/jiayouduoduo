@@ -1,0 +1,661 @@
+@charset "utf-8";
+/* CSS Document */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    padding: 0;
+    width: 100%;
+    background: #f5f5f5;
+    margin: 0 auto;
+    font-family: '微软雅黑';
+    max-width: 720px;
+    color: #333;
+}
+
+input, textarea, select {
+    outline: none;
+    outline: none;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
+
+input[type="button"], input[type="tel"], input[type="submit"], input[type="reset"], button {
+    outline: none;
+    -webkit-appearance: none !important;
+    border-radius: 5px;
+}
+
+a {
+    text-decoration: none;
+}
+
+input::-webkit-input-placeholder { /* WebKit browsers */
+    color: #ccc;
+}
+
+.clear {
+    clear: both;
+}
+
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+img {
+    display: block;
+    border: none;
+}
+
+.panel {
+    width: 100%;
+    height: auto;
+    padding: 0.24rem;
+}
+
+.share_top {
+    width: 100%;
+    height: 2.5rem;
+    background: url("../images/share_top.png") no-repeat center center;
+    background-size: cover;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px #EEE;
+    padding: 0.8rem 0 0 0.9rem;
+    margin-bottom: 0.2rem;
+}
+
+.share_top h2 {
+    width: 100%;
+    line-height: 2em;
+    font-size: 0.32rem;
+}
+
+.share_top p {
+    width: 100%;
+    line-height: 1.8em;
+    font-size: 0.32rem;
+    color: #FF5A01;
+}
+
+.tab{
+    width:100%;
+    height:auto;
+}
+.tab ul{
+    width:100%;
+    height:auto;
+}
+.tab ul li{
+    width:49%;
+    height:auto;
+    font-size:0.3rem;
+    text-align:center;
+    padding:0.24rem 0;
+    border-radius:0.15rem 0.15rem 0 0;
+    float:left;
+    background:#FF7A2C;
+    letter-spacing: 1px;
+    color:#ffffff;
+    font-weight:bold;
+    list-style: none;
+}
+.tab ul li.active{
+    background:#ffffff;
+    color:#FF5A01
+}
+
+.share_list {
+    width: 100%;
+    height: 7rem;
+    background: #fff;
+    box-shadow: 0 2px 5px #EEE;
+    padding: 0.24rem;
+    border-radius:0 0 0.15rem 0.15rem;
+}
+
+.share_list p {
+    text-align: center;
+    font-size: 0.32rem;
+    line-height: 1.5em;
+    padding-bottom: 0.2rem;
+    font-weight: bold;
+}
+
+.share_list p label {
+    padding: 0 0.05rem;
+    color: #FF5A01;
+}
+
+.share_list .list {
+    width: 100%;
+    height: 5.8rem;
+    border-radius: 2px;
+    background: #FEF7F3;
+    padding: 0.1rem 0;
+}
+.share_list .list ul  .monthList{
+    width:100%;
+    height:auto;
+    padding:0.1rem;
+    background:#ffffff;
+    display:none;
+}
+.share_list .list ul .isShow{
+    display:block !important;
+}
+.share_list .list ul  .monthList  dl{
+  width:auto;
+    padding:0.1rem 0.2rem;
+    border-bottom:dotted 1px #FF5A01;
+    position:relative;
+}
+.share_list .list ul  .monthList  dl span{
+    position:absolute;
+    right:0.2rem;
+    top:0.2rem;
+}
+.share_list .list ul i{
+    width:0.24rem;
+    height:0.24rem;
+    margin-left:0.2rem;
+    display:inline-block;
+    background:url("../images/more_icon.png") no-repeat;
+    background-size:contain;
+}
+.share_list .list ul  .monthList  dl:last-child{
+    border:none;
+}
+.share_list .list ul  .monthList dl dt{
+    width:auto;
+    height:auto;
+    background:none;
+    font-size:0.28rem;
+}
+.share_list .list ul  .monthList dl dd{
+    color:#999999;
+    font-size:0.22rem;
+}
+.share_list .list ul  .monthList  span{
+    float:right;
+    font-size:0.28rem;
+}
+.share_list .list ul li {
+    width: 100%;
+    line-height: 0.8rem;
+    list-style: none;
+    color: #333;
+    text-align: center;
+    font-size: 0.3rem;
+    height: 0.8rem;
+}
+
+.share_list .list ul li.noData {
+    height: 4rem;
+    line-height: 4rem;
+}
+
+.share_list .list ul li span {
+    width: 50%;
+    display: block;
+    float: left;
+    font-size: 0.3rem;
+    padding:0 0.2rem;
+    text-align: center;
+}
+
+.share_list .list ul li.th {
+    border-bottom: dotted 1px #FF5A01;
+}
+
+.swiper-container {
+    width: 100%;
+    height: 4.7rem;
+}
+
+.swiper-slide {
+    height: auto !important;
+}
+
+.swiper-container-vertical > .swiper-scrollbar {
+    width: 3px !important;
+}
+
+.swiper-scrollbar-drag {
+    background: rgba(0, 0, 0, 0.3) !important
+}
+
+dl {
+    width: 100%;
+    height: auto;
+    padding-top: 0.8rem;
+}
+
+dl dt {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto;
+    background: url("../images/noLogin.png") no-repeat center center;
+    background-size: contain;
+}
+
+dl dd p {
+    text-align: center;
+    font-size: 0.3rem;
+    line-height: 1.6em;
+    letter-spacing: 1px;
+    color: #666666;
+}
+
+dl dd a {
+    width: 2.8rem;
+    height: 0.8rem;
+    background: #FF5A01;
+    display: block;
+    margin: 0 auto;
+    border-radius: 0.4rem;
+    font-size: 0.3rem;
+    color: #fff;
+    text-align: center;
+    line-height: 0.8rem;
+    letter-spacing: 1px;
+    box-shadow: 0 3px 5px rgba(255, 90, 1, 0.4);
+}
+
+@-webkit-keyframes zoomIn {
+    0% {
+        opacity: 0;
+        -webkit-transform: scale3d(.3, .3, .3);
+        transform: scale3d(.3, .3, .3);
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes zoomIn {
+    0% {
+        opacity: 0;
+        -webkit-transform: scale3d(.3, .3, .3);
+        transform: scale3d(.3, .3, .3);
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none;
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none;
+    }
+}
+
+.show_up {
+    animation: fadeInUp 0.5s 0.2s forwards;
+    -webkit-animation: fadeInUp 0.5s 0.2s forwards;
+}
+
+/*邀请好友*/
+.shareBoxs .step, .shareBoxs .info {
+    width: 100%;
+    height: auto;
+    background: #fff;
+    padding: 0.1rem;
+    border-radius: 0.15rem;
+}
+
+.shareBoxs.other {
+    padding: 0 0.12rem 0.5rem;
+}
+
+.shareBoxs.other .flags {
+    width: 50%;
+    height: auto;
+    padding: 0 0.12rem;
+    float: left;
+}
+
+.shareBoxs.other .flags dl {
+    width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 0.15rem;
+    overflow: hidden;
+    padding: 0;
+}
+
+.shareBoxs.other .flags dl dt {
+    width: 100%;
+    height: 2.7rem;
+}
+
+.shareBoxs .step {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.shareBoxs.other .flags dl dd {
+    background: #ff552c;
+    color: #ffffff;
+    font-size: 0.28rem;
+    padding: 0.2rem;
+    text-align: center;
+}
+
+.shareBoxs .step .txt {
+    width: 33.333333%;
+    height: auto;
+    float: left;
+    text-align: center;
+    padding: 0.2rem 0.05rem;
+    font-size: 0.26rem;
+    line-height: 1.5em;
+    color: #d86100;
+}
+
+.shareBoxs .step .point {
+    display: block;
+    margin: 0 auto;
+    padding: 0.15rem 0 0.2rem 0;
+}
+
+.regPanel, .shareBoxs {
+    width: 100%;
+    height: auto;
+    background: url("../images/bg.png") repeat-x;
+    background-size: cover;
+    padding: 0 0.24rem 0.5rem;
+}
+
+.regPanel h2 {
+    color: #fff;
+    font-size: 0.3rem;
+    font-weight: normal;
+    padding: 0.2rem 0;
+    text-align:center;
+}
+
+.regPanel .regBox {
+    width: 100%;
+    height: auto;
+    background: #fff1e0;
+    padding: 0.4rem;
+    border-radius: 0.15rem;
+}
+
+.regPanel .regBox .item {
+    width: 100%;
+    height: auto;
+    background: #ffffff;
+    margin-bottom: 0.2rem;
+    position: relative;
+    padding: 0.2rem 0.2rem 0.2rem 0.9rem;
+    border-radius: 0.1rem;
+}
+
+.regPanel .regBox .item label {
+    width: 0.5rem;
+    height: 0.5rem;
+    display: block;
+    position: absolute;
+    background: url("../images/phone_icon.png") no-repeat;
+    background-size: contain;
+    left: 0.2rem;
+    top: 0.2rem;
+}
+
+.regPanel .regBox .item input {
+    width: 100%;
+    height: 0.5rem;
+    line-height: 0.5rem;
+    border: none;
+    font-size: 0.3rem;
+    display: block;
+}
+
+.regPanel .regBox p {
+    padding: 0.2rem 0;
+    font-size: 0.26rem;
+    color: #999999;
+    clear: both;
+}
+
+.regPanel .regBox p a {
+    color: #ff8f08;
+}
+
+.regPanel .regBox .item.pass label {
+    background: url("../images/password_icon.png") no-repeat;
+    background-size: contain;
+}
+
+.regPanel .regBox .item.code {
+    width: 50%;
+    float: left;
+    margin-bottom:0.6rem;
+}
+
+.regPanel .regBox .getCode {
+    display: block;
+    width: 45%;
+    height: 0.9rem;
+    color: #fff;
+    background: #ff8f08;
+    font-size: 0.3rem;
+    border: none;
+    float: right;
+}
+
+.regPanel .regBox .item.code label {
+    background: url("../images/code_icon.png") no-repeat;
+    background-size: contain;
+}
+
+.downBtn {
+    clear: both;
+    width: 60%;
+    height: 0.9rem;
+    color: #fff;
+    margin: 0 auto 0.4rem auto;
+    background: #ff8f08;
+    border: none;
+    outline: none;
+    display: block;
+    letter-spacing: 2px;
+    font-size: 0.32rem;
+}
+
+.regPanel .regBox button {
+    clear: both;
+    width: 100%;
+    height: 0.9rem;
+    color: #fff;
+    background: #ff8f08;
+    border: none;
+    outline: none;
+    display: block;
+    letter-spacing: 2px;
+    font-size: 0.3rem;
+}
+
+.rule {
+    width: 100%;
+    padding: 0.3rem;
+    background: #fff1e0;
+}
+
+.rule h2 {
+    width: 100%;
+    height: auto;
+    text-align: center;
+    font-size: 0.32rem;
+    padding-bottom: 0.1rem;
+}
+
+.rule p {
+    width: 100%;
+    height: auto;
+    font-size: 0.28rem;
+    line-height: 1.6em;
+    padding: 0.05rem 0;
+    color: #666666;
+}
+
+.rule p a {
+    text-decoration: underline;
+    color: #333;
+}
+
+.shareBoxs .info {
+    padding: 0.4rem 0.1rem;
+}
+
+.shareBoxs .info dl {
+    padding: 0;
+    width: 50%;
+    float: left;
+}
+
+.shareBoxs .goShare {
+    width: 100%;
+    height: auto;
+}
+
+.shareBoxs .goShare .item {
+    width: 100%;
+    height: auto;
+    background: #fff;
+    border-radius: 0.12rem;
+    padding: 0.2rem;
+    margin-top: 0.2rem;
+    position: relative;
+    overflow: hidden;
+}
+.shareBoxs .goShare button{
+    width:30%;
+    height:100%;
+    position:absolute;
+    right:0;
+    z-index:999;
+    top:0;
+    letter-spacing: 2px;
+    border-radius:0;
+    font-size:0.28rem;
+    color:#fff;
+    background:#ff552c;
+    border:none;
+}
+.shareBoxs .goShare .item label {
+    width: auto;
+    height: 0.5rem;
+    display: block;
+    font-size: 0.32rem;
+    color: #666666;
+    position:absolute;
+    line-height:0.5rem;
+    left:0.2rem;
+}
+.shareBoxs .goShare .item input{
+    height:0.5rem;
+    line-height:0.5rem;
+    font-size:0.31rem;
+    color:#333333;
+    float:left;
+    border:none;
+}
+
+.shareBoxs .info dl:first-child {
+    border-right: dashed 2px #ffbbab;
+}
+
+.shareBoxs .info dl dt {
+    width: 100%;
+    height: auto;
+    background: none;
+    color: #ff552c;
+    font-size: 0.36rem;
+    padding: 0.15rem 0 0.25rem;
+    text-align: center;
+}
+
+.shareBoxs .tip {
+    padding: 0.2rem 0 0.3rem;
+    font-size: 0.27rem;
+    color: #c61a1a;
+    text-align: center;
+    width: 80%;
+    line-height: 1.6em;
+    margin: 0 auto;
+}
+
+.shareBoxs .info dl dt span {
+    font-size: 0.26rem;
+    padding-left: 0.05rem;
+}
+
+.shareBoxs {
+    width: 100%;
+
+}
+
+.shareBoxs .info dl dd {
+    text-align: center;
+    font-size: 0.26rem;
+}
+
+.tipPage {
+    width: 100%;
+    height: 100%;
+    background:#ffffff;
+    position:fixed;
+    z-index:999;
+    top:0;
+    max-width:720px;
+    display: none;
+}
+.tipPage dl{
+    padding:0;
+    margin:0;
+}
+.tipPage dl dt{
+    width:auto;
+    height:auto;
+    background:none;
+
+}
+.tipPage dl dd p {
+    font-size: 0.3rem;
+    color: #333333;
+    line-height: 1.8em;
+    text-align: center;
+}
+

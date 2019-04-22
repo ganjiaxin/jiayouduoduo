@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <title>意见反馈</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        *, *:before, *:after {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        h4 {
+            text-align: center;
+        }
+
+        .htmleaf-header {
+            border-bottom: 1px solid #eee;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0a0a0a;
+        }
+
+        input::-webkit-input-placeholder {
+            font-size: 1.6rem;
+        }
+
+        input::-moz-placeholder { /* Mozilla Firefox 19+ */
+            font-size: 1.6rem;
+        }
+
+        input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            font-size: 1.6rem;
+        }
+
+        input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+            font-size: 1.6rem;
+        }
+
+        textarea:focus {
+            outline: none;
+        }
+
+        #result {
+            width: 75%;
+            height: 8rem;
+            line-height: 8rem;
+            text-align: left;
+            float: right;
+            color: #d6d6d6;
+            /*border:1px solid #eee;*/
+        }
+
+        #result img {
+            width: 100%;
+            height: 8rem;
+            background-size: 50% 50%;
+        }
+
+        .container {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 30px;
+        }
+
+        input::-webkit-input-placeholder { /* WebKit browsers */
+            color: #ccc;
+        }
+
+        input {
+            width: 4.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            /*appearance: none;*/
+            /*background: url("images/cbdhd/bzzx/camera.png");*/
+            /*margin-top: 10px;*/
+            /*float: left;*/
+        }
+
+        #addPictures {
+            width: 100%;
+            height: auto;
+            position: relative;
+        }
+
+        #addPictures dl dt {
+            width: 2.5rem;
+            height: 2.5rem;
+            float: left;
+            background-image: url("images/cbdhd/bzzx/camera.png");
+            background-size: contain;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+
+        #addPictures dl dd {
+            width: 7rem;
+            line-height: 2.5rem;
+            margin: 0;
+            padding-left: 10px;
+            color: #999999;
+            font-size:14px;
+            float: left;
+        }
+
+        .uploadFile {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: red;
+            opacity: 0;
+            z-index: 9;
+        }
+
+        #pic {
+            /*margin-right: 3rem;*/
+            /*background-color: transparent;*/
+            /*color: white;*/
+            /*background: url("images/cbdhd/bzzx/camera.png");*/
+        }
+
+        @-moz-document url-prefix() {
+            input {
+                width: 65px;
+            }
+        }
+
+        /*单独对火狐进行设置*/
+    </style>
+</head>
+<body>
+<div>
+    <div class="htmleaf-container">
+        <!--<header class="htmleaf-header" style="margin-top: 0.75rem;margin-bottom: 1.25rem;">-->
+        <!--<h2 style="font-weight: normal;width: 90%;margin: auto;margin-bottom: 0.75rem;">-->
+        <!--<a href="">-->
+        <!--<img src="images/cbdhd/bzzx/zuojt.png" style="width:0.75rem;height: 1.25rem;float: left;position: relative;top:0.35rem;" alt="">-->
+        <!--</a>-->
+        <!--意见反馈-->
+        <!--</h2>-->
+        <!--</header>-->
+        <div class="demo">
+            <div class="container">
+                <div class="col-md-12">
+                    <textarea id="content" style="border: 0;width: 100%;height: 6rem;font-size: 14px"
+                              placeholder="请详细描述您所遇到的问题，您的理解和支持将帮助我们快速解决问题!"></textarea>
+                    <div id="addPictures">
+                        <input type="file" accept="image/*;capture=camera" class="input uploadFile" name="file">
+                        <input type="hidden" id="uploadImg">
+                        <dl>
+                            <dt></dt>
+                            <dd>添加图片说明</dd>
+                            <div style="clear:both"></div>
+                        </dl>
+                        <div class="imgbox">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <button style="width:95%;height:3.5rem;border-radius: 5rem;border: none;outline: none; box-shadow: 0 2px 10px #ccc;
+   background: linear-gradient(to right, #ff8d3d, #ff5969) !important;color: white;font-size: 1.25rem">
+                确定
+            </button>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../activity/lib/jquery-1.10.1.min.js"></script>
+<script src="../activity/lib/layer_mobile/layer.js"></script>
+<script src="js/upload.js"></script>
+<script>
+    var token = getUrlParam('token');
+    var wap = getUrlParam('wap');
+
+    if (wap == undefined) {
+        token = localStorage.getItem('hykToken');
+    }
+    checkLogin();
+    $('button').on('click', function () {
+        var content = $('#content').val()
+        var imgSrc = $('#uploadImg').val()
+        if (content == '') {
+            layer.open({
+                content: '请输入反馈内容'
+                , skin: 'msg'
+                , time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        $.ajax({
+            url: "/hykweb/mine/opinion",
+            data: {
+                token: token,
+                content: content,
+                imgs: imgSrc
+            },
+            type: 'post',
+            dataType: 'json',
+            success: function (data) {
+                if(data.code!=='200'){
+                    if(data.code==='300'){
+                        layer.open({
+                            content: data.msg
+                            , skin: 'msg'
+                            , time: 2 //2秒后自动关闭
+                        });
+                        setTimeout(function(){
+                            if (wap != undefined) {
+                                if (wap === 'ios') {
+                                    layer.open({
+                                        content: 'IOS跳转'
+                                        , skin: 'msg'
+                                        , time: 2 //2秒后自动关闭
+                                    });
+                                    window.webkit.messageHandlers.gotoLogin.postMessage()
+                                } else {
+                                    layer.open({
+                                        content: '安卓跳转'
+                                        , skin: 'msg'
+                                        , time: 2 //2秒后自动关闭
+                                    });
+                                    window.location.href= '/hykweb/mobile/help/helpCenter_h5_Feedback.html?page=1'
+                                }
+                            } else {
+                                window.location.href = '/hykweb/mobile/index.html#/login?phone=' + localStorage.getItem('hykPhone')
+                            }
+                            return false
+                        },2000)
+                    }else{
+                        layer.open({
+                            content: data.msg
+                            , skin: 'msg'
+                            , time: 2 //2秒后自动关闭
+                        });
+                    }
+                    return false
+                }
+                layer.open({
+                    content: '感谢您的反馈!'
+                    , skin: 'msg'
+                    , time: 2 //2秒后自动关闭
+                });
+                setTimeout(function(){
+                    window.location.href='/hykweb/mobile/help/helpCenter_h5.html'
+                },2000)
+            }
+        })
+    })
+    function checkLogin(){
+        $.ajax({
+            url: "/hykweb/mine/lognStatus",
+            data: {
+                token: token
+            },
+            type: 'post',
+            dataType: 'json',
+            success: function (data) {
+                if(data.code!=='200'){
+                    event.preventDefault()
+                    location.replace('/hykweb/mobile/#/userJoin')
+                }
+            }
+        })
+    }
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+        if (r != null) {
+            return unescape(r[2]);
+        }
+    }
+</script>
+</html>
+

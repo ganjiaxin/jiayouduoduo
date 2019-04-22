@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykOilCardDao">
+    
+	<sql id="hykOilCardColumns">
+		a.id AS "id",
+		a.user_id AS "hykUser.id",
+		a.oli_card_no AS "oliCardNo",
+		a.name AS "name",
+		a.phone AS "phone",
+		a.oil_Type AS "oilType",
+		b.label AS "oilTypeStr",
+		a.money AS "money",
+		a.wait_money AS "waitMoney",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.ydz_money AS "ydzMoney",
+		a.sjdz_money AS "sjdzMoney",
+		a.label AS "label",
+		u2.phone AS "hykUser.phone",
+		u2.phone AS "userPhone",
+		u2.real_name AS "realName"
+	</sql>
+	
+	<sql id="hykOilCardJoins">
+		LEFT JOIN hyk_user u2 ON u2.id = a.user_id
+		LEFT JOIN sys_dict b on a.oil_type=b.`value` and b.type='oilType'
+	</sql>
+    
+	<select id="get" resultType="HykOilCard">
+		SELECT 
+			<include refid="hykOilCardColumns"/>
+		FROM hyk_oil_card a
+		<include refid="hykOilCardJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykOilCard">
+		SELECT 
+			<include refid="hykOilCardColumns"/>
+		FROM hyk_oil_card a
+		<include refid="hykOilCardJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="hykUser != null and hykUser.id != null and hykUser.id != ''">
+				AND a.user_id = #{hykUser.id}
+			</if>
+			<if test="oliCardNo != null and oliCardNo != ''">
+				AND a.oli_card_no = #{oliCardNo}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="phone != null and phone != ''">
+				AND a.phone = #{phone}
+			</if>
+			<if test="oilType != null and oilType != ''">
+				AND a.oil_type = #{oilType}
+			</if>
+			<if test="money != null and money != ''">
+				AND a.money = #{money}
+			</if>
+			<if test="waitMoney != null and waitMoney != ''">
+				AND a.wait_money = #{waitMoney}
+			</if>
+			<if test="remark != null and remark != ''">
+				AND a.remark = #{remark}
+			</if>
+			<if test="ydzMoney != null and ydzMoney != ''">
+				AND a.ydz_money = #{ydzMoney}
+			</if>
+			<if test="sjdzMoney != null and sjdzMoney != ''">
+				AND a.sjdz_money = #{sjdzMoney}
+			</if>
+			<if test="label != null and label != ''">
+				AND a.label = #{label}
+			</if>
+			<if test="other != null and other != ''">
+				AND (a.oli_card_no like CONCAT('%',#{other},'%') or u2.phone like CONCAT('%',#{other},'%') or a.user_id like CONCAT('%',#{other},'%'))
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HykOilCard">
+		SELECT 
+			<include refid="hykOilCardColumns"/>
+		FROM hyk_oil_card a
+		<include refid="hykOilCardJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_oil_card(
+			id,
+			user_id,
+			oli_card_no,
+			name,
+			phone,
+			oil_type,
+			money,
+			wait_money,
+			remark,
+			del_flag,
+			ydz_money,
+			sjdz_money,
+			label
+		) VALUES (
+			#{id},
+			#{hykUser.id},
+			#{oliCardNo},
+			#{name},
+			#{phone},
+			#{oilType},
+			#{money},
+			#{waitMoney},
+			#{remark},
+			#{delFlag},
+			#{ydzMoney},
+			#{sjdzMoney},
+			#{label}
+		)
+	</insert>
+
+	<insert id="addCard">
+		INSERT INTO hyk_oil_card(id,user_id,oli_card_no,name,phone,oil_type)VALUES(#{id},
+		#{userId},#{oliCardNo},#{name},#{phone},#{oilType})
+	</insert>
+
+	<update id="update">
+		UPDATE hyk_oil_card SET 	
+			user_id = #{hykUser.id},
+			oli_card_no = #{oliCardNo},
+			name = #{name},
+			phone = #{phone},
+			oil_type = #{oilType},
+			money = #{money},
+			wait_money = #{waitMoney},
+			remark = #{remark},
+			ydz_money = #{ydzMoney},
+			sjdz_money = #{sjdzMoney},
+			label = #{label}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_oil_card SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateYdzmoneyByCardId">
+		update hyk_oil_card set ydz_money=#{ydzMoney} where id=#{cardId}
+	</update>
+</mapper>

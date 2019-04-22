@@ -1,0 +1,7 @@
+.operation{position: relative;background: #fff;}
+.operation-peple{width:100%;}
+.people-logo{position: absolute;left:15px;top:10px;width:20%;}
+.different-service{background: #fff;padding:10px 10px;}
+.different-service ul{width:100%;margin-bottom: 5px;}
+.different-service ul li{width:46%;float: left;margin:0 2%;}
+.different-service ul li img{width:100%;}

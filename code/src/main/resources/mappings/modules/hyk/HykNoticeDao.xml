@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykNoticeDao">
+    
+	<sql id="hykNoticeColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.status AS "status",
+		b.label AS "statusStr",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.f1 AS "f1",
+		a.f2 AS "f2",
+		a.content AS "content",
+		DATE_FORMAT(a.start_time,'%Y-%m-%d') startTimeStr,
+		DATE_FORMAT(a.end_time,'%Y-%m-%d') endTimeStr
+	</sql>
+	
+	<sql id="hykNoticeJoins">
+		LEFT JOIN sys_dict b on a.`status`=b.`value` and b.type="status"
+	</sql>
+    
+	<select id="get" resultType="HykNotice">
+		SELECT 
+			<include refid="hykNoticeColumns"/>
+		FROM hyk_notice a
+		<include refid="hykNoticeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykNotice">
+		SELECT 
+			<include refid="hykNoticeColumns"/>
+		FROM hyk_notice a
+		<include refid="hykNoticeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="startTime != null and startTime != ''">
+				AND a.start_time = #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND a.end_time = #{endTime}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="remark != null and remark != ''">
+				AND a.remark = #{remark}
+			</if>
+			<if test="f1 != null and f1 != ''">
+				AND a.f1 = #{f1}
+			</if>
+			<if test="f2 != null and f2 != ''">
+				AND a.f2 = #{f2}
+			</if>
+			<if test="content != null and content != ''">
+				AND a.content = #{content}
+			</if>
+		</where>
+
+		ORDER BY a.start_time DESC
+	</select>
+	
+	<select id="findAllList" resultType="HykNotice">
+		SELECT 
+			<include refid="hykNoticeColumns"/>
+		FROM hyk_notice a
+		<include refid="hykNoticeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_notice(
+			id,
+			title,
+			start_time,
+			end_time,
+			status,
+			remark,
+			del_flag,
+			f1,
+			f2,
+			content
+		) VALUES (
+			#{id},
+			#{title},
+			#{startTime},
+			#{endTime},
+			#{status},
+			#{remark},
+			#{delFlag},
+			#{f1},
+			#{f2},
+			#{content}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_notice SET 	
+			title = #{title},
+			start_time = #{startTime},
+			end_time = #{endTime},
+			status = #{status},
+			remark = #{remark},
+			f1 = #{f1},
+			f2 = #{f2},
+			content = #{content}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_notice SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

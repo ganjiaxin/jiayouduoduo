@@ -1,0 +1,26 @@
+#忽略target文件夹中的所有文件
+*/target/*
+#忽略所有.class文件
+*.class
+#忽略mvnw.cmd文件
+*/mvnw.cmd
+#忽略mvnw.cmd文件
+*/mvnw
+#忽略.settings文件夹中的所有文件
+*/.settings/*
+#忽略.mvn文件夹中的所有文件
+*/.mvn/*
+#忽略.idea文件夹中的所有文件
+.idea/
+#忽略.classpath文件
+*.classpath
+#忽略.factorypath文件
+*.factorypath
+#忽略.project文件
+*.project
+.idea/ workspace.xml
+*.idea
+.idea
+*.iml
+.mvn
+

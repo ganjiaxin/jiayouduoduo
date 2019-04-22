@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykUserDao">
+    
+	<sql id="hykUserColumns">
+		a.id AS "id",
+		a.phone AS "phone",
+		a.password AS "password",
+		a.inviter_id AS "inviterId",
+		a.pay_num AS "payNum",
+		a.oil_card_num AS "oilCardNum",
+		a.channel AS "channel",
+		a.wait_amt AS "waitAmt",
+		a.send_code_error AS "sendCodeError",
+		a.account_error AS "accountError",
+		a.openid AS "openid",
+		a.real_name AS "realName",
+		a.headimg AS "headimg",
+		a.sex AS "sex",
+		a.birthday AS "birthday",
+		a.register_date AS "registerDate",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.companyId AS "companyId",
+		a.isBoss AS "isBoss",
+		a.isCompany AS "isCompany",
+		a.qrcode AS "qrcode",
+		a.accumulative_recharge_amount AS "accumulativeRechargeAmount",
+		a.account_balance AS "accountBalance",
+		DATE_FORMAT(a.register_date,'%Y-%m-%d %H:%i:%s')AS "registerDateStr2",
+		c.label as "companyName",
+		a.companyAddDate as "companyAddDate",
+		a.id as  "idstr"
+	</sql>
+
+	<sql id="hykUserColumns2">
+		a.id AS "id",
+		a.phone AS "phone",
+		a.password AS "password",
+		a.inviter_id AS "inviterId",
+		a.pay_num AS "payNum",
+		a.oil_card_num AS "oilCardNum",
+		a.channel AS "channel",
+		a.wait_amt AS "waitAmt",
+		a.send_code_error AS "sendCodeError",
+		a.account_error AS "accountError",
+		a.openid AS "openid",
+		a.real_name AS "realName",
+		a.headimg AS "headimg",
+		a.sex AS "sex",
+		a.birthday AS "birthday",
+		a.register_date AS "registerDate",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.companyId AS "companyId",
+		a.isBoss AS "isBoss",
+		a.isCompany AS "isCompany",
+		a.qrcode AS "qrcode",
+		a.accumulative_recharge_amount AS "accumulativeRechargeAmount",
+		a.account_balance AS "accountBalance"
+	</sql>
+	
+	<sql id="hykUserJoins">
+		LEFT JOIN hyk_user b on a.inviter_id=b.id
+		LEFT JOIN sys_dict c on a.companyId=c.`value` and c.type="companyId"
+	</sql>
+    
+	<select id="get" resultType="HykUser">
+		SELECT 
+			<include refid="hykUserColumns"/>
+		FROM hyk_user a
+		<include refid="hykUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="findList" resultType="HykUser">
+		SELECT 
+			<include refid="hykUserColumns"/>,
+			dd.amt,
+			dd.orderType,
+			dd.payDate,
+			e.amt as totalAmt
+		FROM hyk_user a
+		<include refid="hykUserJoins"/>
+		LEFT JOIN(
+		select a.user_id,sum(a.payable_money+a.balance_payment)amt,sum(amt)taotalamt from hyk_order a where a.pay_date is not null AND a.order_status ="2"
+		GROUP BY a.user_id
+		)e on a.id=e.user_id
+		LEFT  join (
+			select a.user_id,a.amt,case when a.order_type='0' then '即时充值' else '套餐充值'end orderType,DATE_FORMAT(a.pay_date, "%Y-%m-%d %H:%i:%s")payDate
+			from hyk_order a
+			where  a.order_status ="2" and (select count(*)
+			from hyk_order
+			where   user_id = a.user_id and pay_date &lt; a.pay_date) &lt;1
+		)dd on a.id=dd.user_id
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="phone != null and phone != ''">
+				AND a.phone  like concat('%',#{phone},'%')
+			</if>
+			<if test="password != null and password != ''">
+				AND a.password = #{password}
+			</if>
+			<if test="inviterId != null and inviterId != ''">
+				AND (a.inviter_id = #{inviterId} or a.id=#{inviterId})
+			</if>
+			<if test="payNum != null and payNum != ''">
+				AND a.pay_num = #{payNum}
+			</if>
+			<if test="oilCardNum != null and oilCardNum != ''">
+				AND a.oil_card_num = #{oilCardNum}
+			</if>
+			<if test="channel != null and channel != ''">
+				AND a.channel like concat('%',#{channel},'%')
+			</if>
+			<if test="waitAmt != null and waitAmt != ''">
+				AND a.wait_amt = #{waitAmt}
+			</if>
+			<if test="sendCodeError != null and sendCodeError != ''">
+				AND a.send_code_error = #{sendCodeError}
+			</if>
+			<if test="accountError != null and accountError != ''">
+				AND a.account_error = #{accountError}
+			</if>
+			<if test="openid != null and openid != ''">
+				AND a.openid = #{openid}
+			</if>
+			<if test="realName != null and realName != ''">
+				AND a.real_name = #{realName}
+			</if>
+			<if test="headimg != null and headimg != ''">
+				AND a.headimg = #{headimg}
+			</if>
+			<if test="sex != null and sex != ''">
+				AND a.sex = #{sex}
+			</if>
+			<if test="birthday != null and birthday != ''">
+				AND a.birthday = #{birthday}
+			</if>
+			<if test="registerDate != null and registerDate != ''">
+				AND a.register_date = #{registerDate}
+			</if>
+			<if test="remark != null and remark != ''">
+				AND a.remark = #{remark}
+			</if>
+			<if test="companyId != null and companyId != ''">
+				AND a.companyId = #{companyId}
+			</if>
+			<if test="isBoss != null and isBoss != ''">
+				AND a.isBoss = #{isBoss}
+			</if>
+			<if test="isCompany != null and isCompany != ''">
+				AND a.isCompany = #{isCompany}
+			</if>
+			<if test="minPayNum != null">
+				AND a.pay_num &gt;= #{minPayNum}
+			</if>
+			<if test="maxPayNum != null">
+				AND a.pay_num &lt;= #{maxPayNum}
+			</if>
+			<if test="userOther != null and userOther != ''">
+				AND ( a.phone like CONCAT('%',#{userOther},'%') or a.id like CONCAT('%',#{userOther},'%'))
+			</if>
+			<if test="inviterOther != null and inviterOther != ''">
+				AND (b.phone like CONCAT('%',#{inviterOther},'%') or a.inviter_id like CONCAT('%',#{inviterOther},'%'))
+			</if>
+
+			<if test="registerDateStart != null and registerDateStart != ''">
+				AND DATE_FORMAT(a.register_date,'%Y%m%d')&gt;=DATE_FORMAT(#{registerDateStart},'%Y%m%d')
+			</if>
+			<if test="registerDateEnd != null and registerDateEnd != ''">
+				AND DATE_FORMAT(a.register_date,'%Y%m%d')&lt;=DATE_FORMAT(#{registerDateEnd},'%Y%m%d')
+			</if>
+		</where>
+		ORDER BY a.register_date desc
+	</select>
+	
+	<select id="findAllList" resultType="HykUser">
+		SELECT 
+			<include refid="hykUserColumns"/>
+		FROM hyk_user a
+		<include refid="hykUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<update id="updateAccountBalance">
+		update hyk_user set account_balance=account_balance-#{money} where id=#{id}
+	</update>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO hyk_user(
+			id,
+			phone,
+			password,
+			inviter_id,
+			pay_num,
+			oil_card_num,
+			channel,
+			wait_amt,
+			send_code_error,
+			account_error,
+			openid,
+			real_name,
+			headimg,
+			sex,
+			birthday,
+			register_date,
+			remark,
+			del_flag,
+			companyId,
+			isBoss,
+			isCompany,
+			qrcode,
+			accumulative_recharge_amount,
+			account_balance,
+			companyAddDate
+		) VALUES (
+			#{id},
+			#{phone},
+			#{password},
+			#{inviterId},
+			#{payNum},
+			#{oilCardNum},
+			#{channel},
+			#{waitAmt},
+			#{sendCodeError},
+			#{accountError},
+			#{openid},
+			#{realName},
+			#{headimg},
+			#{sex},
+			#{birthday},
+			#{registerDate},
+			#{remark},
+			#{delFlag},
+			#{companyId},
+			#{isBoss},
+			#{isCompany},
+			#{qrcode},
+			#{accumulativeRechargeAmount},
+			#{accountBalance},
+			#{companyAddDate}
+		)
+	</insert>
+
+	<update id="updateAccountBalance2">
+		update hyk_user set account_balance=account_balance+#{money} where id=#{id}
+	</update>
+	<update id="updateAllOrderByUserId">
+		update hyk_user,(SELECT user_id as userId,SUM(balance_payment) as money from hyk_order where UNIX_TIMESTAMP(NOW())>=UNIX_TIMESTAMP(create_date)+1800
+		 and order_status=0 and del_flag=0 group by user_id)a set account_balance=account_balance+ a.money where a.userId=hyk_user.id and hyk_user.id=#{id}
+	</update>
+	<update id="updateAllOrder">
+		update hyk_user,(SELECT user_id as userId,SUM(balance_payment) as money from hyk_order where UNIX_TIMESTAMP(NOW())>=UNIX_TIMESTAMP(create_date)+1800
+		 and order_status=0 and del_flag=0 group by user_id)a set account_balance=account_balance+ a.money where a.userId=hyk_user.id
+	</update>
+
+	<update id="update">
+		UPDATE hyk_user
+		<trim prefix="set" suffixOverrides=",">
+		<if test="phone != null and phone != ''">
+			 phone = #{phone},
+		</if>
+		<if test="password != null and password != ''">
+			 password = #{password},
+		</if>
+			 inviter_id = #{inviterId},
+		<if test="payNum != null and payNum != ''">
+			 pay_num = #{payNum},
+		</if>
+		<if test="oilCardNum != null and oilCardNum != ''">
+			 oil_card_num = #{oilCardNum},
+		</if>
+		<if test="channel != null and channel != ''">
+			 channel = #{channel},
+		</if>
+		<if test="waitAmt != null and waitAmt != ''">
+			 wait_amt = #{waitAmt},
+		</if>
+		<if test="sendCodeError != null and sendCodeError != ''">
+			 send_code_error = #{sendCodeError},
+		</if><if test="accountError != null and accountError != ''">
+			 account_error = #{accountError},
+		</if>
+		<if test="openid != null and openid != ''">
+			 openid = #{openid},
+		</if>
+		<if test="realName != null and realName != ''">
+			 real_name = #{realName},
+		</if>
+		<if test="headimg != null and headimg != ''">
+			 headimg = #{headimg},
+		</if>
+		<if test="sex != null and sex != '' ">
+			 sex = #{sex},
+		</if>
+		<if test="birthday != null and birthday != ''">
+			 birthday = #{birthday},
+		</if>
+		<if test="registerDate != null and registerDate != ''">
+			 register_date = #{registerDate},
+		</if>
+		<if test="remark != null and remark != ''">
+			 remark = #{remark},
+		</if>
+		<if test="companyId != null and companyId != ''">
+			 companyId = #{companyId},
+		</if>
+		<if test="isBoss != null and isBoss != ''">
+			 isBoss = #{isBoss},
+		</if>
+		<if test="isCompany != null and isCompany != ''">
+			 isCompany = #{isCompany},
+		</if>
+		<if test="qrcode != null and qrcode != ''">
+			qrcode = #{qrcode},
+		</if>
+		<if test="companyAddDate != null and companyAddDate != ''">
+			companyAddDate = #{companyAddDate},
+		</if>
+		<if test="accumulativeRechargeAmount != null and accumulativeRechargeAmount != ''">
+			accumulative_recharge_amount = #{accumulativeRechargeAmount},
+		</if>
+		<if test="accountBalance != null and accountBalance != ''">
+			account_balance = #{accountBalance}
+		</if>
+		</trim>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_user SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<update id="updateBirthday">
+		update hyk_user set birthday=DATE_FORMAT(DATE_ADD(FROM_UNIXTIME(0), INTERVAL #{str} SECOND),'%Y-%m-%d %H:%i:%s') where id=#{id};
+	</update>
+
+
+
+	<select id="getByPhone" resultType="HykUser">
+		SELECT
+		<include refid="hykUserColumns2"/>
+		FROM hyk_user a
+		WHERE  a.phone = #{phone}
+	</select>
+
+	<update id="updateBalanceById">
+		update hyk_user set accumulative_recharge_amount=IFNULL(accumulative_recharge_amount,0)+#{money},
+		account_balance=IFNULL(account_balance,0)+#{money}
+		where id=#{id}
+	</update>
+
+	<update id="saveQrcode">
+		update hyk_user
+		set  qrcode = #{qrcode}
+		where id=#{id}
+	</update>
+
+
+</mapper>

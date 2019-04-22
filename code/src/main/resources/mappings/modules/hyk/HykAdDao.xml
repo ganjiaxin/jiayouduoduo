@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykAdDao">
+    
+	<sql id="hykAdColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.banner_img AS "bannerImg",
+		a.open_img AS "openImg",
+		a.wondeful_img AS "wondefulImg",
+		a.app_img AS "appImg",
+		a.share_img AS "shareImg",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.status AS "status",
+		b.label AS "statusStr",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.shareTitle AS "shareTitle",
+		a.shareSonTitle AS "shareSonTitle",
+		a.url AS "url",
+		a.shareUrl AS "shareUrl",
+		DATE_FORMAT(a.start_time,'%Y-%m-%d') startTimeStr,
+		DATE_FORMAT(a.end_time,'%Y-%m-%d') endTimeStr,
+		a.sort,
+		a.goodsImg
+	</sql>
+	
+	<sql id="hykAdJoins">
+		LEFT JOIN  sys_dict b on a.status=b.`value` and  b.type='ad_status'
+	</sql>
+    
+	<select id="get" resultType="HykAd">
+		SELECT 
+			<include refid="hykAdColumns"/>
+		FROM hyk_ad a
+		<include refid="hykAdJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykAd">
+		SELECT 
+			<include refid="hykAdColumns"/>
+		FROM hyk_ad a
+		<include refid="hykAdJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="bannerImg != null and bannerImg != ''">
+				AND a.banner_img = #{bannerImg}
+			</if>
+			<if test="openImg != null and openImg != ''">
+				AND a.open_img = #{openImg}
+			</if>
+			<if test="wondefulImg != null and wondefulImg != ''">
+				AND a.wondeful_img = #{wondefulImg}
+			</if>
+			<if test="appImg != null and appImg != ''">
+				AND a.app_img = #{appImg}
+			</if>
+			<if test="shareImg != null and shareImg != ''">
+				AND a.share_img = #{shareImg}
+			</if>
+			<if test="startTime != null and startTime != ''">
+				AND a.start_time = #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND a.end_time = #{endTime}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+
+			<if test="remark != null and remark != ''">
+				AND a.remark = #{remark}
+			</if>
+			<if test="shareTitle != null and shareTitle != ''">
+				AND a.shareTitle = #{shareTitle}
+			</if>
+			<if test="shareSonTitle != null and shareSonTitle != ''">
+				AND a.shareSonTitle = #{shareSonTitle}
+			</if>
+			<if test="url != null and url != ''">
+				AND a.url = #{url}
+			</if>
+		</where>
+		ORDER BY a.status desc,a.sort,a.end_time
+	</select>
+	
+	<select id="findAllList" resultType="HykAd">
+		SELECT 
+			<include refid="hykAdColumns"/>
+		FROM hyk_ad a
+		<include refid="hykAdJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	
+	<insert id="insert">
+		INSERT INTO hyk_ad(
+			id,
+			title,
+			banner_img,
+			open_img,
+			wondeful_img,
+			app_img,
+			share_img,
+			start_time,
+			end_time,
+			status,
+			remark,
+			del_flag,
+			shareTitle,
+			shareSonTitle,
+			url,
+			shareUrl,
+			sort,
+			goodsImg
+		) VALUES (
+			#{id},
+			#{title},
+			#{bannerImg},
+			#{openImg},
+			#{wondefulImg},
+			#{appImg},
+			#{shareImg},
+			#{startTime},
+			#{endTime},
+			#{status},
+			#{remark},
+			#{delFlag},
+			#{shareTitle},
+			#{shareSonTitle},
+			#{url},
+			#{shareUrl},
+			#{sort},
+			#{goodsImg}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_ad SET 	
+			title = #{title},
+			banner_img = #{bannerImg},
+			open_img = #{openImg},
+			wondeful_img = #{wondefulImg},
+			app_img = #{appImg},
+			share_img = #{shareImg},
+			start_time = #{startTime},
+			end_time = #{endTime},
+			status = #{status},
+			remark = #{remark},
+			shareTitle = #{shareTitle},
+			shareSonTitle = #{shareSonTitle},
+			url = #{url},
+			shareUrl=#{shareUrl},
+			sort=#{sort},
+			goodsImg=#{goodsImg}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE hyk_ad SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+
+	<select id="getHykAdAppImg" resultType="HykAd">
+		SELECT * from hyk_ad where LENGTH(app_img)>0 and UNIX_TIMESTAMP(NOW())BETWEEN UNIX_TIMESTAMP(start_time) and UNIX_TIMESTAMP(end_time) and
+		 status=1 and del_flag=0 ORDER BY start_time desc limit 1
+	</select>
+	<select id="getHykAdOpenImg" resultType="HykAd">
+		SELECT * from hyk_ad where LENGTH(open_img)>0 and UNIX_TIMESTAMP(NOW())BETWEEN UNIX_TIMESTAMP(start_time) and UNIX_TIMESTAMP(end_time) and
+		 status=1 and del_flag=0 ORDER BY start_time desc limit 1
+	</select>
+
+	<select id="getHykAdShareImg" resultType="HykAd">
+		 SELECT title as title ,share_img as shareImg,shareTitle as shareTitle,shareSonTitle as shareSonTitle,url as url from hyk_ad
+		 where UNIX_TIMESTAMP(NOW()) BETWEEN UNIX_TIMESTAMP(start_time) AND UNIX_TIMESTAMP(end_time) AND status=1 and del_flag=0 and LENGTH(share_img)>0
+		 ORDER BY start_time DESC
+	</select>
+
+	<select id="goodsImg" resultType="HykAd">
+		 SELECT * from hyk_ad
+		 where  del_flag=0 and status=1 and LENGTH(goodsImg)>0 and NOW() BETWEEN start_time and end_time ORDER BY sort,end_time
+	</select>
+
+</mapper>

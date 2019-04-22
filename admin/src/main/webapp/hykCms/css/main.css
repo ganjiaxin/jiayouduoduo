@@ -1,0 +1,714 @@
+.content {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.head-title {
+    text-align: center;
+    font-size: 2em;
+    margin: 30px auto;
+    color: #333;
+}
+
+.bgcolor-blue {
+    background: #1E9FFF;
+}
+
+.color-blue {
+    color: #1E9FFF;
+}
+
+.bgcolor-commred {
+    background: #ff6c60;
+}
+
+.color-commred {
+    color: #ff6c60;
+}
+
+.bgcolor-dark-green {
+    background: #009688;
+}
+
+.color-dark-green {
+    color: #009688;
+}
+
+.bgcolor-yellow-green {
+    background: #5FB878;
+}
+
+.color-yellow-green {
+    color: #5FB878;
+}
+
+.bgcolor-orange {
+    background: #FF5722;
+}
+
+.color-orange {
+    color: #FF5722;
+}
+
+.bgcolor-yellow {
+    background: #F7B824;
+}
+
+.color-yellow {
+    color: #F7B824;
+}
+
+body {
+    color: #444;
+}
+
+.panel {
+    border: solid 1px #eee !important;
+}
+
+a, a:focus, a:hover {
+    text-decoration: none;
+}
+
+.larry-wrapper {
+    margin: 40px auto;
+!important;
+}
+
+.symbol {
+    width: 40%;
+    padding: 1.4em 0;
+    border-radius: 4px 0px 0px 4px;
+    display: inline-block;
+    text-align: center;
+}
+
+.symbol i {
+    color: #fff;
+    font-size: 3em;
+}
+
+.value {
+    width: 58%;
+    text-align: center;
+    float: right;
+    margin-top: 1.4em;
+}
+
+.value h1 {
+    font-size: 1.8em;
+}
+
+.panel-heading {
+    border-bottom: 1px solid #EEE;
+    padding: 1.4em;
+}
+
+.panel-heading a {
+    color: #DDD;
+    font-weight: bold;
+}
+
+.panel-heading a:hover {
+    color: #999;
+}
+
+.log .panel-body h2 {
+    font-size: 1.4em;
+    color: #333;
+    line-height: 2.2em;
+}
+
+.log .panel-body ul li {
+    list-style: square inside;
+    line-height: 2em;
+}
+
+.echarts {
+    display: block;
+    padding: 15px;
+    height: 300px;
+}
+
+.panel-padding {
+    padding: 10px;
+    margin-bottom: 10px !important;
+}
+
+.layui-form-checkbox {
+    margin: 0 !important;
+}
+
+.layui-inline {
+    margin: 2px 0;
+}
+
+.lastline {
+    width: 120px;
+}
+
+.layui-form-checkbox[lay-skin=primary] i {
+    top: 1px;
+}
+
+.layui-form-label {
+    width: 110px;
+}
+
+.tag, .tag-defined {
+    display: inline-block;
+    position: relative;
+    padding: 0 20px;
+    border: 1px solid #DDD;
+    border-radius: 2px;
+    cursor: pointer;
+    line-height: 36px;
+    margin: 0 0 10px 10px;
+}
+
+.tag-selected {
+    border: 1px solid #5FB878;
+    color: #5FB878;
+}
+
+.tick-box {
+    display: none;
+}
+
+.tag .tick-bg {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border: 10px solid;
+    border-color: transparent #5FB878 #5FB878 transparent;
+}
+
+.tag .tick {
+    position: absolute;
+    right: 0;
+    bottom: -12px;
+    font-size: 8px;
+    color: #FFF;
+}
+
+.imgbox {
+    line-height: 120px;
+    height: 120px;
+    width: 120px;
+}
+
+.layui-form .has-warning {
+    position: relative;
+}
+
+.jq-error {
+    height: 20px;
+    line-height: 20px;
+    overflow: hidden;
+    padding: 0 !important;
+    color: #FF5722 !important;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    margin-top: -10px;
+    background: #fff;
+    font-weight: normal !important;
+}
+
+.error p, .error {
+    line-height: 36px;
+    color: #FF5722 !important;
+    display: inline-block;
+    padding: 0 5px;
+    font-weight: normal !important;
+}
+
+.add-subcat {
+    display: none;
+    padding: 20px;
+}
+
+.layui-form-item .left-icon {
+    float: left;
+    margin-left: 10px;
+    padding: 10px 15px;
+    background: #e6e6e6;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px 0 0 3px;
+}
+
+.layui-form-item .left-icon i {
+    font-size: 12px;
+}
+
+.permission-list ul li {
+    margin-bottom: 25px;
+}
+
+.permission-list ul li dl, .permission-list ul li dl dd {
+    margin-left: 3em;
+}
+
+.layui-form-switch {
+    width: 50px;
+    margin-top: 0;
+}
+
+.font-pt {
+    padding-top: 6px;
+}
+
+.login-pane {
+    margin-top: 30%;
+}
+
+.layui-table td, .layui-table th {
+    min-height: 24px;
+    line-height: 24px;
+    text-align: center;
+    padding: 8px;
+}
+
+.layui-table {
+    margin: 5px 0;
+}
+
+.laydate-icon, .laydate-icon-dahong, .laydate-icon-danlan, .laydate-icon-default, .laydate-icon-molv {
+    border-color: #e6e6e6 !important;
+    height: 38px !important;
+    padding-right: 0 !important;
+    line-height: 38px !important;
+}
+
+.Nulldata {
+    text-align: center;
+    height: 100px;
+    line-height: 100px;
+}
+
+.layui-input, .layui-select, .layui-textarea {
+    color: #333;
+}
+
+.group-button {
+    padding-bottom: 5px;
+}
+
+.group-button button i {
+    margin: 1px 5px 0 0;
+}
+
+.layui-btn-mini {
+    height: 27px;
+    line-height: 27px;
+    padding: 0 12px;
+    margin: 2px 0px !important;
+}
+
+.layui-btn-mini i {
+    margin-right: 3px;
+}
+
+.layui-btn-submit {
+    background: #5FB878;
+}
+
+.layui-btn-blue {
+    background: #01AAED;
+}
+
+.layui-form-select {
+    border: none !important;
+}
+
+.layui-form .has-warning .layui-input, /*.layui-form .has-warning .layui-form-select,*/
+.layui-form .has-warning .layui-layedit, .layui-form .has-warning .layui-textarea {
+    border: 1px solid #FF5722 !important;
+    color: #FF5722;
+}
+
+.layui-form .has-success .layui-input, .layui-form .has-success .layui-form-select, .layui-form .has-success .layui-layedit {
+    border: 1px solid #5FB878;
+    color: #5FB878;
+}
+
+.layui-form-item .layui-input-inline {
+    width: 50% !important;
+}
+
+.layui-form-select dl {
+    max-height: 220px;
+}
+
+input[readonly] {
+    background-color: #fbfbfb;
+    color: #333
+}
+
+.layui-unselect[readonly] {
+    background-color: #fff;
+    color: #333;
+}
+
+.search-btn i {
+    font-size: 15px;
+    margin-right: 5px;
+}
+
+.layui-layer-dialog .layui-layer-padding {
+    color: #555;
+}
+
+.layui-layer-dialog .layui-layer-content {
+    font-size: 15px !important;
+}
+
+.layui-layer-msg {
+    border: none !important;
+    background-color: #fff;
+    -webkit-background-clip: content;
+    box-shadow: 1px 1px 6px rgba(0, 0, 0, .3) !important;
+}
+
+.layui-layer-btn a {
+    background: #fff !important;
+}
+
+.layui-layer-hui {
+    background: rgba(57, 61, 73, 0.8) !important;
+}
+
+.layui-layer-btn .layui-layer-btn0 {
+    background: #01AAED !important;
+    border-color: #01AAED !important;
+}
+
+.permission-list ul li dl dd {
+    display: inline-block;
+    margin-left: 0;
+}
+
+.permission-list ul li dl .first {
+    margin-left: 3em;
+}
+
+.layui-colla-title {
+    padding: 0 15px 0 18px !important;
+}
+
+.layui-layer-title {
+    border-left: solid 1px #eee;
+    border-right: solid 1px #eee;
+}
+
+.layui-upload-button:hover {
+    border: solid 1px #ccc;
+}
+
+.time-item .jq-error {
+    right: 36px !important;
+}
+
+/*#page .jq-error { top: -35px !important; }*/
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+    padding: 0 8px 0 0;
+}
+
+.layui-laypage {
+    margin-bottom: 0 !important;
+}
+
+.layui-table .success {
+    color: #5FB878;
+    font-weight: bold;
+}
+
+.layui-table .fail {
+    color: #FF5722;
+    font-weight: bold;
+}
+
+.layui-table .disabled {
+    background: rgb(247, 247, 247);
+}
+
+.layui-table .disabled td {
+    color: #999;
+}
+
+.layui-form-switch i {
+    top: 2px;
+    left: 1px;
+}
+
+.layui-form-onswitch i {
+    top: 2px;
+    left: auto;
+    right: 1px;
+}
+
+.layui-form .layui-form-item p {
+    width: auto;
+    line-height: 160%;
+    padding: 8px 0;
+}
+
+.layui-form .uploadBtn {
+    width: auto;
+    height: auto;
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+}
+
+.layui-form .uploadBtn .hiddenBtn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    height: 38px;
+    opacity: 0;
+}
+
+.larry-wrapper {
+    margin: 10px auto;
+}
+
+.layui-select-disabled .layui-disabled {
+    color: #777 !important;
+}
+
+.sort_box {
+    padding: 20px;
+    display: none;
+}
+
+.progress {
+    margin-top: 2px;
+    width: 200px;
+    height: 14px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+}
+
+.progress-bar {
+    background-color: rgb(92, 184, 92);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.14902) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.14902) 50%, rgba(255, 255, 255, 0.14902) 75%, transparent 75%, transparent);
+    background-size: 40px 40px;
+    box-shadow: rgba(0, 0, 0, 0.14902) 0px -1px 0px 0px inset;
+    box-sizing: border-box;
+    color: rgb(255, 255, 255);
+    display: block;
+    float: left;
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    transition-delay: 0s;
+    transition-duration: 0.6s;
+    transition-property: width;
+    transition-timing-function: ease;
+    width: 266.188px;
+}
+
+.search_panel {
+    border: none !important;
+    padding: 12px 10px;
+    box-shadow: none;
+}
+
+.layui-elem-field legend {
+    font-size: 16px;
+}
+
+.site-list-flow {
+    width: 100%;
+    padding: 10px 0 0 0;
+}
+
+.site-list-flow img {
+    width: auto;
+    height: 100%;
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+.site-list-flow .img_box {
+    position: relative;
+    text-align: center; /* Center slide text vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.site-list-flow .img_box .layui-form-checkbox[lay-skin=primary] {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
+.layui-flow-more {
+    width: 100%;
+    clear: both;
+    padding-top: 20px;
+}
+
+.layui-layer-photos .layui-layer-phimg {
+    height: 100%;
+}
+
+.layui-layer-photos .layui-layer-phimg img {
+    max-height: 100% !important;
+    width: auto !important;
+}
+
+.clear {
+    clear: both;
+}
+
+#list.layui-form {
+    width: 100%;
+    height: auto;
+    overflow: auto;
+}
+
+.layui-btn-primary:hover {
+    border-color: #c9c9c9 !important;
+}
+
+.layui-card-header {
+    width: 100%;
+    height: auto;
+    font-size: 16px;
+    color: #333;
+    border-bottom: solid 1px #eee;
+    padding: 5px 0 10px 5px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.layui-card-body {
+    width: 100%;
+    padding: 15px 5px;
+}
+
+.layui-card-body ul {
+    width: 100%;
+    height: auto;
+}
+
+.layui-card-body ul li {
+    width: 25%;
+    height: auto;
+    padding: 0 15px;
+    float: left;
+
+}
+
+.layui-card-body ul li .box, .layui-card-body ul li .boxs {
+    background: #f2f2f2;
+    padding: 30px 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.layui-card-body ul li .box h3, .layui-card-body ul li .boxs h3 {
+    font-size: 14px;
+    color: #666;
+    padding-bottom: 20px;
+}
+
+@media only screen and (max-width: 500px) {
+    .layui-card-body ul li .box p cite {
+        font-size: 2rem !important;
+        font-style: normal;
+        color: #01AAED;
+    }
+
+    .layui-card-body ul li {
+        width: 100%;
+        height: auto;
+        padding: 10px 15px !important;
+        float: left;
+
+    }
+}
+
+.layui-card-body ul li .box p cite {
+    font-size: 42px;
+    font-style: normal;
+    color: #01AAED;
+}
+
+@media only screen and (min-width: 1200px) {
+    .layui-card-body ul li .boxs p cite {
+        font-size: 42px;
+        font-style: normal;
+        color: #FF5722;
+    }
+}
+
+@media only screen and (min-width: 600px) and (max-width: 1200px) {
+    .layui-card-body ul li .boxs p cite {
+        font-size: 22px;
+        font-style: normal;
+        color: #FF5722;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .layui-card-body ul li .boxs p cite {
+        font-size: 2.05rem;
+        font-style: normal;
+        color: #FF5722;
+    }
+    .showData ul li {
+        width: 49.3333% !important;
+        float: left;
+        font-size: 16px;
+        padding: 5px 0;
+        color: #888888;
+    }
+}
+
+.layui-card-body ul li .box p label, .layui-card-body ul li .boxs p label {
+    font-size: 14px;
+    color: #999;
+    padding-left: 5px;
+}
+
+.showData {
+    width: 100%;
+    height: auto;
+    padding: 15px 0;
+}
+
+/*.showData ul li {*/
+    /*width: 33.3333%;*/
+    /*float: left;*/
+    /*font-size: 16px;*/
+    /*padding: 5px 0;*/
+    /*color: #888888;*/
+/*}*/
+
+.showData ul li label {
+    color: red;
+    font-size: 19px;
+    padding-right: 10px;
+}

@@ -1,0 +1,220 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {
+    width:100%;
+    /*height:1200px;*/
+    background: url(../images/login_bg.jpg) no-repeat;
+    background-size: cover;
+    /*background-size: 100%;*/
+}
+@media only screen and (min-width: 1367px) {
+    .login-pane {
+        width: 380px;
+        height: 350px;
+        background: rgba(57, 61, 73, 0.8);
+        border-radius: 3px;
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        margin: -180px 0 0 -190px;
+        padding: 10px 20px;
+    }
+
+    .head-title {
+        font-size: 26px;
+        color: #fff;
+        text-align: center;
+        line-height: 106px;
+        margin: 0;
+    }
+
+    .layui-form-item {
+        margin-bottom: 23px;
+    }
+
+    .layui-form-item input {
+        border-radius: 20px !important;
+    }
+
+    .layui-form-onswitch i {
+        left: 23px !important;
+    }
+
+    .layui-form-switch i {
+        left: 2px;
+        top: 2px;
+    }
+
+    .layui-form-onswitch {
+        background: #01AAED;
+        border: solid 1px #01AAED;
+    }
+
+    .layui-form-switch {
+        margin-top: -3px !important;
+        width: 40px;
+    }
+
+    .layui-form-item .font-pt {
+        color: #fff;
+        line-height: 30px;
+    }
+
+    .login_btn {
+        background: #5FB878;
+        width: 50%;
+        margin: 0 auto;
+        display: block;
+        height: 40px;
+        font-size: 16px;
+        opacity: 1;
+    }
+}
+
+@media only screen  and (max-width: 1367px) {
+    body {
+        width:100%;
+        /*height:1200px;*/
+        background: url(../images/login_bg.jpg)50% 10% no-repeat;
+        /*background-size: cover;*/
+        /*background-size: 100%;*/
+    }
+    .login-pane {
+        width: 25rem;
+        height: 30rem;
+        background: rgba(57, 61, 73, 0.8);
+        border-radius: 3px;
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        margin: -180px 0 0 -190px;
+        padding: 10px 20px;
+    }
+
+    .head-title {
+        font-size: 26px;
+        color: #fff;
+        text-align: center;
+        line-height: 106px;
+        margin: 0;
+    }
+
+    .layui-form-item {
+        margin-bottom: 23px;
+    }
+
+    .layui-form-item input {
+        border-radius: 20px !important;
+    }
+
+    .layui-form-onswitch i {
+        left: 23px !important;
+    }
+
+    .layui-form-switch i {
+        left: 2px;
+        top: 2px;
+    }
+
+    .layui-form-onswitch {
+        background: #01AAED;
+        border: solid 1px #01AAED;
+    }
+
+    .layui-form-switch {
+        margin-top: -3px !important;
+        width: 40px;
+    }
+
+    .layui-form-item .font-pt {
+        color: #fff;
+        line-height: 30px;
+    }
+
+    .login_btn {
+        background: #5FB878;
+        width: 50%;
+        margin: 0 auto;
+        display: block;
+        height: 40px;
+        font-size: 16px;
+        opacity: 1;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    body {
+        width:100%;
+        /*height:1200px;*/
+        background: url(../images/login_bg.jpg)50% 30% no-repeat;
+        /*background-size: cover;*/
+        /*background-size: 100%;*/
+    }
+    .login-pane {
+        width: 26rem;
+        height: 30rem;
+        background: rgba(57, 61, 73, 0.8);
+        border-radius: 3px;
+        position: inherit;
+        /*top: 35%;*/
+        /*left: 55%;*/
+        margin: 0 auto;
+        /*margin: -180px 0 0 -190px;*/
+        padding: 10px 20px;
+        text-align: center;
+    }
+
+    .head-title {
+        font-size: 26px;
+        color: #fff;
+        text-align: center;
+        line-height: 106px;
+        margin: 0;
+    }
+
+    .layui-form-item {
+        margin-bottom: 23px;
+    }
+
+    .layui-form-item input {
+        border-radius: 20px !important;
+    }
+
+    .layui-form-onswitch i {
+        left: 23px !important;
+    }
+
+    .layui-form-switch i {
+        left: 2px;
+        top: 2px;
+    }
+
+    .layui-form-onswitch {
+        background: #01AAED;
+        border: solid 1px #01AAED;
+    }
+
+    .layui-form-switch {
+        margin-top: -3px !important;
+        width: 40px;
+    }
+
+    .layui-form-item .font-pt {
+        color: #fff;
+        line-height: 30px;
+    }
+
+    .login_btn {
+        background: #5FB878;
+        width: 50%;
+        margin: 0 auto;
+        display: block;
+        height: 40px;
+        font-size: 16px;
+        opacity: 1;
+    }
+}
+
+
+

@@ -1,0 +1,50 @@
+/* 
+* @Author: anchen
+* @Date:   2017-02-21 15:01:19
+* @Last Modified by:   anchen
+* @Last Modified time: 2017-02-22 14:22:40
+*/
+html, body, div, p, ul, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, form, input, select, button, textarea, iframe, table, th, td {
+    margin: 0;
+    padding: 0;
+}
+/*字体*/
+body{font-size:12px;font-family:"Microsoft Yahei","Arial","simhei"!important; text-align:left; background:#fff;color:#333;}
+/*ul*/
+ul{ list-style:none;}
+/*a*/
+a{ text-decoration:none;outline:none;color:#333;}
+html, body{height:100%;}
+/*img*/
+img{border:0 none;max-width:100%;}
+/*浮动*/
+.lf{float:left; display:inline;}
+.rf{float:right; display:inline;}
+/*清除浮动*/
+.clear{clear:both;}
+p{font-size: 12px;}
+/*塌陷*/
+.clearfix{zoom:1;}
+.clearfix:before,.clearfix:after{display: table;line-height: 0;content:"";}
+.clearfix:after{clear:both;}
+.bg1{background: #2c99fe;color:#fff;}
+.color1{color:#f6482f;}
+.color2{color:#2c99fe;}
+.color3{color: #333;}
+.color4{color:#747474;}
+.mb4{margin-bottom:4px;}
+.ml10{margin-left:10px;}
+.mr10{margin-right:10px;}
+.mb10{margin-bottom:10px;}
+.mt5{margin-top:5px;}
+.mt4{margin-top:4px;}
+.border0{border:none;}
+.bgimg1{background: url(../img/img2.png) no-repeat left center;background-size:16px;}
+.bgimg2{background: url(../img/img3.png) no-repeat left center;background-size:16px;}
+.bgimg3{background: url(../img/img4.png) no-repeat left center;background-size:16px;}
+.bgimg4{background: url(../img/img1.png) no-repeat left center;background-size:16px;}
+.colorfonts{color:#f44830;font-size: 14px;}
+.wrapper{background:#eeeeee;height:100%;}
+.top{height:40px;line-height:40px;background: #2c99fe;width:100%;text-align: center;font-size: 16px;color:#fff;}
+.top2{height:40px;line-height:40px;background: #2c99fe url(../img/zx2.png) no-repeat 95% center;width:100%;text-align: center;font-size: 16px;color:#fff;background-size:22px 18px;}
+.button1{width:80%;height:40px;line-height:40px;background: #2c99fe;margin:0 auto;text-align: center;border-radius:5px;font-size: 16px;color:#fff;margin-top:20px;margin-bottom:70px;}

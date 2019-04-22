@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykAppVersionDao">
+    
+	<sql id="hykAppVersionColumns">
+		a.id AS "id",
+		a.code AS "code",
+		a.content AS "content",
+		a.app_tpye AS "appTpye",
+		a.istip AS "istip",
+		a.min_version AS "minVersion",
+		a.default_version AS "defaultVersion",
+		a.url AS "url",
+		a.createDate AS "createDate",
+		b.label AS "appTpyeStr"
+	</sql>
+	
+	<sql id="hykAppVersionJoins">
+	LEFT JOIN sys_dict b on a.app_tpye =b.`value` and b.type="appTpye"
+	</sql>
+    
+	<select id="get" resultType="HykAppVersion">
+		SELECT 
+			<include refid="hykAppVersionColumns"/>
+		FROM hyk_app_version a
+		<include refid="hykAppVersionJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HykAppVersion">
+		SELECT 
+			<include refid="hykAppVersionColumns"/>
+		FROM hyk_app_version a
+		<include refid="hykAppVersionJoins"/>
+		<where>
+			
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+			<if test="content != null and content != ''">
+				AND a.content = #{content}
+			</if>
+			<if test="appTpye != null and appTpye != ''">
+				AND a.app_tpye = #{appTpye}
+			</if>
+			<if test="istip != null and istip != ''">
+				AND a.istip = #{istip}
+			</if>
+			<if test="minVersion != null and minVersion != ''">
+				AND a.min_version = #{minVersion}
+			</if>
+			<if test="defaultVersion != null and defaultVersion != ''">
+				AND a.default_version = #{defaultVersion}
+			</if>
+			<if test="url != null and url != ''">
+				AND a.url = #{url}
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.createDate = #{createDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HykAppVersion">
+		SELECT 
+			<include refid="hykAppVersionColumns"/>
+		FROM hyk_app_version a
+		<include refid="hykAppVersionJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO hyk_app_version(
+			id,
+			code,
+			content,
+			app_tpye,
+			istip,
+			min_version,
+			default_version,
+			url,
+			createDate
+		) VALUES (
+			#{id},
+			#{code},
+			#{content},
+			#{appTpye},
+			#{istip},
+			#{minVersion},
+			#{defaultVersion},
+			#{url},
+			#{createDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE hyk_app_version SET 	
+			code = #{code},
+			content = #{content},
+			app_tpye = #{appTpye},
+			istip = #{istip},
+			min_version = #{minVersion},
+			default_version = #{defaultVersion},
+			url = #{url},
+			createDate = #{createDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM hyk_app_version
+		WHERE id = #{id}
+	</update>
+
+
+	<select id="getBySystem" resultType="HykAppVersion">
+		SELECT `url` as url,`code` as version,content as msg ,istip as updateSign ,id as id,app_tpye as appTpye,min_version as minVersion,default_version as defaultVersion
+		from hyk_app_version where (app_tpye=3 or app_tpye=#{system}) ORDER BY createDate desc limit 1;
+	</select>
+
+	<select id="getBySystem2" resultType="HykAppVersion">
+		SELECT `url` as url,`code` as version,content as msg ,istip as updateSign ,id as id,app_tpye as appTpye,min_version as minVersion,default_version as defaultVersion
+		from hyk_app_version where app_tpye=#{system} ORDER BY createDate desc limit 1;
+	</select>
+</mapper>

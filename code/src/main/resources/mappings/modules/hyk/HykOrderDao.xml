@@ -1,0 +1,805 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyk.code.modules.hyk.dao.HykOrderDao">
+
+    <sql id="hykOrderColumns">
+		a.id AS "id",
+		a.order_no AS "orderNo",
+		a.user_id AS "hykUser.id",
+		a.user_phone AS "userPhone",
+		a.card_no AS "cardNo",
+		a.order_type AS "orderType",
+		b.label AS "orderTypeStr",
+		a.pay_type AS "payType",
+		c.label AS "payTypeStr",
+		a.everyAmt as "everyAmt",
+		a.amt AS "amt",
+		a.goods_id AS "goodsId",
+		a.redpackage_id AS "redpackageId",
+		a.redpackage_amt AS "redpackageAmt",
+		a.pay_date AS "payDate",
+		a.order_status AS "orderStatus",
+		d.label AS "orderStatusStr",
+		a.remark AS "remark",
+		a.del_flag AS "delFlag",
+		a.f1 AS "f1",
+		a.payable_money AS payableMoney,
+		a.cardId AS "cardId",
+		e.goods_name AS "goodsName",
+		e.cycle As "cycle",
+		a.balance_payment as balancePayment,
+		a.oil_status as "oilStatus",
+		DATE_FORMAT(a.pay_date,'%Y-%m-%d %H:%i') payDateStr,
+		DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i') createDateStr,
+        u.register_date AS "hykUser.registerDate",
+        case when LENGTH(u.channel)>0 then u.channel else "" end channel
+	</sql>
+
+    <sql id="hykOrderInviterColumns">
+        a.id AS "id",
+        a.order_no AS "orderNo",
+        u2.id AS "hykUser.inviterId",
+        u2.phone AS "hykuser.inviterPhone",
+        u2.phone AS "inviterPhone",
+        a.user_phone AS "userPhone",
+        a.card_no AS "cardNo",
+        b.label AS "orderType",
+        c.label AS "payType",
+        a.amt AS "amt",
+        a.goods_id AS "goodsId",
+        a.redpackage_id AS "redpackageId",
+        a.redpackage_amt AS "redpackageAmt",
+        a.pay_date AS "payDate",
+        d.label AS "orderStatus",
+        a.remark AS "remark",
+        a.cardId AS "cardId",
+        e.goods_name AS "goodsName",
+        e.cycle As "cycle",
+        a.payable_money AS payableMoney,
+        DATE_FORMAT(a.pay_date,'%Y-%m-%d %H:%i') payDateStr,
+        DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i') createDateStr
+    </sql>
+    <sql id="hykOrderInviterColumns2">
+        a.id AS "id",
+        a.order_no AS "orderNo",
+        a.user_phone AS "userPhone",
+        a.card_no AS "cardNo",
+        a.amt AS "amt",
+        a.payable_money AS payableMoney,
+        a.goods_id AS "goodsId",
+        a.redpackage_id AS "redpackageId",
+        a.redpackage_amt AS "redpackageAmt",
+        a.pay_date AS "payDate",
+        a.remark AS "remark",
+        a.cardId AS "cardId",
+        e.goods_name AS "goodsName",
+        e.cycle As "cycle"
+    </sql>
+
+    <sql id="hykOrderJoins">
+		LEFT JOIN sys_dict b on a.order_type=b.`value` and b.type="orderType"
+		LEFT JOIN sys_dict c on a.pay_type=c.`value` and c.type="payType"
+		LEFT JOIN sys_dict d on a.order_status=d.`value` and d.type="orderStatus"
+		LEFT JOIN hyk_goods e on a.goods_id=e.id
+		LEFT JOIN hyk_user u on a.user_id=u.id
+	</sql>
+
+    <select id="get" resultType="HykOrder">
+        SELECT
+        <include refid="hykOrderColumns"/>
+        FROM hyk_order a
+        <include refid="hykOrderJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="HykOrder">
+        SELECT
+        <include refid="hykOrderColumns"/>
+        FROM hyk_order a
+        <include refid="hykOrderJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="id != null and id != ''">
+                AND a.id = #{id}
+            </if>
+            <if test="orderNo != null and orderNo != ''">
+                AND a.order_no = #{orderNo}
+            </if>
+            <if test="hykUser != null and hykUser.id != null and hykUser.id != ''">
+                AND a.user_id = #{hykUser.id}
+            </if>
+            <if test="userPhone != null and userPhone != ''">
+                AND a.user_phone = #{userPhone}
+            </if>
+            <if test="cardNo != null and cardNo != ''">
+                AND a.card_no = #{cardNo}
+            </if>
+            <if test="orderType != null and orderType != ''">
+                AND a.order_type = #{orderType}
+            </if>
+            <if test="payType != null and payType != ''">
+                AND a.pay_type = #{payType}
+            </if>
+            <if test="amt != null and amt != ''">
+                AND a.amt = #{amt}
+            </if>
+            <if test="goodsId != null and goodsId != ''">
+                AND a.goods_id = #{goodsId}
+            </if>
+            <if test="redpackageId != null and redpackageId != ''">
+                AND a.redpackage_id = #{redpackageId}
+            </if>
+            <if test="redpackageAmt != null and redpackageAmt != ''">
+                AND a.redpackage_amt = #{redpackageAmt}
+            </if>
+            <if test="payDate != null and payDate != ''">
+                AND a.pay_date = #{payDate}
+            </if>
+            <if test="orderStatus != null and orderStatus != ''">
+                AND a.order_status = #{orderStatus}
+            </if>
+            <if test="createDate != null and createDate != ''">
+                AND a.create_date = #{createDate}
+            </if>
+            <if test="remark != null and remark != ''">
+                AND a.remark = #{remark}
+            </if>
+            <if test="f1 != null and f1 != ''">
+                AND a.f1 = #{f1}
+            </if>
+            <if test="payableMoney != null and payableMoney != ''">
+                AND a.payable_money = #{payableMoney}
+            </if>
+            <if test="cardId != null and cardId != ''">
+                AND a.cardId = #{cardId}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND DATE_FORMAT(a.create_date,'%Y%m%d')&gt;=DATE_FORMAT(#{startTime},'%Y%m%d')
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND DATE_FORMAT(a.create_date,'%Y%m%d')&lt;=DATE_FORMAT(#{endTime},'%Y%m%d')
+            </if>
+            <if test="other != null and other != ''">
+                AND (a.order_no like CONCAT('%',#{other},'%') or a.user_phone like CONCAT('%',#{other},'%') or a.user_id=#{other})
+            </if>
+            <if test="channel != null and channel != ''">
+                AND u.channel like CONCAT('%',#{channel},'%')
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.create_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findAllList" resultType="HykOrder">
+        SELECT
+        <include refid="hykOrderColumns"/>
+        FROM hyk_order a
+        <include refid="hykOrderJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+		INSERT INTO hyk_order(
+			id,
+			order_no,
+			user_id,
+			user_phone,
+			card_no,
+			order_type,
+			pay_type,
+			amt,
+			goods_id,
+			redpackage_id,
+			redpackage_amt,
+			pay_date,
+			order_status,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remark,
+			del_flag,
+			f1,
+			payable_money,
+			cardId
+		) VALUES (
+			#{id},
+			#{orderNo},
+			#{hykUser.id},
+			#{userPhone},
+			#{cardNo},
+			#{orderType},
+			#{payType},
+			#{amt},
+			#{goodsId},
+			#{redpackageId},
+			#{redpackageAmt},
+			#{payDate},
+			#{orderStatus},
+			#{createDate},
+			#{updateBy},
+			#{updateDate},
+			#{remark},
+			#{delFlag},
+			#{f1},
+			#{payableMoney},
+			#{cardId}
+		)
+	</insert>
+
+    <update id="update">
+		UPDATE hyk_order SET 	
+			order_no = #{orderNo},
+			user_id = #{hykUser.id},
+			user_phone = #{userPhone},
+			card_no = #{cardNo},
+			order_type = #{orderType},
+			pay_type = #{payType},
+			amt = #{amt},
+			goods_id = #{goodsId},
+			redpackage_id = #{redpackageId},
+			redpackage_amt = #{redpackageAmt},
+			pay_date = #{payDate},
+			order_status = #{orderStatus},
+			oil_status = #{oilStatus},
+			remark = #{remark},
+			f1 = #{f1},
+			payable_money = #{payableMoney},
+			cardId = #{cardId}
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+		UPDATE hyk_order SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+    <select id="getApp" resultType="map" parameterType="java.lang.String">
+		  SELECT `value` as url,label as version,description as msg ,type as updateSign from sys_dict where id=#{id}
+	</select>
+
+
+    <select id="queryByOrderNo" resultType="map">
+		 SELECT a.id as id ,a.pay_type as payType,a.payable_money as payableMoney, a.oil_status as oilStatus, UNIX_TIMESTAMP(NOW()) as sysTime , UNIX_TIMESTAMP(a.create_date) as createTime,b.goodsImg as goodsImg, a.order_status as orderStatus,a.card_no as cardNo ,
+		  a.amt as amt,ifnull(a.redpackage_amt,0) as redpackageAmt,a.order_no as orderNo ,FROM_UNIXTIME(UNIX_TIMESTAMP(a.create_date),'%Y-%m-%d %H:%i:%s') as createDateStr,
+        case when a.amt-ifnull(a.redpackage_amt,0)&lt;0 then 0 else a.amt-ifnull(a.redpackage_amt,0) end   as orderMoney ,
+           FROM_UNIXTIME(UNIX_TIMESTAMP(a.pay_date),'%Y-%m-%d %H:%i:%s') as payDateStr ,b.goods_name as goodsName , b.cycle as cycel ,b.discount as discount,b.activity_discount as activityDiscount,
+             b.goods_type as goodsType,b.prices as prices,b.val as val, a.balance_payment as balancePayment from hyk_order a left join hyk_goods b on a.goods_id=b.id where a.order_no=#{orderNo} 
+	</select>
+
+
+    <insert id="insertOrder">
+		INSERT into hyk_order (id,order_no,user_id,user_phone,cardId,card_no,order_type,everyAmt,amt,goods_id,redpackage_id,redpackage_amt,order_status,create_date,payable_money,del_flag)
+                          values(#{id},#{orderNo},#{hykUser.id},#{hykUser.phone},#{cardId},#{cardNo},#{orderType},#{everyAmt},#{amt},#{goodsId},#{redpackageId},#{redpackageAmt},#{orderStatus},#{createDate},#{payableMoney},#{delFlag})
+	</insert>
+
+
+    <select id="findcompanyBackMoneyPage" resultType="CompanyMarVo">
+        select
+        a.companyId,
+        c.label companyName,
+        a.user_id userId,
+        b.phone,
+        d.employee,
+        a.total_money totalMoney,
+        a.use_money useMoney,
+        d1.num as orderNum,
+        d2.num as orderAmt,
+        d3.num as totalBackMoney,
+        d4.num as lastMonthOrderAmt,
+        d5.num as lastMonthBackMoney
+        from  hyk_company_money a
+        LEFT JOIN hyk_user b on a.user_id=b.id
+        LEFT JOIN sys_dict c on a.companyId=c.`value` and c.type='companyId'
+        LEFT JOIN (
+        select a.companyId,COUNT(*)employee from hyk_user a
+        where a.isCompany=1
+        GROUP BY  a.companyId
+        ) d on a.companyId=d.companyId
+
+        LEFT JOIN hyk_month_report d1 on d1.company_id=a.companyId and d1.type=1 and d1.isBoss=1 AND DATE_FORMAT(d1.create_date,  "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+        LEFT JOIN hyk_month_report d2 on d2.company_id=a.companyId and d2.type=2 and d2.isBoss=1 AND DATE_FORMAT(d2.create_date,  "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+        LEFT JOIN hyk_month_report d3 on d3.company_id=a.companyId and d3.type=3 and d3.isBoss=1 AND DATE_FORMAT(d3.create_date,  "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+        LEFT JOIN hyk_month_report d4 on d4.company_id=a.companyId and d4.type=4 and d4.isBoss=1 AND DATE_FORMAT(d4.create_date,  "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+        LEFT JOIN hyk_month_report d5 on d5.company_id=a.companyId and d5.type=5 and d5.isBoss=1 AND DATE_FORMAT(d5.create_date,  "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+        <if test="other != null and other != ''">
+            where (a.user_id =#{other} or b.phone=#{other} or c.label like CONCAT('%',#{other},'%'))
+        </if>
+
+        ORDER BY b.companyAddDate
+    </select>
+
+    <select id="findInviterExcelList" resultType="HykInviter">
+        SELECT
+        <include refid="hykOrderInviterColumns"/>
+        FROM hyk_order a
+        inner JOIN hyk_user u1 on a.user_id=u1.id
+        inner JOIN hyk_user u2 on u1.inviter_id=u2.id
+        LEFT JOIN sys_dict b on a.order_type=b.`value` and b.type="orderType"
+        LEFT JOIN sys_dict c on a.pay_type=c.`value` and c.type="payType"
+        LEFT JOIN sys_dict d on a.order_status=d.`value` and d.type="orderStatus"
+        LEFT JOIN hyk_goods e on a.goods_id=e.id
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL} and a.pay_date is not null
+            <if test="other != null and other != ''">
+                AND (a.user_id =#{other} or u1.phone =#{other} )
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.pay_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <select id="getCurrentMonthAmt" resultType="HykOrder">
+        SELECT
+        sum(a.amt) payableMoney
+        FROM hyk_order a
+        inner JOIN hyk_user u1 on a.user_id=u1.id
+        LEFT JOIN hyk_goods e on a.goods_id=e.id
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL} and LENGTH(u1.inviter_id)&gt;0 and a.pay_date is not null and
+            date_format(pay_date,'%Y%m') = date_format(curdate(),'%Y%m')
+            <if test="other != null and other != ''">
+                AND (a.user_id =#{other} or u1.phone =#{other} )
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.pay_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="getUpMonthPayAmt" resultType="HykOrder">
+        SELECT
+        SUM(a.amt)payableMoney,
+        sum(case e.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end
+        )backMoney
+        FROM hyk_order a
+        inner JOIN hyk_user u1 on a.user_id=u1.id
+        LEFT JOIN hyk_goods e on a.goods_id=e.id
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL} and a.order_type=1 and LENGTH(u1.inviter_id)&gt;0 and a.pay_date is not null
+            and date_format(pay_date, '%Y%m') = date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y%m') and e.cycle
+            in(3,8,13,24)
+            <if test="other != null and other != ''">
+                AND (a.user_id =#{other} or u1.phone =#{other} )
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.pay_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="getUpMonthBackAmt" resultType="HykOrder">
+        SELECT
+        SUM(a.payable_money)payableMoney,
+        sum(case e.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end
+        )backMoney
+        FROM hyk_order a
+        inner JOIN hyk_user u1 on a.user_id=u1.id
+        LEFT JOIN hyk_goods e on a.goods_id=e.id
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL} and a.order_type=1 and LENGTH(u1.inviter_id)&gt;0 and a.pay_date is not null
+            and date_format(pay_date, '%Y%m') = date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y%m') and e.cycle
+            in(3,8,13,24)
+            <if test="other != null and other != ''">
+                AND (a.user_id =#{other} or u1.phone =#{other} )
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.pay_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="getCurrentMonthBackAmt" resultType="HykOrder">
+        SELECT
+        sum(case e.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end
+        )backMoney
+        FROM hyk_order a
+        inner JOIN hyk_user u1 on a.user_id=u1.id
+        LEFT JOIN hyk_goods e on a.goods_id=e.id
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL} and a.order_type=1 and LENGTH(u1.inviter_id)&gt;0 and a.pay_date is not null
+            and date_format(pay_date, '%Y%m')= date_format(curdate(),'%Y%m') and e.cycle in(3,8,13,24)
+            <if test="other != null and other != ''">
+                AND (a.user_id =#{other} or u1.phone =#{other} )
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.pay_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <select id="getTotalPayAmt" resultType="HykOrder">
+        SELECT
+        SUM(a.payable_money)payableMoney
+        FROM hyk_order a
+        inner JOIN hyk_user u1 on a.user_id=u1.id
+        LEFT JOIN hyk_goods e on a.goods_id=e.id
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL} and LENGTH(u1.inviter_id)&gt;0 and a.pay_date is not null and
+            DATE_FORMAT(a.pay_date,"%Y%m")&lt;DATE_FORMAT(now(),'%Y%m')
+            <if test="other != null and other != ''">
+                AND (a.user_id =#{other} or u1.phone =#{other} )
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.pay_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <select id="getTotalBackAmt" resultType="HykOrder">
+        SELECT
+        sum(case e.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end
+        )backMoney
+        FROM hyk_order a
+        inner JOIN hyk_user u1 on a.user_id=u1.id
+        LEFT JOIN hyk_goods e on a.goods_id=e.id
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL} and a.order_type=1 and LENGTH(u1.inviter_id)&gt;0 and a.pay_date is not null
+            and DATE_FORMAT(a.pay_date,"%Y%m")&lt;DATE_FORMAT(now(),'%Y%m') and e.cycle in(3,8,13,24)
+            <if test="other != null and other != ''">
+                AND (a.user_id =#{other} or u1.phone =#{other} )
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.pay_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--商户管理 奖励明细-->
+    <select id="findOrderBackMoneyDetailPage" resultType="HykOrderDetailVo" parameterType="HykOrderDetailVo">
+        -- 订单返现详情
+        SELECT
+				a.order_no orderNo,
+				a.phone,
+				a.inviterPhone,
+				a.card_no cardNo,
+				case when a.order_type=0 then '即时充值' else '套餐充值'end orderTypeStr,
+				a.amt,
+                a.goods_name goodsName,
+				IFNULL(a.redpackage_amt,0)redpackageAmt ,
+				DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i:%s')createDateStr,
+                DATE_FORMAT(a.pay_date,'%Y-%m-%d %H:%i:%s')payDateStr,
+				IFNULL(a.backMoney,0) as backMoney
+        FROM
+        (
+        -- 查询出订单所属商户ID
+        SELECT
+				a.backMoney,
+				a.order_no,
+				a.phone,
+				b.phone as inviterPhone,
+				a.card_no,
+				a.order_type,
+				a.amt,
+                a.goods_name,
+				a.redpackage_amt,
+                a.create_date,
+                a.pay_date,a.user_id,dd.label as companyName
+        FROM
+        (
+        -- 查询出所有的被邀请用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end
+        )backMoney,
+		a.order_no,
+		b.phone,
+        b.inviter_id,
+        a.amt,
+        a.card_no,
+		a.order_type,
+        c.goods_name,
+		a.redpackage_amt,
+		a.create_date,
+        a.pay_date,a.user_id
+		FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        WHERE
+        a.del_flag = 0
+        and a.pay_date is not null
+        AND LENGTH(b.inviter_id) > 0
+        -- 查询出所有的邀请用户下单记录
+        ) a
+        LEFT JOIN hyk_user b ON a.inviter_id = b.id
+        LEFT JOIN sys_dict dd on b.companyId=dd.`value` and dd.type="companyId"
+        WHERE b.isCompany=1 and a.pay_date >b.companyAddDate
+        -- 查询出订单所属商户ID
+        UNION  ALL
+        -- 商户用户下单记录
+        SELECT
+        (case c.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12)
+        end
+        )backMoney,
+		a.order_no,
+		b.phone,
+        b.phone as inviterPhone,
+        a.card_no,
+		a.order_type,
+		a.amt,
+        c.goods_name,
+		a.redpackage_amt,
+		a.create_date,
+        a.pay_date,
+        a.user_id,
+        dd.label as companyName
+        FROM
+        hyk_order a
+        INNER JOIN hyk_user b ON a.user_id = b.id
+        LEFT JOIN hyk_goods c on a.goods_id=c.id
+        LEFT JOIN sys_dict dd on b.companyId=dd.`value` and dd.type="companyId"
+        WHERE
+        a.del_flag = 0
+        AND b.isCompany=1
+		and  a.pay_date >b.companyAddDate
+        -- 商户用户下单记录
+        ) a
+        <where>
+            <if test="other != null and other != ''">
+                (a.inviterPhone=#{other} or a.user_id=#{other} or  a.companyName like CONCAT('%',#{other},'%'))
+            </if>
+        </where>
+        order by  a.create_date desc
+    </select>
+
+
+    <select id="getMonthBackAmt" resultType="HykBackMoneyVo">
+        select DATE_FORMAT(a.plan_oil_date,"%Y%m")months,count(*)monthOrderNum,b.monthPayMoney,c.monthBackMoney from
+        hyk_oil_manager a
+
+        LEFT JOIN (
+        select a.user_id,sum(a.amt)monthPayMoney,DATE_FORMAT(a.pay_date,"%Y%m")months from hyk_order a
+        INNER JOIN hyk_user b on a.user_id=b.id
+        where a.del_flag=0 and a.pay_date is not null
+        GROUP BY DATE_FORMAT(a.pay_date,"%Y%m")
+        ORDER BY a.pay_date desc
+        )b on DATE_FORMAT(a.plan_oil_date,"%Y%m")=b.months
+
+        LEFT JOIN (
+        select a.user_id,sum(backMoney)monthBackMoney,DATE_FORMAT(a.pay_date,"%Y%m")months from (
+        select a.pay_date,a.user_id,sum(case e.cycle
+        when 3 then ((a.amt)*0.02)
+        when 8 then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end
+        )backMoney
+        from hyk_order a
+        INNER JOIN hyk_goods e on a.goods_id=e.id
+        INNER JOIN hyk_user b on a.user_id=b.id
+        where a.del_flag = 0 and LENGTH(b.inviter_id)>0 and a.order_type=1 and a.pay_date is not null and e.cycle
+        in(3,8,13,24)
+        GROUP BY a.id) a
+
+        GROUP BY DATE_FORMAT(a.pay_date,"%Y%m")
+        ) c on DATE_FORMAT(a.plan_oil_date,"%Y%m")=c.months
+
+        LEFT JOIN hyk_user d on a.user_id=d.id
+        <where>
+            <if test="other != null and other != ''">
+                (a.user_id =#{other} or d.phone =#{other} )
+            </if>
+        </where>
+        GROUP BY DATE_FORMAT(a.plan_oil_date,"%Y%m")
+        ORDER BY a.plan_oil_date desc
+    </select>
+
+
+    <select id="sumBackMoney" resultType="HykOrder">
+        SELECT
+        sum(case  e.cycle
+        when 3  then ((a.amt)*0.02)
+        when 8  then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end )backMoney
+        FROM hyk_order a
+        inner JOIN hyk_user u1 on a.user_id=u1.id
+        LEFT JOIN hyk_goods e on a.goods_id=e.id
+        where
+        a.del_flag =0 and a.pay_date is not null and a.`order_type` =1 and e.cycle in(3,8,13,24)
+
+        AND u1.inviter_id =#{userId}
+    </select>
+
+    <select id="monthList" resultType="HykOrder">
+      SELECT
+      DATE_FORMAT(a.pay_date, '%Y年%m月')month,
+		sum(case  e.cycle
+        when 3  then ((a.amt)*0.02)
+        when 8  then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end )backMoney
+          FROM hyk_order a
+          inner JOIN hyk_user u1 on a.user_id= u1.id
+          LEFT JOIN hyk_goods e on a.goods_id= e.id
+         where a.del_flag= 0
+           and a.pay_date is not null
+           and a.`order_type`= 1
+           AND u1.inviter_id =#{userId} and e.cycle in(3,8,13,24)
+         GROUP BY DATE_FORMAT(a.pay_date, '%Y%m')
+    </select>
+
+    <update id="updateFailStatus">
+      update hyk_order set order_status=4 where order_no=#{orderNo};
+    </update>
+    <select id="queryInviterBackMoney" resultType="HykOrder">
+      SELECT
+        DATE_FORMAT(a.pay_date, '%Y-%m-%d')month,
+        case  e.cycle
+        when 3  then ((a.amt)*0.02)
+        when 8  then ((a.amt)*0.05)
+        when 13 then ((a.amt)*0.07)
+        when 24 then ((a.amt)*0.12) end backMoney
+        FROM hyk_order a
+        inner JOIN hyk_user u1 on a.user_id=u1.id
+        LEFT JOIN hyk_goods e on a.goods_id=e.id
+        where
+        a.del_flag =0 and a.pay_date is not null and a.`order_type` =1 and DATE_FORMAT(a.pay_date,'%Y年%m月')=#{month}
+        AND u1.inviter_id =#{userId} and e.cycle in(3,8,13,24)
+    </select>
+
+    <select id="queryListByUserId" resultType="HykOrder">
+        SELECT b.goodsImg as goodsImg , a.order_no as orderNo , a.card_no as cardNo , a.amt as amt , b.goods_name as
+        goodsName , b.goods_type as goodsType , a.order_status as orderStatus
+        , a.oil_status as oilStatus
+        from hyk_order a
+        left join hyk_goods b on a.goods_id=b.id
+        <where>
+            a.del_flag=0 and a.user_id=#{userId}
+            <if test="oilStatus != null and oilStatus != ''">
+                AND a.order_status=2 and a.oil_status=#{oilStatus}
+            </if>
+        </where>
+        ORDER BY a.order_status asc ,a.create_date desc
+    </select>
+
+    <select id="getListByUserIdAndNullCardIdAndNullCardNo" resultType="HykOrder">
+        SELECT * from hyk_order where LENGTH(cardId)=0 and LENGTH(card_no)=0 and  user_id=#{userId} and del_flag=0
+    </select>
+
+    <update id="updateCardIdAndCardNo">
+        update hyk_order set  cardId=#{cardId},card_no=#{cardNo} where LENGTH(cardId)=0 and LENGTH(card_no)=0 and user_id=#{userId} and del_flag=0
+    </update>
+
+    <update id="updatePayableMoneyAndBalanceMoney">
+        update hyk_order set payable_money=payable_money-#{balanceMoney} , balance_payment=#{balanceMoney} where id=#{orderId} and del_flag=0
+    </update>
+
+    <select id="getListByCardId" resultType="HykOrder">
+        SELECT a.*,b.goodsImg as goodsImg,b.goods_name as goodsName,b.goods_type as goodsType from hyk_order a left join hyk_goods b on a.goods_id=b.id
+        where a.order_status=2 and a.del_flag=0 and a.cardId=#{cardId} ORDER BY a.oil_status asc,a.pay_date desc
+    </select>
+
+    <update id="softDeleteOrder">
+        update  hyk_order set del_flag=1 where del_flag=0 and order_status=3 and TO_DAYS(NOW()) - TO_DAYS(create_date)&gt;13
+    </update>
+
+    <update id="updateDelFlag">
+        update hyk_order set del_flag=0 where id=#{id}
+    </update>
+
+    <select id="findMonthReportPage" resultType="CompanyMarVo">
+            select
+            a.companyId,
+            c.label companyName,
+            a.phone,
+            a.id inviterCode,
+            case when a.isBoss='1' then '商户主'else '员工'end isBoss,
+            d1.num as orderNum,
+            d2.num as orderAmt,
+            d3.num as totalBackMoney,
+            d4.num as lastMonthOrderAmt,
+            d5.num as lastMonthBackMoney
+            from  hyk_user a
+            LEFT JOIN sys_dict c on a.companyId=c.`value` and c.type='companyId'
+            LEFT JOIN hyk_month_report d1 on d1.employee_id=a.id and d1.type=1 and d1.isBoss=0 AND DATE_FORMAT(d1.`create_date`,  "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+            LEFT JOIN hyk_month_report d2 on d2.employee_id=a.id and d2.type=2 and d2.isBoss=0 AND DATE_FORMAT(d2.`create_date`,  "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+            LEFT JOIN hyk_month_report d3 on d3.employee_id=a.id and d3.type=3 and d3.isBoss=0 AND DATE_FORMAT(d3.`create_date`,  "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+            LEFT JOIN hyk_month_report d4 on d4.employee_id=a.id and d4.type=4 and d4.isBoss=0 AND DATE_FORMAT(d4.`create_date`,  "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+            LEFT JOIN hyk_month_report d5 on d5.employee_id=a.id and d5.type=5 and d5.isBoss=0 AND DATE_FORMAT(d5.`create_date`,  "%Y%m") = DATE_FORMAT(curdate(), "%Y%m")
+            where a.isCompany=1
+            <if test="other != null and other != ''">
+                and (a.id =#{other} or a.phone=#{other} or c.label like CONCAT('%',#{other},'%'))
+            </if>
+            ORDER BY a.companyId,a.companyAddDate
+
+    </select>
+    <select id="getSuccessCountByDate" resultType="HykOrder">
+        SELECT * from hyk_order where user_id=#{userId} and goods_id=#{goodsId} and everyAmt &gt;=#{everyAmt} and pay_date BETWEEN #{startTime} and #{endTime} and del_flag=0
+    </select>
+    <select id="queryReadyOrderCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) from hyk_order where cardId=#{cardId} and order_status=0 and del_flag=0
+    </select>
+
+    <update id="updateStop">
+        update hyk_order set order_status ="5" where id=#{id} and order_status="2"
+    </update>
+
+    <update id="updateStart">
+        update hyk_order set order_status ="2" where id=#{id} and order_status="5"
+    </update>
+
+    <update id="updateRefund">
+        update hyk_order set order_status ="6" where id=#{id} and order_status="2"
+    </update>
+
+</mapper>
