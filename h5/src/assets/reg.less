@@ -1,0 +1,198 @@
+.reg_panel {
+  .cube-input::after,.cube-textarea-wrapper::after{
+    border-radius: 0 !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+  .reg_box {
+    width: 100%;
+    height: auto;
+    padding: 0 25px;
+    h2{
+       text-align:left;
+       padding-bottom:70px;
+       line-height:1;
+    }
+    .item {
+      margin-bottom: 80px;
+      .getCode{
+         width:100%;
+         height:auto;
+         position:relative;
+         margin-bottom:15px;
+         button{
+            position:absolute;
+            border:none;
+            top:0;
+            right:0;
+            background:none;
+            color:#5097FF;
+            font-size:15px;
+            height:45px;
+            line-height:45px;
+            outline: none;
+         }
+         button.disabled{
+            color:#999999;
+         }
+      }
+      .view_phone{
+         width:100%;
+         height:auto;
+         line-height:1;
+         padding:20px 0;
+         p{
+            font-size:24px;
+            letter-spacing: 2px;
+            color:#666666;
+         }
+      }
+      .pass{
+         margin-bottom:15px;
+      }
+      .link{
+         font-size:15px;
+         a{
+           color:#3A8BBB;
+           float:right;
+           padding-left:12px;
+         }
+      }
+      input {
+        font-size: 15px;
+        padding: 12px 8px;
+        color:#333;
+      }
+      button {
+        padding: 0;
+        height: 50px;
+        line-height: 50px;
+        border-radius: 25px;
+        font-size: 18px;
+        letter-spacing: 2px;
+      }
+      .code_txt{
+         font-size:15px;
+         color:#666;
+         text-align:center;
+         margin-bottom:20px;
+      }
+      .error{
+         text-align:center;
+         color:#FF5757;
+         font-size:15px;
+         line-height:1;
+         padding-bottom:35px;
+         letter-spacing: 1px;
+      }
+      .send_again{
+         text-align:center;
+         color:#3A8BBB;
+         font-size:15px;
+        letter-spacing: 2px;
+      }
+      .send_again.disabled{
+        color:#aaa;
+      }
+      .setPass{
+         margin-bottom:22px;
+      }
+      ul{
+         width:auto;
+         height:auto;
+         margin:0 auto 18px auto;
+         position:relative;
+         display:inline-block;
+         overflow: hidden;
+         li{
+            width:45px;
+            height:45px;
+            border:solid 1px #ebebeb;
+            float:left;
+            line-height:45px;
+            margin:0 8px;
+            border-radius:2px;
+            font-size:24px;
+            color:#333;
+         }
+         li.active{
+            border-color: #FF7353
+         }
+         input{
+            width:33em;
+            height:100%;
+            position:absolute;
+            top:0;
+            left:-15em;
+            opacity: 0;
+            background:#ccc;
+            outline: none;
+         }
+      }
+    }
+    .login_type {
+      width: 100%;
+      height: auto;
+      font-size: 12px;
+      color: #ccc;
+      position: relative;
+      .title {
+        width:100%;
+        height:12px;
+        position:relative;
+        p {
+          width: 100%;
+          border-bottom: solid 1px #EEE;
+        }
+        label {
+          width: 90px;
+          height: 12px;
+          background: #FFFFFF;
+          position: absolute;
+          left: 50%;
+          margin-left: -45px;
+          top: -6px;
+          letter-spacing: 0.05rem;
+        }
+      }
+      dl {
+        padding-top:40px;
+        width: 100%;
+        height: auto;
+        dt {
+          width: 44px;
+          height: 44px;
+          background: url("../../static/images/wechat_logo.png") no-repeat center center;
+          background-size: contain;
+          margin: 0 auto;
+        }
+        dd{
+          font-size:12px;
+          color:#666;
+          line-height:1;
+          padding:10px 0;
+        }
+      }
+    }
+  }
+  .pd {
+    padding-top: 15%;
+  }
+  .protocol {
+    width: 100%;
+    height: 50px;
+    position: fixed;
+    bottom: 0;
+    padding: 0 25px;
+    p {
+      text-align: center;
+      line-height: 1.5em;
+      font-size: 12px;
+      color: #999;
+      label {
+        color: #FF4456;
+      }
+    }
+  }
+}

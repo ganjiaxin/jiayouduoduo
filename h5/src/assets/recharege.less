@@ -1,0 +1,390 @@
+.ticket_ul {
+  width: 100%;
+  height: auto;
+  ul {
+    li {
+      width: 100%;
+      height: auto;
+      font-size: 14px;
+      color: #999;
+      text-align: left;
+      line-height: 1;
+      padding: 18px 0;
+      border-bottom: solid 1px #ebebeb;
+      label {
+        float: right;
+        color: #333;
+        font-size: 15px;
+      }
+    }
+    li:last-child {
+      border: none;
+    }
+  }
+}
+
+.userCoupon {
+  display: none;
+}
+
+.userCoupon.isShow {
+  display: block;
+}
+
+.recharge_page {
+  color: #333;
+  .submit-button {
+    padding: 20px 30px 15px;
+    button {
+      letter-spacing: 4px;
+    }
+    p {
+      text-align: center;
+      color: #999999;
+      font-size: 12px;
+      line-height: 1;
+      padding-top: 20px;
+      letter-spacing: 1px;
+    }
+  }
+  .recharge_info {
+    width: 100%;
+    padding: 0 15px;
+    margin-bottom:15px;
+    ul {
+      li {
+        width: 100%;
+        line-height: 1;
+        border-bottom: solid 1PX #ebebeb;
+        font-size: 14px;
+        padding: 20px 0;
+        text-align: left;
+        span {
+          float: right;
+          font-size: 15px;
+          color: #999999;
+          label {
+            color: #333;
+          }
+        }
+        span.usedCoupon {
+          color: #333333;
+        }
+        .more {
+          width: 15px;
+          height: 13px;
+          background: url("../../static/images/more_icon.png") no-repeat center center;
+          background-size: contain;
+          display: block;
+          float: right;
+          margin-left: 5px;
+        }
+      }
+      li:last-child {
+        border: none;
+      }
+    }
+  }
+  .total{
+     text-align:center;
+     font-size:15px;
+     color:#999999;
+  }
+  .select_type {
+    width: 100%;
+    height: auto;
+    padding-bottom: 2px;
+    p {
+      font-size: 15px;
+      padding: 18px 15px;
+      line-height: 1;
+    }
+    .type_list {
+      width: 100%;
+      padding: 0 7.5px;
+      .box {
+        width: 33.33333%;
+        height: 72px;
+        padding: 0 7.5px;
+        border-radius: 2px;
+        float: left;
+        dl {
+          width: 100%;
+          height: auto;
+          border: solid 1px #ebebeb;
+          border-radius: 4px;
+          position: relative;
+          padding: 6px 0;
+          .checked {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px 0 4px 0;
+            background: #FF4456;
+            position: absolute;
+            left: -1px;
+            top: -1px;
+            display: none;
+            svg {
+              width: 14px;
+              height: 14px;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              margin: -7px 0 0 -7px;
+              fill: #FFFFFF;
+            }
+          }
+          .flag {
+            width: 28px;
+            height: 28px;
+            position: absolute;
+            right: -1px;
+            top: -1px;
+          }
+          .flag.hot {
+            background: url("../../static/images/hot.png") no-repeat center center;
+            background-size: contain;
+          }
+          .flag.limit {
+            background: url("../../static/images/time.png") no-repeat center center;
+            background-size: contain;
+          }
+          dt {
+            font-size: 27px;
+            color: #FF4456;
+            line-height: 1;
+            padding-bottom: 6px;
+            label {
+              font-size: 12px;
+              color: #333333;
+              padding-left: 2px;
+            }
+            span {
+              font-size: 16px;
+            }
+            s {
+              font-size: 11px;
+              color: #999999;
+              padding-left: 3px;
+            }
+          }
+          dd {
+            font-size: 12px;
+            color: #666;
+          }
+        }
+      }
+      .box.custom {
+        dd {
+          color: #333;
+          font-size: 15px;
+          height: 45px;
+          line-height: 45px;
+        }
+      }
+      .box.active {
+        dl {
+          border: solid 2PX #FF4456;
+          background: #FFF2F3;
+          .checked {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+  .month_money {
+    width: 100%;
+    height: auto;
+    padding: 0 15px;
+    p {
+      font-size: 15px;
+      padding-top: 15px;
+      line-height: 1;
+    }
+    .custom_money {
+      padding: 4px 0 15px 0;
+      text-align: center;
+      color: #666;
+      letter-spacing: 2px;
+      font-size: 12px;
+    }
+    .select_money {
+      width: 100%;
+      height: auto;
+      margin-bottom: 8px;
+      padding: 15px 0 14px 0;
+      position: relative;
+      border-bottom: solid 1px #EBEBEB;
+      .button {
+        width: 55px;
+        height: 30px;
+        top: 8px;
+        background: url("../../static/images/jian.png") no-repeat center center;
+        background-size: 15px 15px;
+        left: 0;
+        position: absolute;
+      }
+      .button.add {
+        right: 0;
+        left: auto;
+        background: url("../../static/images/add.png") no-repeat center center;
+        background-size: 15px 15px;
+      }
+      .money {
+        height: auto;
+        text-align: center;
+        line-height: 1;
+        font-size: 16px;
+        label {
+          display: inline-block;
+          font-size: 15px;
+          padding-left: 4px;
+          color: #666;
+        }
+      }
+    }
+  }
+  .select_ticket {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    position: relative;
+    padding: 0;
+    #ticketList {
+      width: 100%;
+      height: 80px;
+      position: relative;
+      z-index: 99;
+      .swiper-container {
+        width: 100%;
+        height: 100%;
+        .swiper-slide.swiper-slide-prev {
+          transform-origin: 100% bottom !important;
+        }
+        .swiper-slide.swiper-slide-next {
+          transform-origin: 0 bottom !important;
+        }
+        .swiper-slide.swiper-slide-active {
+          transform-origin: 100% bottom !important;
+        }
+        .swiper-slide {
+          width: 84%;
+          position: relative;
+          margin: 0 auto;
+          .card_box {
+            width: 7.8rem;
+            height: 100%;
+            border-radius: 5px 5px 0 0;
+            margin: 0 auto;
+            position: relative;
+            //background: -webkit-linear-gradient(left top, #FF8D3D, #FF3548);
+            //background: -o-linear-gradient(bottom right, #FF8D3D, #FF3548);
+            //background: -moz-linear-gradient(bottom right, #FF8D3D, #FF3548);
+            //background: linear-gradient(to bottom right, #FF8D3D, #FF3548);
+            background: #FF4456;
+            box-shadow: 0 1px 8px rgba(213, 43, 43, 0.5);
+            overflow: hidden;
+            .logo {
+              width: 80px;
+              height: auto;
+              top:15%;
+              position: absolute;
+              .icon {
+                width: 36px;
+                height: 34px;
+                overflow: hidden;
+                margin: 0 auto 4px auto;
+                fill: rgba(255, 255, 255, 0.7);
+              }
+              p {
+                font-size: 14px;
+                color: rgba(255, 255, 255, 0.7);
+                text-align: center;
+                width: 100%;
+                line-height:1;
+                padding:0;
+              }
+            }
+            dl {
+              width: 100%;
+              padding: 22px 12px 20px 12px;
+              dt {
+                color: #FFFFFF;
+                text-align: right;
+                font-size: 16px;
+                line-height: 1;
+                padding-bottom: 16px;
+                letter-spacing: 2px;
+              }
+              dd {
+                text-align: right;
+                color: #FFFFFF;
+                font-size: 17px;
+                letter-spacing: 0;
+                text-shadow: 1PX 1PX 2PX rgba(0, 0, 0, 0.1);
+              }
+            }
+          }
+        }
+      }
+    }
+    .shadow {
+      height: 2px;
+      position: absolute;
+      left: 15px;
+      right: 15px;
+      bottom: -2px;
+      box-shadow: 0 0 5px #ccc;
+    }
+    p {
+      font-size: 15px;
+      padding: 20px 15px;
+      line-height: 1;
+      span {
+        float: right;
+        color: #FF4456;
+        font-size: 14px;
+        line-height: 1.1em;
+      }
+    }
+    .add_ticket.show {
+      display: block !important;
+    }
+    .add_ticket {
+      width: 7.8rem;
+      height: 80px;
+      margin: 0 auto;
+      display: none;
+      position: relative;
+      z-index: 99;
+      border-radius: 5px 5px 0 0;
+      p{
+         text-align:center;
+         line-height:1;
+         padding:6px 0;
+         margin-bottom:5px;
+         font-size:13px;
+         color:#666666;
+      }
+      p.btn{
+        text-align: center;
+        display: inline-block;
+        color: #FFFFFF;
+        font-size: 15px;
+        padding:8px 25px;
+        border-radius:20px;
+        letter-spacing: 2px;
+        background:#FF4456;
+        i {
+          margin-right: 5px;
+          width: 13px;
+          height: 13px;
+          display: inline-block;
+          background: url("../../static/images/plus.png") no-repeat center center;
+          background-size: contain;
+        }
+      }
+    }
+  }
+}
