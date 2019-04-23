@@ -8,7 +8,8 @@
 */mvnw
 #忽略.settings文件夹中的所有文件
 */.settings/*
-./dist/
+dist/
+node_modules/
 #忽略.mvn文件夹中的所有文件
 */.mvn/*
 #忽略.idea文件夹中的所有文件
