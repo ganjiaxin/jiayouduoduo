@@ -27,7 +27,7 @@
             'url': '/'
           },
           {
-            'title': '商城',
+            'title': '多多商城',
             'icon': '#shangcheng-pre',
             'activeIcon': '#shangcheng-nor',
             'url': '/store'
