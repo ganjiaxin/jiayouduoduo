@@ -43,6 +43,7 @@ public class AlipayUtils {
     public static final String SIGN_TYPE = "RSA2";
 
     public static String OIL_NOTIFY = "http://web.banyuge.com/web/f/web/pay/receiveNotifyAliPay";//加油卡正式回调地址
+    public static String SHOP_NOTIFY = "http://web.banyuge.com/web/f/web/payShop/receiveNotifyAliPay";//加油卡正式回调地址
 
     public static final String WAIT_BUYER_PAY = "WAIT_BUYER_PAY";//	交易创建，等待买家付款
     public static final String TRADE_CLOSED = "TRADE_CLOSED";//	未付款交易超时关闭，或支付完成后全额退款
@@ -56,7 +57,7 @@ public class AlipayUtils {
         return client;
     }
 
-    public static String createOrder(HttpServletRequest req, OrderModel orderModel) {
+    public static String createOrder(HttpServletRequest req, OrderModel orderModel,String notifyUrl) {
         //实例化客户端
         String port = req.getServerPort() + "";
 
@@ -75,7 +76,7 @@ public class AlipayUtils {
         model.setGoodsType(orderModel.getGoods_type());
         request.setBizModel(model);
 
-        request.setNotifyUrl(OIL_NOTIFY);//加油回调地址
+        request.setNotifyUrl(notifyUrl);//加油回调地址
 
         String bodystr = "";
         try {

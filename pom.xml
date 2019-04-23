@@ -639,13 +639,13 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.2.5</version>
+            <version>4.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.2.4</version>
+            <version>4.4</version>
         </dependency>
 
         <dependency>
@@ -740,6 +740,8 @@
             <version>3.3.2</version>
             <classifier>source</classifier>
         </dependency>
+
+
 
     </dependencies>
 

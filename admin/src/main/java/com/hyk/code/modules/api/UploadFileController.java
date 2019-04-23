@@ -58,15 +58,9 @@ public class UploadFileController {
         Gson gson=new Gson();
         Map<String,Object> map = new HashMap<String, Object>();
         try {
-            String mHttpUrlName=request.getRequestURI();//项目名称+文件路径
-            String mScriptName=request.getServletPath();//文件路径
-            String serverName=request.getServerName();//服务地址
-            int port=request.getServerPort();//端口
-            String mServerUrl="http://"+request.getServerName()+":"+request.getServerPort()+mHttpUrlName.substring(0,mHttpUrlName.lastIndexOf(mScriptName));//取得OfficeServer文件的完整URL
-
             String path=ImageUploadUtil.upload(request);
             map.put("uploaded",1);
-            map.put("url",mServerUrl+path);
+            map.put("url",path);
         }catch (Exception e){
             e.printStackTrace();
             map.put("uploaded",2);

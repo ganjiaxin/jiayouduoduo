@@ -291,7 +291,7 @@ public class HykUser extends DataEntity<HykUser> {
         this.oilCardNum = oilCardNum;
     }
 
-    @Length(min = 0, max = 10, message = "渠道长度必须介于 0 和 10 之间")
+    @Length(min = 0, max = 50, message = "渠道长度必须介于 0 和 50 之间")
     @ExcelField(title = "渠道", align = 2, sort = 44)
     public String getChannel() {
         return channel;

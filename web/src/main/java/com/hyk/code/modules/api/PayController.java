@@ -223,7 +223,7 @@ public class PayController {
             //下面是生成给支付宝的订单
             OrderModel order = payParamAliPayOil(request, hykOrder);
             // 创建订单
-            String bodystr = AlipayUtils.createOrder(request, order);
+            String bodystr = AlipayUtils.createOrder(request, order, AlipayUtils.OIL_NOTIFY);
             map.put("code", "200");
             map.put("bodyStr", bodystr);
             addPayInfo(request, hykOrder);
@@ -395,7 +395,7 @@ public class PayController {
             AlipayUtils.notityInfo(request, resp);
             RetBean retBean = new RetBean();
             boolean status = (boolean) request.getAttribute("status");
-            logger.info(request.getAttribute("trade_status") + "回调成功 进行业务处理：" + request.getAttribute(
+            logger.info(request.getAttribute("trade_status") + "油卡充值回调成功 进行业务处理：" + request.getAttribute(
                     "out_trade_no"));
             String out_trade_no = request.getAttribute("out_trade_no") + "";
             if (status) {

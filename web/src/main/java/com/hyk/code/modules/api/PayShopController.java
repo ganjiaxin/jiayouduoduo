@@ -169,7 +169,7 @@ public class PayShopController {
             HykMallOrder hykMallOrder = hykMallOrderService.get(id);
             OrderModel order = payParamAliPay(request, hykMallOrder);
             // 创建订单
-            String bodystr = AlipayUtils.createOrder(request, order);
+            String bodystr = AlipayUtils.createOrder(request, order, AlipayUtils.SHOP_NOTIFY);
             map.put("code", "200");
             map.put("bodyStr", bodystr);
             addPayInfo(request, hykMallOrder);
@@ -227,7 +227,7 @@ public class PayShopController {
             boolean status = (boolean) request.getAttribute("status");
             String out_trade_no = request.getAttribute("out_trade_no") + "";
             if (status) {
-                System.out.println(request.getAttribute("trade_status") + "回调成功 进行业务处理：" + request.getAttribute(
+                System.out.println(request.getAttribute("trade_status") + "商品购买回调成功 进行业务处理：" + request.getAttribute(
                         "out_trade_no"));
                 String trade_status = request.getAttribute("trade_status") + "";
                 try {

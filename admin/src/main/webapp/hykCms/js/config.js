@@ -20,7 +20,8 @@ if(token===undefined || token.typeOf === 'undefined'){
 
 var url =window.location.href;
 var rootUrl =url.substring(0,url.indexOf("hykCms")-1); //通用
-var imgUrl ='http://47.99.115.136:8082/hykweb/f/app/download/image?filePath=' //测试库
+var imgUrl=''
+// var imgUrl ='http://47.99.115.136:8082/hykweb/f/app/download/image?filePath=' //测试库
 // var imgUrl ='http://47.110.60.57:8082/hykweb/f/app/download/image?filePath=' //预发布正式库
 //var imgUrl ='https://www.huiucard.com/hykweb/f/app/download/image?filePath=' //正式库
 //var rootUrl = 'http://47.99.115.136:8081/hyk-admin' //本地测试
