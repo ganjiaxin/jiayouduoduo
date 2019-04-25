@@ -17,7 +17,7 @@ const router = new VueRouter({
       path: '/store',
       name: 'store',
       component: resolve => (require(['@/components/store'], resolve)),
-      meta: {title: '商城'}
+      meta: {title: '多多商城'}
     },
     {
       path: '/storeBuy',

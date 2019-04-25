@@ -50,7 +50,7 @@
                 </router-link>
                 <router-link tag="dl" class="eq" to="/store">
                   <dt></dt>
-                  <dd>惠优商城</dd>
+                  <dd>多多商城</dd>
                 </router-link>
                 <dl class="caifly">
                   <dt></dt>

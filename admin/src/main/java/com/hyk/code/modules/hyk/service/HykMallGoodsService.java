@@ -21,6 +21,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class HykMallGoodsService extends CrudService<HykMallGoodsDao, HykMallGoods> {
 
+
 	public HykMallGoods get(String id) {
 		return super.get(id);
 	}
